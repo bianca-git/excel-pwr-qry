@@ -1,0 +1,14 @@
+[
+    {
+        "id": "connect-workbook",
+        "title": "Connect to Another Workbook",
+        "description": "Pull data from another Excel file.",
+        "file": "content/connect-workbook.html"
+    },
+    {
+        "id": "combine-pdfs",
+        "title": "Combine Multiple PDFs",
+        "description": "Automate data extraction from a folder of PDFs.",
+        "file": "content/combine-pdfs.html"
+    }
+]
