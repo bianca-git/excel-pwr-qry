@@ -16,6 +16,74 @@
             color: #4f46e5;
             font-weight: 600;
         }
+        /* Styles from 'Connect to Workbook' Guide */
+        .step-card {
+            background-color: #ffffff;
+            border: 1px solid #e4e4e7;
+            transition: box-shadow 0.3s ease-in-out;
+        }
+        .step-card:hover {
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.07);
+        }
+        .step-number {
+            background-color: #166534; /* Dark Green */
+            color: #ffffff;
+        }
+        .interactive-diagram {
+            background-color: #f4f4f5;
+            border: 1px dashed #d4d4d8;
+            user-select: none;
+        }
+        .excel-button {
+            border: 1px solid #a1a1aa;
+            background-color: #f4f4f5;
+            transition: all 0.2s ease;
+        }
+        .excel-button:hover {
+            background-color: #e4e4e7;
+            border-color: #71717a;
+        }
+        .excel-button.active, .excel-button.highlight {
+            background-color: #dcfce7; /* Light Green */
+            border-color: #166534;
+            color: #15803d;
+        }
+        .pro-tip {
+            background-color: #fefce8; /* Light Yellow */
+            border-left: 4px solid #ca8a04; /* Yellow */
+        }
+        /* Styles from 'Combine PDFs' Guide */
+        .tab-active {
+            background-color: #d1fae5; /* Tailwind green-100 */
+            color: #065f46; /* Tailwind green-800 */
+            border-color: #6ee7b7; /* Tailwind green-300 */
+        }
+        .arrow {
+            position: relative;
+            padding-right: 2.5rem;
+        }
+        .arrow::after {
+            content: '→';
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            color: #9ca3af;
+        }
+        @media (max-width: 768px) {
+            .arrow-stack {
+                padding-right: 0;
+                margin-bottom: 2.5rem;
+            }
+            .arrow-stack::after {
+                content: '↓';
+                right: 50%;
+                top: auto;
+                bottom: -2.5rem;
+                transform: translateX(50%);
+            }
+        }
     </style>
 </head>
 <body class="text-gray-800">
@@ -52,3 +120,4 @@
     <script src="guides.js"></script>
 </body>
 </html>
+
