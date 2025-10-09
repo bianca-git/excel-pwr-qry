@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
             contentEl.innerHTML = content;
             headerEl.textContent = guide.title;
             
-            // Re-run any scripts within the loaded content if necessary
+            // Re-run any scripts within the loaded content
             const scripts = contentEl.querySelectorAll('script');
             scripts.forEach(oldScript => {
                 const newScript = document.createElement('script');
@@ -55,7 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('guides.json');
             guides = await response.json();
             
-            // Clear loading message and build navigation
             navEl.innerHTML = ''; 
             guides.forEach(guide => {
                 const link = document.createElement('a');
@@ -72,7 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 navEl.appendChild(link);
             });
 
-            // Check URL hash on load to show the correct guide
             const currentHash = window.location.hash.substring(1);
             const guideToLoad = guides.find(g => g.id === currentHash) || guides[0];
             if (guideToLoad) {
@@ -87,3 +85,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     init();
 });
+
