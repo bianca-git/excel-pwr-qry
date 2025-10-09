@@ -1,65 +1,299 @@
-<div class="max-w-4xl mx-auto">
-    <div class="space-y-12">
-        <!-- Step 1 -->
-        <section id="step1" class="step-card rounded-xl p-6 sm:p-8 bg-white border">
-            <div class="flex items-start gap-4">
-                <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg bg-green-800 text-white">1</div>
-                <div>
-                    <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Open the Power Query Editor</h2>
-                    <p class="mt-2 text-gray-700">First, we need to tell Excel where we want to get our data from. This process starts from the "Data" tab on the main ribbon.</p>
+<main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    <div class="max-w-4xl mx-auto">
+        <div class="space-y-12">
+            <!-- Step 1 -->
+            <section id="step1" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">1</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Open the Power Query Editor</h2>
+                        <p class="mt-2 text-gray-700">First, we need to tell Excel where we want to get our data from. This process starts from the "Data" tab on the main ribbon.</p>
+                    </div>
                 </div>
-            </div>
-            <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
-                <div>
-                    <ul class="list-decimal list-inside space-y-2 text-gray-600">
-                        <li>Open the Excel workbook where you want the new data to <strong class="font-semibold text-gray-800">go</strong>.</li>
-                        <li>Navigate to the <strong class="font-semibold text-gray-800">Data</strong> tab on the Excel ribbon.</li>
-                        <li>In the "Get & Transform Data" section, click on <strong class="font-semibold text-gray-800">Get Data</strong>.</li>
-                        <li>From the dropdown menu, select <strong class="font-semibold text-gray-800">From File</strong>, and then choose <strong class="font-semibold text-gray-800">From Excel Workbook</strong>.</li>
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+                    <div>
+                        <ul class="list-decimal list-inside space-y-2 text-gray-600">
+                            <li>Open the Excel workbook where you want the new data to <strong class="font-semibold text-gray-800">go</strong>.</li>
+                            <li>Navigate to the <strong class="font-semibold text-gray-800">Data</strong> tab on the Excel ribbon.</li>
+                            <li>In the "Get & Transform Data" section, click on <strong class="font-semibold text-gray-800">Get Data</strong>.</li>
+                            <li>From the dropdown menu, select <strong class="font-semibold text-gray-800">From File</strong>, and then choose <strong class="font-semibold text-gray-800">From Excel Workbook</strong>.</li>
+                        </ul>
+                    </div>
+                    <div id="diagram1" class="interactive-diagram p-4 rounded-lg">
+                        <p class="text-center text-sm text-gray-500 mb-2">Interactive Diagram: Click the buttons</p>
+                        <div class="bg-white p-2 rounded-t-md border-b-2 border-gray-300">
+                            <div class="flex space-x-2">
+                                <div class="px-3 py-1 text-sm">File</div>
+                                <div class="px-3 py-1 text-sm">Home</div>
+                                <div id="d1-data-tab" class="px-3 py-1 text-sm rounded cursor-pointer excel-button">Data</div>
+                                <div class="px-3 py-1 text-sm">Review</div>
+                                <div class="px-3 py-1 text-sm">View</div>
+                            </div>
+                        </div>
+                        <div id="d1-data-ribbon" class="hidden p-4 relative">
+                            <div id="d1-get-data" class="excel-button cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium rounded-md">
+                                <span>📂 Get Data</span>
+                            </div>
+                            <div id="d1-dropdown" class="hidden absolute top-14 left-4 bg-white border rounded-md shadow-lg z-10 w-56">
+                                <div class="p-1">
+                                    <div id="d1-from-file" class="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100 cursor-pointer flex justify-between items-center">From File <span>▶</span></div>
+                                    <div class="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100 cursor-pointer">From Database</div>
+                                    <div class="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100 cursor-pointer">From Azure</div>
+                                </div>
+                                <div id="d1-from-file-submenu" class="hidden absolute left-full -top-0 bg-white border rounded-md shadow-lg w-56">
+                                     <div class="p-1">
+                                        <div id="d1-from-workbook" class="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100 cursor-pointer">From Excel Workbook</div>
+                                        <div class="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100 cursor-pointer">From Text/CSV</div>
+                                        <div class="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100 cursor-pointer">From XML</div>
+                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="d1-message" class="text-center mt-2 font-medium text-green-700 h-5"></div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="step2" class="step-card rounded-xl p-6 sm:p-8">
+                 <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">2</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Select Your Source File</h2>
+                        <p class="mt-2 text-gray-700">Excel will now ask you to locate the workbook you want to pull data <strong class="font-semibold text-gray-800">from</strong>.</p>
+                    </div>
+                </div>
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+                    <div>
+                         <ul class="list-decimal list-inside space-y-2 text-gray-600">
+                            <li>A file browser window will open.</li>
+                            <li>Navigate to the folder containing your source Excel file.</li>
+                            <li>Select the file and click the <strong class="font-semibold text-gray-800">Import</strong> button.</li>
+                        </ul>
+                    </div>
+                    <div class="interactive-diagram p-4 rounded-lg">
+                        <div class="bg-white rounded-lg border border-gray-300 shadow-md w-full">
+                            <div class="bg-gray-100 p-2 border-b flex justify-between items-center">
+                                <h3 class="font-semibold text-sm">Import Data</h3>
+                                <span class="text-gray-400">✖</span>
+                            </div>
+                            <div class="p-4 flex space-x-4">
+                                <div class="w-1/3 text-sm space-y-1">
+                                    <div class="p-1 rounded bg-blue-100 text-blue-800">▶ Documents</div>
+                                    <div class="p-1 rounded ml-2">└ 📁 Sales Data</div>
+                                    <div class="p-1 rounded ml-2">└ 📁 Reports</div>
+                                </div>
+                                <div class="w-2/3 border rounded-md p-2 space-y-1">
+                                    <div class="p-2 text-sm rounded cursor-pointer hover:bg-gray-100">📄 Q1_Report.xlsx</div>
+                                    <div class="p-2 text-sm rounded cursor-pointer bg-blue-100 border border-blue-400">📄 Q2_Sales_Data.xlsx</div>
+                                    <div class="p-2 text-sm rounded cursor-pointer hover:bg-gray-100">📄 Q2_Analysis.docx</div>
+                                </div>
+                            </div>
+                            <div class="p-2 border-t bg-gray-50 flex justify-end space-x-2">
+                                <button class="text-sm px-4 py-1.5 rounded excel-button">Cancel</button>
+                                <button class="text-sm px-4 py-1.5 rounded excel-button active">Import</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="step3" class="step-card rounded-xl p-6 sm:p-8">
+                 <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">3</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Choose the Data in the Navigator</h2>
+                        <p class="mt-2 text-gray-700">After connecting, Power Query shows what's inside the file. The <strong class="font-semibold text-gray-800">Navigator</strong> window is where you select the exact data you need.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 mb-6">
+                        <li>On the left, you'll see a list of worksheets and any formatted Excel Tables.</li>
+                        <li>Click a name to see a preview on the right.</li>
+                        <li>Select the item you want by checking the box next to its name.</li>
+                        <li>Click <strong class="font-semibold text-gray-800">Transform Data</strong>. It's always best to check your data before loading it.</li>
                     </ul>
-                </div>
-                <div id="diagram1" class="interactive-diagram p-4 rounded-lg bg-gray-50 border-dashed">
-                    <p class="text-center text-sm text-gray-500 mb-2">Interactive Diagram: Click the buttons</p>
-                    <div class="bg-white p-2 rounded-t-md border-b-2 border-gray-300">
-                        <div class="flex space-x-2">
-                            <div class="px-3 py-1 text-sm">File</div>
-                            <div class="px-3 py-1 text-sm">Home</div>
-                            <div id="d1-data-tab" class="px-3 py-1 text-sm rounded cursor-pointer excel-button border bg-gray-50">Data</div>
-                            <div class="px-3 py-1 text-sm">Review</div>
-                            <div class="px-3 py-1 text-sm">View</div>
-                        </div>
+                    <div class="pro-tip p-4 rounded-md my-4">
+                        <p><strong class="font-semibold text-yellow-800">Pro Tip:</strong> If your source data is in a named Excel Table (it has a blue header icon 📊), choose that. Tables are more robust and less likely to break if the source sheet's layout changes.</p>
                     </div>
-                    <div id="d1-data-ribbon" class="hidden p-4 relative">
-                        <div id="d1-get-data" class="excel-button cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium rounded-md border bg-gray-50">
-                            <span>📂 Get Data</span>
-                        </div>
-                        <div id="d1-dropdown" class="hidden absolute top-14 left-4 bg-white border rounded-md shadow-lg z-10 w-56">
-                            <div class="p-1">
-                                <div id="d1-from-file" class="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100 cursor-pointer flex justify-between items-center">From File <span>▶</span></div>
-                                <div class="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100 cursor-pointer">From Database</div>
-                                <div class="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100 cursor-pointer">From Azure</div>
-                            </div>
-                            <div id="d1-from-file-submenu" class="hidden absolute left-full -top-0 bg-white border rounded-md shadow-lg w-56">
-                                    <div class="p-1">
-                                    <div id="d1-from-workbook" class="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100 cursor-pointer">From Excel Workbook</div>
-                                    <div class="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100 cursor-pointer">From Text/CSV</div>
-                                    <div class="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100 cursor-pointer">From XML</div>
+                    <div id="diagram3" class="interactive-diagram p-4 rounded-lg">
+                        <div class="bg-white rounded-lg border border-gray-300 shadow-md w-full">
+                            <div class="bg-gray-100 p-2 border-b"><h3 class="font-semibold text-sm">Navigator</h3></div>
+                            <div class="flex">
+                                <div class="w-1/3 border-r p-2">
+                                    <p class="text-xs font-bold text-gray-500 mb-2">Q2_Sales_Data.xlsx</p>
+                                    <div id="d3-sales-table" class="p-2 text-sm rounded flex items-center space-x-2 cursor-pointer hover:bg-gray-100">
+                                        <input type="checkbox" class="pointer-events-none">
+                                        <span class="text-blue-600">📊</span>
+                                        <span>Sales_Data</span>
                                     </div>
+                                    <div id="d3-sheet1" class="p-2 text-sm rounded flex items-center space-x-2 cursor-pointer hover:bg-gray-100">
+                                        <input type="checkbox" class="pointer-events-none">
+                                        <span class="text-green-600">📈</span>
+                                        <span>Sheet1</span>
+                                    </div>
+                                </div>
+                                <div class="w-2/3 p-2">
+                                    <p id="d3-preview-title" class="text-xs font-bold text-gray-500 mb-2">Preview (Select an item)</p>
+                                    <div id="d3-preview-area" class="h-40 overflow-hidden text-xs border rounded bg-gray-50 flex items-center justify-center text-gray-400">
+                                        <table class="w-full hidden">
+                                            <thead class="bg-gray-200"><tr><th class="p-1 font-semibold">Date</th><th class="p-1 font-semibold">Region</th><th class="p-1 font-semibold">Amount</th></tr></thead>
+                                            <tbody>
+                                                <tr><td class="p-1 border-t">2025-04-01</td><td class="p-1 border-t">North</td><td class="p-1 border-t">1500</td></tr>
+                                                <tr><td class="p-1 border-t">2025-04-01</td><td class="p-1 border-t">South</td><td class="p-1 border-t">950</td></tr>
+                                                <tr><td class="p-1 border-t">...</td><td class="p-1 border-t">...</td><td class="p-1 border-t">...</td></tr>
+                                            </tbody>
+                                        </table>
+                                        <span>Select an item to preview</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-2 border-t bg-gray-50 flex justify-end space-x-2">
+                                <button class="text-sm px-4 py-1.5 rounded excel-button">Load</button>
+                                <button id="d3-transform" class="text-sm px-4 py-1.5 rounded excel-button">Transform Data</button>
+                                <button class="text-sm px-4 py-1.5 rounded excel-button">Cancel</button>
                             </div>
                         </div>
                     </div>
-                    <div id="d1-message" class="text-center mt-2 font-medium text-green-700 h-5"></div>
                 </div>
-            </div>
-        </section>
-        
-        <!-- Step 2 and onwards... (rest of the guide content) -->
-        <div class="text-center p-8 bg-white border rounded-xl">... The rest of your guide's interactive steps would go here ...</div>
+            </section>
+            
+            <section id="step4" class="step-card rounded-xl p-6 sm:p-8">
+                 <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">4</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Clean and Shape Your Data</h2>
+                        <p class="mt-2 text-gray-700">You are now in the Power Query Editor. This is where you can clean your data before it even touches your spreadsheet. Every change is recorded as a repeatable step.</p>
+                    </div>
+                </div>
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+                    <div>
+                        <p class="mb-4 font-semibold text-gray-800">Here are a few common, simple transformations:</p>
+                        <ul class="space-y-3">
+                            <li class="flex items-start gap-3">
+                                <span class="text-green-600 mt-1">✓</span>
+                                <div><strong class="font-semibold text-gray-800">Remove Columns:</strong> If you don't need certain columns, right-click their header and select <strong class="italic">Remove</strong>.</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-green-600 mt-1">✓</span>
+                                <div><strong class="font-semibold text-gray-800">Filter Rows:</strong> Click the arrow on a column header to filter out unwanted rows, just like in Excel.</div>
+                            </li>
+                             <li class="flex items-start gap-3">
+                                <span class="text-green-600 mt-1">✓</span>
+                                <div><strong class="font-semibold text-gray-800">Use First Row as Headers:</strong> If your headers are in the first data row, go to the <strong class="italic">Home</strong> tab and click this button.</div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="interactive-diagram p-4 rounded-lg">
+                         <div class="bg-white rounded-lg border border-gray-300 shadow-md w-full">
+                            <div class="bg-gray-100 p-2 border-b"><h3 class="font-semibold text-sm">Power Query Editor</h3></div>
+                            <div class="flex p-2 space-x-2 border-b">
+                                <div class="text-sm px-3 py-1 excel-button rounded cursor-pointer">🏠 Home</div>
+                                <div class="text-sm px-3 py-1 excel-button rounded cursor-pointer">🔄 Transform</div>
+                                <div class="text-sm px-3 py-1 excel-button rounded cursor-pointer">➕ Add Column</div>
+                            </div>
+                            <div class="p-2">
+                                <table class="w-full text-xs">
+                                    <thead>
+                                        <tr>
+                                            <th class="p-1 font-semibold border bg-gray-200">Column1</th>
+                                            <th class="p-1 font-semibold border bg-gray-200">Column2 ▼</th>
+                                            <th class="p-1 font-semibold border bg-gray-200">Column3</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="p-1 border bg-blue-50">Date</td>
+                                            <td class="p-1 border bg-blue-50">Region</td>
+                                            <td class="p-1 border bg-blue-50">Amount</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-1 border">2025-04-01</td>
+                                            <td class="p-1 border">North</td>
+                                            <td class="p-1 border">1500</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-1 border"></td>
+                                            <td class="p-1 border"></td>
+                                            <td class="p-1 border"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="p-2 border-t bg-gray-50">
+                                <h4 class="font-semibold text-sm mb-2">Applied Steps</h4>
+                                <div class="text-xs space-y-1">
+                                    <p>✔️ Source</p>
+                                    <p>✔️ Navigation</p>
+                                    <p class="text-gray-400">...your steps appear here...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="step5" class="step-card rounded-xl p-6 sm:p-8">
+                 <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">5</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Load the Data into Excel</h2>
+                        <p class="mt-2 text-gray-700">Once you're happy with the data preview, it's time to bring it into your workbook.</p>
+                    </div>
+                </div>
+                <div class="mt-6 flex flex-col items-center">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 mb-6 self-start">
+                        <li>In the top-left corner of the Power Query Editor, click the <strong class="font-semibold text-gray-800">Close & Load</strong> button.</li>
+                        <li>Your data will load into a new worksheet in a special, green-formatted Excel Table.</li>
+                    </ul>
+                     <div class="interactive-diagram p-4 rounded-lg w-full max-w-md text-center">
+                        <p class="text-center text-sm text-gray-500 mb-2">Click "Close & Load"</p>
+                        <button id="d5-close-load" class="px-4 py-2 rounded-md font-semibold text-white bg-green-700 hover:bg-green-800 transition-all duration-200 transform hover:scale-105">
+                            ⏏️ Close & Load
+                        </button>
+                        <p id="d5-message" class="mt-4 text-gray-600 h-5 font-medium"></p>
+                    </div>
+                    <p class="mt-4 font-semibold text-lg text-gray-800">Your data from the other workbook is now in your current Excel file!</p>
+                </div>
+            </section>
+
+            <section id="step6" class="step-card rounded-xl p-6 sm:p-8">
+                 <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">6</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Refresh Your Data (The Best Part)</h2>
+                        <p class="mt-2 text-gray-700">You've built a connection, not just a one-time import. If the source data changes, you don't have to repeat these steps. Just refresh!</p>
+                    </div>
+                </div>
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+                     <div>
+                        <p class="font-semibold text-gray-800 mb-2">To refresh the data:</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-600">
+                            <li>Go to the <strong class="font-semibold text-gray-800">Data</strong> tab and click the <strong class="font-semibold text-gray-800">Refresh All</strong> button.</li>
+                            <li>Alternatively, right-click anywhere inside the new data table and select <strong class="font-semibold text-gray-800">Refresh</strong>.</li>
+                        </ul>
+                        <p class="mt-4 text-gray-700">Excel will automatically re-run all your saved steps and pull in the latest data from the source file. No more manual updates.</p>
+                    </div>
+                    <div class="interactive-diagram p-4 rounded-lg">
+                        <p class="text-center text-sm text-gray-500 mb-2">Click to simulate a refresh</p>
+                        <button id="d6-refresh" class="w-full text-center px-4 py-2 rounded-md font-semibold text-gray-700 excel-button mb-4 flex items-center justify-center gap-2">
+                            <span id="d6-refresh-icon">🔄</span> Refresh All
+                        </button>
+                        <div class="bg-white border rounded">
+                            <table id="d6-table" class="w-full text-xs">
+                                <thead class="bg-teal-700 text-white"><tr><th class="p-2 font-semibold">Date</th><th class="p-2 font-semibold">Region</th><th class="p-2 font-semibold">Amount</th></tr></thead>
+                                <tbody class="bg-teal-50">
+                                    <tr><td class="p-2 border-t">2025-04-01</td><td class="p-2 border-t">North</td><td class="p-2 border-t">1500</td></tr>
+                                    <tr><td class="p-2 border-t">2025-04-01</td><td class="p-2 border-t">South</td><td class="p-2 border-t">950</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
     </div>
-</div>
+</main>
 <script>
-    // The specific JS for this guide's interactive diagrams goes here.
-    // This will be executed by the main script when the content is loaded.
     const d1 = {
         dataTab: document.getElementById('d1-data-tab'),
         dataRibbon: document.getElementById('d1-data-ribbon'),
@@ -76,7 +310,6 @@
             d1.dataRibbon.classList.remove('hidden');
             d1.message.textContent = 'Great! Now click "Get Data".';
         });
-
         d1.getData.addEventListener('click', () => {
             if (d1.dataTab.classList.contains('active')) {
                 d1.getData.classList.add('highlight');
@@ -84,7 +317,6 @@
                 d1.message.textContent = 'Select "From File".';
             }
         });
-
         d1.fromFile.addEventListener('click', () => {
             if (d1.getData.classList.contains('highlight')) {
                 d1.fromFile.classList.add('highlight');
@@ -92,7 +324,6 @@
                 d1.message.textContent = 'Finally, click "From Excel Workbook".';
             }
         });
-
         d1.fromWorkbook.addEventListener('click', () => {
             if (d1.fromFile.classList.contains('highlight')) {
                 d1.fromWorkbook.classList.add('highlight');
@@ -100,4 +331,77 @@
             }
         });
     }
+    const d3_preview_area_element = document.getElementById('d3-preview-area');
+    if (d3_preview_area_element) {
+        const d3 = {
+            salesTable: document.getElementById('d3-sales-table'),
+            sheet1: document.getElementById('d3-sheet1'),
+            previewTitle: document.getElementById('d3-preview-title'),
+            previewArea: d3_preview_area_element,
+            table: d3_preview_area_element.querySelector('table'),
+            placeholder: d3_preview_area_element.querySelector('span'),
+            transformBtn: document.getElementById('d3-transform'),
+        };
+        function resetD3Selection() {
+            d3.salesTable.classList.remove('bg-blue-100');
+            d3.sheet1.classList.remove('bg-blue-100');
+            d3.salesTable.querySelector('input').checked = false;
+            d3.sheet1.querySelector('input').checked = false;
+        }
+        d3.salesTable.addEventListener('click', () => {
+            resetD3Selection();
+            d3.salesTable.classList.add('bg-blue-100');
+            d3.salesTable.querySelector('input').checked = true;
+            d3.previewTitle.textContent = 'Preview of "Sales_Data"';
+            d3.placeholder.classList.add('hidden');
+            d3.table.classList.remove('hidden');
+            d3.transformBtn.classList.add('active');
+        });
+        d3.sheet1.addEventListener('click', () => {
+            resetD3Selection();
+            d3.sheet1.classList.add('bg-blue-100');
+            d3.sheet1.querySelector('input').checked = true;
+            d3.previewTitle.textContent = 'Preview of "Sheet1"';
+            d3.placeholder.classList.add('hidden');
+            d3.table.classList.remove('hidden');
+            d3.transformBtn.classList.add('active');
+        });
+    }
+    const d5_close_load_btn = document.getElementById('d5-close-load');
+    if(d5_close_load_btn) {
+        const d5 = {
+            closeLoadBtn: d5_close_load_btn,
+            message: document.getElementById('d5-message'),
+        };
+        d5.closeLoadBtn.addEventListener('click', () => {
+            d5.message.textContent = 'Loading data into a new sheet...';
+            d5.closeLoadBtn.disabled = true;
+            d5.closeLoadBtn.classList.remove('hover:scale-105');
+            d5.closeLoadBtn.classList.add('opacity-50');
+            setTimeout(() => {
+                d5.message.textContent = 'Done! Your data is loaded.';
+            }, 1500);
+        });
+    }
+    const d6_refresh_btn = document.getElementById('d6-refresh');
+    if (d6_refresh_btn) {
+        const d6 = {
+            refreshBtn: d6_refresh_btn,
+            icon: document.getElementById('d6-refresh-icon'),
+            table: document.getElementById('d6-table').querySelector('tbody'),
+        };
+        d6.refreshBtn.addEventListener('click', () => {
+            d6.icon.innerHTML = `<svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+            d6.refreshBtn.disabled = true;
+            setTimeout(() => {
+                const newRow = document.createElement('tr');
+                newRow.classList.add('bg-yellow-100', 'font-semibold');
+                newRow.innerHTML = `<td class="p-2 border-t">2025-04-02</td><td class="p-2 border-t">East</td><td class="p-2 border-t">2100</td>`;
+                d6.table.appendChild(newRow);
+                d6.icon.textContent = '🔄';
+                d6.refreshBtn.disabled = false;
+            }, 1500);
+        });
+    }
 </script>
+
