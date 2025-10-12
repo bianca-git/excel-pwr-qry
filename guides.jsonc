@@ -9,7 +9,7 @@
         "id": "combine-pdfs",
         "title": "Combine Multiple PDFs",
         "description": "Automate data extraction from a folder of PDFs.",
-        "file": "content/combine-pdfs-v2.html"
+        "file": "content/combine-pdfs.html"
     },
     {
         "id": "combine-pdfs-v2",
