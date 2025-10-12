@@ -167,7 +167,7 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        window.init_combine_pdfs = function() {
             const mainNavBtns = document.querySelectorAll('.main-nav-btn');
             const mainContentSections = document.querySelectorAll('.main-content');
             
@@ -226,5 +226,5 @@
 
             activateMainNav('overview');
             activateStepTab('step1');
-        });
+        };
     </script>
