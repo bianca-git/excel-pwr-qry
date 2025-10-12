@@ -167,64 +167,62 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const mainNavBtns = document.querySelectorAll('.main-nav-btn');
-            const mainContentSections = document.querySelectorAll('.main-content');
-            
-            const stepTabs = document.querySelectorAll('.step-tab');
-            const stepContents = document.querySelectorAll('.step-content');
+        const mainNavBtns = document.querySelectorAll('.main-nav-btn');
+        const mainContentSections = document.querySelectorAll('.main-content');
+        
+        const stepTabs = document.querySelectorAll('.step-tab');
+        const stepContents = document.querySelectorAll('.step-content');
 
-            function activateMainNav(targetId) {
-                mainNavBtns.forEach(btn => {
-                    if (btn.dataset.target === targetId) {
-                        btn.classList.add('border-green-500', 'text-green-600');
-                        btn.classList.remove('text-gray-500', 'border-transparent');
-                    } else {
-                        btn.classList.remove('border-green-500', 'text-green-600');
-                        btn.classList.add('text-gray-500', 'border-transparent');
-                    }
-                });
-
-                mainContentSections.forEach(section => {
-                    if (section.id === targetId) {
-                        section.classList.remove('hidden');
-                    } else {
-                        section.classList.add('hidden');
-                    }
-                });
-            }
-
-            function activateStepTab(targetId) {
-                stepTabs.forEach(tab => {
-                    if (tab.dataset.tab === targetId) {
-                        tab.classList.add('tab-active');
-                    } else {
-                        tab.classList.remove('tab-active');
-                    }
-                });
-
-                stepContents.forEach(content => {
-                    if (content.id === targetId) {
-                        content.classList.remove('hidden');
-                    } else {
-                        content.classList.add('hidden');
-                    }
-                });
-            }
-
+        function activateMainNav(targetId) {
             mainNavBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    activateMainNav(btn.dataset.target);
-                });
+                if (btn.dataset.target === targetId) {
+                    btn.classList.add('border-green-500', 'text-green-600');
+                    btn.classList.remove('text-gray-500', 'border-transparent');
+                } else {
+                    btn.classList.remove('border-green-500', 'text-green-600');
+                    btn.classList.add('text-gray-500', 'border-transparent');
+                }
             });
 
+            mainContentSections.forEach(section => {
+                if (section.id === targetId) {
+                    section.classList.remove('hidden');
+                } else {
+                    section.classList.add('hidden');
+                }
+            });
+        }
+
+        function activateStepTab(targetId) {
             stepTabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    activateStepTab(tab.dataset.tab);
-                });
+                if (tab.dataset.tab === targetId) {
+                    tab.classList.add('tab-active');
+                } else {
+                    tab.classList.remove('tab-active');
+                }
             });
 
-            activateMainNav('overview');
-            activateStepTab('step1');
+            stepContents.forEach(content => {
+                if (content.id === targetId) {
+                    content.classList.remove('hidden');
+                } else {
+                    content.classList.add('hidden');
+                }
+            });
+        }
+
+        mainNavBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                activateMainNav(btn.dataset.target);
+            });
         });
+
+        stepTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                activateStepTab(tab.dataset.tab);
+            });
+        });
+
+        activateMainNav('overview');
+        activateStepTab('step1');
     </script>
