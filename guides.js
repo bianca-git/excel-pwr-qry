@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
             contentEl.innerHTML = content;
             headerEl.textContent = guide.title;
             
-            // Re-run any scripts within the loaded content
+            // Re-run any scripts within the loaded content to define the init functions
             const scripts = contentEl.querySelectorAll('script');
             scripts.forEach(oldScript => {
                 const newScript = document.createElement('script');
@@ -25,6 +25,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 newScript.appendChild(document.createTextNode(oldScript.innerHTML));
                 oldScript.parentNode.replaceChild(newScript, oldScript);
             });
+
+            // Now, run the guide's specific initialization script
+            const initFunctionName = `init_${guide.id.replace(/-/g, '_')}`;
+            if (typeof window[initFunctionName] === 'function') {
+                window[initFunctionName]();
+            }
 
         } catch (error) {
             console.error('Error loading guide:', error);
