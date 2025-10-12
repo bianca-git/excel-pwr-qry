@@ -1,3 +1,10 @@
+// This file is a manifest of all available interactive guides.
+// To add a new guide, append a new object to this array.
+//
+// "id": A unique, kebab-case identifier for the guide. This is used in the URL hash.
+// "title": The display title of the guide shown in the navigation menu.
+// "description": A short summary of the guide's content.
+// "file": The path to the guide's HTML content file.
 [
     {
         "id": "connect-workbook",

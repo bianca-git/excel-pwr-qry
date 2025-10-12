@@ -294,7 +294,17 @@
     </div>
 </main>
 <script>
+/**
+ * Initializes the interactive diagrams for the 'Connect to Another Workbook' guide.
+ * This function sets up all the event listeners for the interactive elements,
+ * allowing users to click through simulated Excel menus to understand the process
+ * of connecting to an external workbook in Power Query.
+ */
 window.init_connect_workbook = function() {
+    /**
+     * --- Interactive Diagram 1: Get Data ---
+     * This section handles the simulation of the "Get Data" ribbon menu in Excel.
+     */
     const d1 = {
         dataTab: document.getElementById('d1-data-tab'),
         dataRibbon: document.getElementById('d1-data-ribbon'),
@@ -306,11 +316,13 @@ window.init_connect_workbook = function() {
         message: document.getElementById('d1-message'),
     };
     if(d1.dataTab) {
+        /** Handles clicking the main "Data" tab. */
         d1.dataTab.addEventListener('click', () => {
             d1.dataTab.classList.add('active');
             d1.dataRibbon.classList.remove('hidden');
             d1.message.textContent = 'Great! Now click "Get Data".';
         });
+        /** Handles clicking the "Get Data" button. */
         d1.getData.addEventListener('click', () => {
             if (d1.dataTab.classList.contains('active')) {
                 d1.getData.classList.add('highlight');
@@ -318,6 +330,7 @@ window.init_connect_workbook = function() {
                 d1.message.textContent = 'Select "From File".';
             }
         });
+        /** Handles clicking the "From File" menu item. */
         d1.fromFile.addEventListener('click', () => {
             if (d1.getData.classList.contains('highlight')) {
                 d1.fromFile.classList.add('highlight');
@@ -325,6 +338,7 @@ window.init_connect_workbook = function() {
                 d1.message.textContent = 'Finally, click "From Excel Workbook".';
             }
         });
+        /** Handles clicking the "From Excel Workbook" sub-menu item. */
         d1.fromWorkbook.addEventListener('click', () => {
             if (d1.fromFile.classList.contains('highlight')) {
                 d1.fromWorkbook.classList.add('highlight');
@@ -332,6 +346,11 @@ window.init_connect_workbook = function() {
             }
         });
     }
+
+    /**
+     * --- Interactive Diagram 3: Navigator ---
+     * This section handles the simulation of the Power Query Navigator window.
+     */
     const d3_preview_area_element = document.getElementById('d3-preview-area');
     if (d3_preview_area_element) {
         const d3 = {
@@ -343,37 +362,57 @@ window.init_connect_workbook = function() {
             placeholder: d3_preview_area_element.querySelector('span'),
             transformBtn: document.getElementById('d3-transform'),
         };
+
+        /**
+         * Resets the selection state in the Navigator diagram.
+         * This ensures only one item can be selected at a time.
+         */
         function resetD3Selection() {
             d3.salesTable.classList.remove('bg-blue-100');
             d3.sheet1.classList.remove('bg-blue-100');
             d3.salesTable.querySelector('input').checked = false;
             d3.sheet1.querySelector('input').checked = false;
         }
+
+        /**
+         * Updates the Navigator diagram to show a preview of the selected data.
+         * @param {string} title - The title to display for the preview.
+         */
+        function showPreview(title) {
+            d3.previewTitle.textContent = title;
+            d3.placeholder.classList.add('hidden');
+            d3.table.classList.remove('hidden');
+            d3.transformBtn.classList.add('active');
+        }
+
+        /** Handles clicking the "Sales_Data" table item. */
         d3.salesTable.addEventListener('click', () => {
             resetD3Selection();
             d3.salesTable.classList.add('bg-blue-100');
             d3.salesTable.querySelector('input').checked = true;
-            d3.previewTitle.textContent = 'Preview of "Sales_Data"';
-            d3.placeholder.classList.add('hidden');
-            d3.table.classList.remove('hidden');
-            d3.transformBtn.classList.add('active');
+            showPreview('Preview of "Sales_Data"');
         });
+
+        /** Handles clicking the "Sheet1" worksheet item. */
         d3.sheet1.addEventListener('click', () => {
             resetD3Selection();
             d3.sheet1.classList.add('bg-blue-100');
             d3.sheet1.querySelector('input').checked = true;
-            d3.previewTitle.textContent = 'Preview of "Sheet1"';
-            d3.placeholder.classList.add('hidden');
-            d3.table.classList.remove('hidden');
-            d3.transformBtn.classList.add('active');
+            showPreview('Preview of "Sheet1"');
         });
     }
+
+    /**
+     * --- Interactive Diagram 5: Close & Load ---
+     * This section handles the simulation of the "Close & Load" button.
+     */
     const d5_close_load_btn = document.getElementById('d5-close-load');
     if(d5_close_load_btn) {
         const d5 = {
             closeLoadBtn: d5_close_load_btn,
             message: document.getElementById('d5-message'),
         };
+        /** Handles clicking the "Close & Load" button. */
         d5.closeLoadBtn.addEventListener('click', () => {
             d5.message.textContent = 'Loading data into a new sheet...';
             d5.closeLoadBtn.disabled = true;
@@ -384,6 +423,11 @@ window.init_connect_workbook = function() {
             }, 1500);
         });
     }
+
+    /**
+     * --- Interactive Diagram 6: Refresh All ---
+     * This section handles the simulation of the "Refresh All" button.
+     */
     const d6_refresh_btn = document.getElementById('d6-refresh');
     if (d6_refresh_btn) {
         const d6 = {
@@ -391,6 +435,7 @@ window.init_connect_workbook = function() {
             icon: document.getElementById('d6-refresh-icon'),
             table: document.getElementById('d6-table').querySelector('tbody'),
         };
+        /** Handles clicking the "Refresh All" button, simulating new data being added. */
         d6.refreshBtn.addEventListener('click', () => {
             d6.icon.innerHTML = `<svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
             d6.refreshBtn.disabled = true;

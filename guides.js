@@ -4,7 +4,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const headerEl = document.getElementById('guide-header').querySelector('h2');
     let guides = [];
 
-    // Fetches the content for a specific guide and displays it
+    /**
+     * Fetches the content for a specific guide, displays it, and executes its scripts.
+     * When new HTML content is loaded, any <script> tags within it are not automatically
+     * executed by the browser. This function finds, recreates, and replaces the script
+     * tags to ensure their code runs, which is essential for initializing the
+     * interactive elements of each guide. It then calls the guide-specific
+     * initialization function (e.g., `window.init_connect_workbook`).
+     * @param {object} guide - The guide object, containing its id, title, and file path.
+     */
     async function loadGuideContent(guide) {
         try {
             const response = await fetch(guide.file);
@@ -38,7 +46,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Updates the URL hash and active link in the navigation
+    /**
+     * Updates the URL hash, styles the active link in the navigation, and triggers the loading of the selected guide.
+     * @param {string} guideId - The unique identifier of the guide to activate.
+     */
     function setActiveGuide(guideId) {
         window.location.hash = guideId;
         document.querySelectorAll('#guide-nav a').forEach(a => {
@@ -55,10 +66,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Main function to initialize the library
+    /**
+     * Main initialization function for the guide library.
+     * It fetches the list of available guides from `guides.json`, populates the
+     * navigation menu, and loads the initial guide based on the URL hash or defaults to the first guide.
+     */
     async function init() {
         try {
-            const response = await fetch('guides.json');
+            const response = await fetch('guides.jsonc');
             guides = await response.json();
             
             navEl.innerHTML = ''; 
@@ -77,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 navEl.appendChild(link);
             });
 
+            // Load guide from hash or default to the first one
             const currentHash = window.location.hash.substring(1);
             const guideToLoad = guides.find(g => g.id === currentHash) || guides[0];
             if (guideToLoad) {
