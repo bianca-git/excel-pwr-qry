@@ -89,26 +89,29 @@
 <body class="text-gray-800">
 
     <div class="flex h-screen bg-gray-100">
-        <!-- Sidebar Navigation -->
+        <!-- Sidebar for Guide Navigation -->
         <aside class="w-64 flex-shrink-0 bg-white border-r border-gray-200 flex flex-col">
+            <!-- Header for the sidebar -->
             <div class="h-16 flex-shrink-0 px-6 flex items-center border-b">
                 <h1 class="text-xl font-bold text-gray-900">PQ Guides</h1>
             </div>
+            <!-- Navigation container that will be dynamically populated by guides.js -->
             <nav id="guide-nav" class="flex-1 p-4 space-y-2">
-                <!-- Guide links will be inserted here by JavaScript -->
                 <div class="text-center p-4 text-sm text-gray-500">Loading guides...</div>
             </nav>
         </aside>
 
         <!-- Main Content Area -->
         <main id="main-content" class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header for the main content, title will be updated dynamically -->
             <header class="h-16 bg-white border-b flex-shrink-0">
                 <div id="guide-header" class="h-full px-6 flex items-center">
                     <h2 class="text-2xl font-bold text-gray-800">Welcome</h2>
                 </div>
             </header>
+            <!-- Wrapper where guide HTML content will be injected -->
             <div id="guide-content-wrapper" class="flex-1 overflow-y-auto p-6 md:p-8">
-                <!-- Selected guide content will be loaded here -->
+                <!-- Initial welcome message -->
                 <div class="max-w-4xl mx-auto text-center">
                     <h3 class="text-2xl font-semibold">Welcome to the Interactive Guide Library!</h3>
                     <p class="mt-2 text-gray-600">Please select a guide from the menu on the left to get started.</p>
@@ -117,6 +120,7 @@
         </main>
     </div>
 
+    <!-- Main application script -->
     <script src="guides.js"></script>
 </body>
 </html>
