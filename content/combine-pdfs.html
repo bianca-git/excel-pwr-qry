@@ -25,37 +25,8 @@
                             <li>In the preview window, click the dropdown on the <strong class="font-semibold text-gray-800">Combine</strong> button and select <strong class="font-semibold text-gray-800">Combine & Transform Data</strong>.</li>
                         </ul>
                     </div>
-                    <div id="diagram1" class="interactive-diagram p-4 rounded-lg">
-                        <p class="text-center text-sm text-gray-500 mb-2">Interactive Diagram: Click the buttons</p>
-                        <div class="bg-white p-2 rounded-t-md border-b-2 border-gray-300">
-                            <div class="flex space-x-2">
-                                <div class="px-3 py-1 text-sm">File</div>
-                                <div class="px-3 py-1 text-sm">Home</div>
-                                <div id="d1-data-tab" class="px-3 py-1 text-sm rounded cursor-pointer excel-button">Data</div>
-                                <div class="px-3 py-1 text-sm">Review</div>
-                                <div class="px-3 py-1 text-sm">View</div>
-                            </div>
-                        </div>
-                        <div id="d1-data-ribbon" class="hidden p-4 relative">
-                            <div id="d1-get-data" class="excel-button cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium rounded-md">
-                                <span>📂 Get Data</span>
-                            </div>
-                            <div id="d1-dropdown" class="hidden absolute top-14 left-4 bg-white border rounded-md shadow-lg z-10 w-56">
-                                <div class="p-1">
-                                    <div id="d1-from-file" class="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100 cursor-pointer flex justify-between items-center">From File <span>▶</span></div>
-                                    <div class="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100 cursor-pointer">From Database</div>
-                                    <div class="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100 cursor-pointer">From Azure</div>
-                                </div>
-                                <div id="d1-from-file-submenu" class="hidden absolute left-full -top-0 bg-white border rounded-md shadow-lg w-56">
-                                     <div class="p-1">
-                                        <div id="d1-from-folder" class="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100 cursor-pointer">From Folder</div>
-                                        <div class="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100 cursor-pointer">From Text/CSV</div>
-                                        <div class="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100 cursor-pointer">From PDF</div>
-                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="d1-message" class="text-center mt-2 font-medium text-green-700 h-5"></div>
+                    <div class="flex justify-center">
+                        <img src="https://raw.githubusercontent.com/Laskew/office-guides/main/img/combine-pdf-step-1.png" alt="Screenshot of the 'Get Data > From File > From Folder' menu in the Excel Data ribbon." class="rounded-lg border border-gray-300 shadow-md">
                     </div>
                 </div>
             </section>
@@ -76,47 +47,8 @@
                             <li>Use the tools in the ribbon to clean the sample data, such as "Use First Row as Headers," changing data types, and removing unnecessary columns.</li>
                         </ul>
                     </div>
-                    <div class="interactive-diagram p-4 rounded-lg">
-                        <div class="bg-white rounded-lg border border-gray-300 shadow-md w-full">
-                            <div class="bg-gray-100 p-2 border-b"><h3 class="font-semibold text-sm">Power Query Editor</h3></div>
-                            <div class="flex p-2 space-x-2 border-b">
-                                <div class="text-sm px-3 py-1 excel-button rounded cursor-pointer">🏠 Home</div>
-                                <div class="text-sm px-3 py-1 excel-button rounded cursor-pointer">🔄 Transform</div>
-                                <div class="text-sm px-3 py-1 excel-button rounded cursor-pointer">➕ Add Column</div>
-                            </div>
-                            <div class="p-2">
-                                <div class="mb-2 flex items-center space-x-2">
-                                    <button id="d2-use-headers" class="text-sm px-3 py-1.5 rounded excel-button">Use First Row as Headers</button>
-                                    <button class="text-sm px-3 py-1.5 rounded excel-button">Remove Columns</button>
-                                </div>
-                                <table id="d2-table" class="w-full text-xs">
-                                    <thead>
-                                        <tr>
-                                            <th class="p-1 font-semibold border bg-gray-200">Column1</th>
-                                            <th class="p-1 font-semibold border bg-gray-200">Column2</th>
-                                            <th class="p-1 font-semibold border bg-gray-200">Column3</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="p-1 border bg-blue-50">Date</td>
-                                            <td class="p-1 border bg-blue-50">Product</td>
-                                            <td class="p-1 border bg-blue-50">Sales</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="p-1 border">2025-01-15</td>
-                                            <td class="p-1 border">Widget A</td>
-                                            <td class="p-1 border">1200</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="p-1 border">2025-01-16</td>
-                                            <td class="p-1 border">Widget B</td>
-                                            <td class="p-1 border">850</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                    <div class="flex justify-center">
+                        <img src="https://raw.githubusercontent.com/Laskew/office-guides/main/img/combine-pdf-step-2.png" alt="Screenshot of the Power Query Editor showing the 'Use First Row as Headers' button." class="rounded-lg border border-gray-300 shadow-md">
                     </div>
                 </div>
             </section>
@@ -137,51 +69,8 @@
                             <li>If you see errors, you can go back to the "Transform Sample File" query to adjust your steps.</li>
                         </ul>
                     </div>
-                    <div class="interactive-diagram p-4 rounded-lg">
-                        <div class="bg-white rounded-lg border border-gray-300 shadow-md w-full">
-                            <div class="bg-gray-100 p-2 border-b"><h3 class="font-semibold text-sm">Power Query Editor - Combined Data</h3></div>
-                            <div class="p-2 overflow-x-auto">
-                                <table class="w-full text-xs">
-                                    <thead>
-                                        <tr>
-                                            <th class="p-1 font-semibold border bg-gray-200">Date</th>
-                                            <th class="p-1 font-semibold border bg-gray-200">Product</th>
-                                            <th class="p-1 font-semibold border bg-gray-200">Sales</th>
-                                            <th class="p-1 font-semibold border bg-yellow-200">Source.Name</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="p-1 border">2025-01-15</td>
-                                            <td class="p-1 border">Widget A</td>
-                                            <td class="p-1 border">1200</td>
-                                            <td class="p-1 border bg-yellow-50">Q1_Sales.pdf</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="p-1 border">2025-01-16</td>
-                                            <td class="p-1 border">Widget B</td>
-                                            <td class="p-1 border">850</td>
-                                            <td class="p-1 border bg-yellow-50">Q1_Sales.pdf</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="p-1 border">2025-02-10</td>
-                                            <td class="p-1 border">Widget C</td>
-                                            <td class="p-1 border">1450</td>
-                                            <td class="p-1 border bg-yellow-50">Q2_Sales.pdf</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="p-1 border">2025-02-11</td>
-                                            <td class="p-1 border">Widget A</td>
-                                            <td class="p-1 border">920</td>
-                                            <td class="p-1 border bg-yellow-50">Q2_Sales.pdf</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="p-2 border-t bg-gray-50 text-xs text-gray-600">
-                                <p>✓ All files combined automatically</p>
-                            </div>
-                        </div>
+                    <div class="flex justify-center">
+                        <img src="https://raw.githubusercontent.com/Laskew/office-guides/main/img/combine-pdf-step-3.png" alt="Screenshot of the Power Query Editor showing the combined data with the Source.Name column." class="rounded-lg border border-gray-300 shadow-md">
                     </div>
                 </div>
             </section>
@@ -202,26 +91,8 @@
                             <li>In the "Query Settings" pane on the right, give your query a descriptive name (e.g., `CombinedPDFData`).</li>
                         </ul>
                     </div>
-                    <div class="interactive-diagram p-4 rounded-lg">
-                        <div class="bg-white rounded-lg border border-gray-300 shadow-md w-full">
-                            <div class="bg-gray-100 p-2 border-b"><h3 class="font-semibold text-sm">Query Settings</h3></div>
-                            <div class="p-3 space-y-3">
-                                <div>
-                                    <label class="text-xs text-gray-600 block mb-1">Name</label>
-                                    <input id="d4-query-name" type="text" value="Table1" class="w-full p-1.5 text-sm border rounded focus:outline-none focus:border-green-500">
-                                </div>
-                                <div class="border-t pt-3">
-                                    <p class="text-xs font-semibold text-gray-700 mb-2">Applied Steps</p>
-                                    <div class="space-y-1 text-xs">
-                                        <div class="p-1.5 bg-gray-50 rounded">Source</div>
-                                        <div class="p-1.5 bg-gray-50 rounded">Combine Files</div>
-                                        <div class="p-1.5 bg-gray-50 rounded">Promoted Headers</div>
-                                        <div class="p-1.5 bg-gray-50 rounded">Changed Type</div>
-                                    </div>
-                                </div>
-                                <button id="d4-rename" class="w-full text-sm px-3 py-1.5 rounded excel-button mt-2">Rename Query</button>
-                            </div>
-                        </div>
+                    <div class="flex justify-center">
+                        <img src="https://raw.githubusercontent.com/Laskew/office-guides/main/img/combine-pdf-step-4.png" alt="Screenshot of the Query Settings pane where the query can be renamed." class="rounded-lg border border-gray-300 shadow-md">
                     </div>
                 </div>
             </section>
@@ -242,31 +113,8 @@
                             <li>Your data is now ready for analysis, PivotTables, or charts.</li>
                         </ul>
                     </div>
-                    <div class="interactive-diagram p-4 rounded-lg">
-                        <div class="text-center">
-                            <p class="text-sm text-gray-500 mb-4">Click to load data into Excel</p>
-                            <button id="d5-close-load" class="px-6 py-3 rounded-md font-semibold text-white bg-green-700 hover:bg-green-800 transition-all duration-200 transform hover:scale-105">
-                                ⏏️ Close & Load
-                            </button>
-                            <p id="d5-message" class="mt-4 text-gray-600 h-5 font-medium"></p>
-                            <div id="d5-table" class="hidden mt-4 bg-white border rounded-lg p-3">
-                                <table class="w-full text-xs">
-                                    <thead class="bg-teal-700 text-white">
-                                        <tr>
-                                            <th class="p-2 font-semibold">Date</th>
-                                            <th class="p-2 font-semibold">Product</th>
-                                            <th class="p-2 font-semibold">Sales</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="bg-teal-50">
-                                        <tr><td class="p-2 border-t">2025-01-15</td><td class="p-2 border-t">Widget A</td><td class="p-2 border-t">1200</td></tr>
-                                        <tr><td class="p-2 border-t">2025-01-16</td><td class="p-2 border-t">Widget B</td><td class="p-2 border-t">850</td></tr>
-                                        <tr><td class="p-2 border-t">2025-02-10</td><td class="p-2 border-t">Widget C</td><td class="p-2 border-t">1450</td></tr>
-                                    </tbody>
-                                </table>
-                                <p class="text-xs text-gray-600 mt-2">✓ Data loaded successfully!</p>
-                            </div>
-                        </div>
+                    <div class="flex justify-center">
+                        <img src="https://raw.githubusercontent.com/Laskew/office-guides/main/img/combine-pdf-step-5.png" alt="Screenshot of the final data loaded into an Excel sheet as a formatted table." class="rounded-lg border border-gray-300 shadow-md">
                     </div>
                 </div>
             </section>
@@ -288,27 +136,8 @@
                         </ul>
                         <p class="mt-4 text-gray-700">Excel will automatically re-run all your saved steps and pull in the latest data from the source file. No more manual updates.</p>
                     </div>
-                    <div class="interactive-diagram p-4 rounded-lg">
-                        <p class="text-center text-sm text-gray-500 mb-2">Click to simulate a refresh</p>
-                        <button id="d6-refresh" class="w-full text-center px-4 py-2 rounded-md font-semibold text-gray-700 excel-button mb-4 flex items-center justify-center gap-2">
-                            <span id="d6-refresh-icon">🔄</span> Refresh All
-                        </button>
-                        <div class="bg-white border rounded">
-                            <table id="d6-table" class="w-full text-xs">
-                                <thead class="bg-teal-700 text-white">
-                                    <tr>
-                                        <th class="p-2 font-semibold">Date</th>
-                                        <th class="p-2 font-semibold">Product</th>
-                                        <th class="p-2 font-semibold">Sales</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="bg-teal-50">
-                                    <tr><td class="p-2 border-t">2025-01-15</td><td class="p-2 border-t">Widget A</td><td class="p-2 border-t">1200</td></tr>
-                                    <tr><td class="p-2 border-t">2025-01-16</td><td class="p-2 border-t">Widget B</td><td class="p-2 border-t">850</td></tr>
-                                    <tr><td class="p-2 border-t">2025-02-10</td><td class="p-2 border-t">Widget C</td><td class="p-2 border-t">1450</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="flex justify-center">
+                        <img src="https://raw.githubusercontent.com/Laskew/office-guides/main/img/combine-pdf-step-6.png" alt="Animation showing the data refresh process in Excel." class="rounded-lg border border-gray-300 shadow-md">
                     </div>
                 </div>
             </section>
@@ -316,172 +145,6 @@
     </div>
 </main>
 <script>
-/**
- * Initializes the interactive diagrams for the 'Combine PDFs' guide.
- * This function sets up all the event listeners for the interactive elements,
- * allowing users to click through simulated Excel menus to understand the process
- * of combining PDFs in Power Query.
- */
-window.init_combine_pdfs = function() {
-    /**
-     * --- Interactive Diagram 1: Get Data > From File > From Folder ---
-     * This section handles the simulation of the "Get Data" ribbon menu in Excel.
-     */
-    const d1 = {
-        dataTab: document.getElementById('d1-data-tab'),
-        dataRibbon: document.getElementById('d1-data-ribbon'),
-        getData: document.getElementById('d1-get-data'),
-        dropdown: document.getElementById('d1-dropdown'),
-        fromFile: document.getElementById('d1-from-file'),
-        fromFileSubmenu: document.getElementById('d1-from-file-submenu'),
-        fromFolder: document.getElementById('d1-from-folder'),
-        message: document.getElementById('d1-message'),
-    };
-    
-    if(d1.dataTab) {
-        /** Handles clicking the main "Data" tab. */
-        d1.dataTab.addEventListener('click', () => {
-            d1.dataTab.classList.add('active');
-            d1.dataRibbon.classList.remove('hidden');
-            d1.message.textContent = 'Great! Now click "Get Data".';
-        });
-        
-        /** Handles clicking the "Get Data" button. */
-        d1.getData.addEventListener('click', () => {
-            if (d1.dataTab.classList.contains('active')) {
-                d1.getData.classList.add('highlight');
-                d1.dropdown.classList.remove('hidden');
-                d1.message.textContent = 'Select "From File".';
-            }
-        });
-        
-        /** Handles clicking the "From File" menu item. */
-        d1.fromFile.addEventListener('click', () => {
-            if (d1.getData.classList.contains('highlight')) {
-                d1.fromFile.classList.add('highlight');
-                d1.fromFileSubmenu.classList.remove('hidden');
-                d1.message.textContent = 'Finally, click "From Folder".';
-            }
-        });
-        
-        /** Handles clicking the "From Folder" sub-menu item. */
-        d1.fromFolder.addEventListener('click', () => {
-            if (d1.fromFile.classList.contains('highlight')) {
-                d1.fromFolder.classList.add('highlight');
-                d1.message.textContent = 'Step 1 complete!';
-            }
-        });
-    }
-
-    /**
-     * --- Interactive Diagram 2: Use First Row as Headers ---
-     * This section handles the simulation of the "Use First Row as Headers" button.
-     */
-    const d2_use_headers_btn = document.getElementById('d2-use-headers');
-    if(d2_use_headers_btn) {
-        const d2 = {
-            useHeadersBtn: d2_use_headers_btn,
-            table: document.getElementById('d2-table'),
-        };
-        
-        /** Handles clicking the "Use First Row as Headers" button. */
-        d2.useHeadersBtn.addEventListener('click', () => {
-            d2.useHeadersBtn.classList.add('active');
-            const headerRow = d2.table.querySelector('tbody tr:first-child');
-            const headers = d2.table.querySelectorAll('thead th');
-            
-            // Update headers with values from first data row
-            headerRow.querySelectorAll('td').forEach((cell, index) => {
-                if (headers[index]) {
-                    headers[index].textContent = cell.textContent;
-                }
-            });
-            
-            // Remove the first data row
-            headerRow.remove();
-            
-            setTimeout(() => {
-                d2.useHeadersBtn.disabled = true;
-                d2.useHeadersBtn.classList.remove('hover:bg-gray-100');
-                d2.useHeadersBtn.classList.add('opacity-50');
-            }, 500);
-        });
-    }
-
-    /**
-     * --- Interactive Diagram 4: Rename Query ---
-     * This section handles the simulation of renaming a query.
-     */
-    const d4_rename_btn = document.getElementById('d4-rename');
-    if(d4_rename_btn) {
-        const d4 = {
-            renameBtn: d4_rename_btn,
-            queryName: document.getElementById('d4-query-name'),
-        };
-        
-        /** Handles clicking the "Rename Query" button. */
-        d4.renameBtn.addEventListener('click', () => {
-            const currentName = d4.queryName.value;
-            if (currentName === 'Table1') {
-                d4.queryName.value = 'CombinedPDFData';
-                d4.renameBtn.classList.add('active');
-                d4.queryName.classList.add('border-green-500', 'bg-green-50');
-            }
-        });
-    }
-
-    /**
-     * --- Interactive Diagram 5: Close & Load ---
-     * This section handles the simulation of the "Close & Load" button.
-     */
-    const d5_close_load_btn = document.getElementById('d5-close-load');
-    if(d5_close_load_btn) {
-        const d5 = {
-            closeLoadBtn: d5_close_load_btn,
-            message: document.getElementById('d5-message'),
-            table: document.getElementById('d5-table'),
-        };
-        
-        /** Handles clicking the "Close & Load" button. */
-        d5.closeLoadBtn.addEventListener('click', () => {
-            d5.message.textContent = 'Loading data into a new sheet...';
-            d5.closeLoadBtn.disabled = true;
-            d5.closeLoadBtn.classList.remove('hover:scale-105');
-            d5.closeLoadBtn.classList.add('opacity-50');
-            
-            setTimeout(() => {
-                d5.message.textContent = 'Done! Your data is loaded.';
-                d5.table.classList.remove('hidden');
-            }, 1500);
-        });
-    }
-
-    /**
-     * --- Interactive Diagram 6: Refresh All ---
-     * This section handles the simulation of the "Refresh All" button.
-     */
-    const d6_refresh_btn = document.getElementById('d6-refresh');
-    if (d6_refresh_btn) {
-        const d6 = {
-            refreshBtn: d6_refresh_btn,
-            icon: document.getElementById('d6-refresh-icon'),
-            table: document.getElementById('d6-table').querySelector('tbody'),
-        };
-        
-        /** Handles clicking the "Refresh All" button, simulating new data being added. */
-        d6.refreshBtn.addEventListener('click', () => {
-            d6.icon.innerHTML = `<svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
-            d6.refreshBtn.disabled = true;
-            
-            setTimeout(() => {
-                const newRow = document.createElement('tr');
-                newRow.classList.add('bg-yellow-100', 'font-semibold');
-                newRow.innerHTML = `<td class="p-2 border-t">2025-02-11</td><td class="p-2 border-t">Widget A</td><td class="p-2 border-t">920</td>`;
-                d6.table.appendChild(newRow);
-                d6.icon.textContent = '🔄';
-                d6.refreshBtn.disabled = false;
-            }, 1500);
-        });
-    }
-}
+    // This script is no longer needed as the interactive diagrams have been removed.
+    window.init_combine_pdfs = function() {};
 </script>
