@@ -1,305 +1,150 @@
-<main>
-    <!-- Navigation -->
-    <nav class="flex justify-center mb-10 md:mb-12 border-b border-gray-200">
-        <button data-target="overview" class="main-nav-btn px-4 py-3 md:px-6 text-sm md:text-base font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none">Overview</button>
-        <button data-target="steps" class="main-nav-btn px-4 py-3 md:px-6 text-sm md:text-base font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none">Interactive Steps</button>
-        <button data-target="techniques" class="main-nav-btn px-4 py-3 md:px-6 text-sm md:text-base font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none">Key Techniques</button>
-    </nav>
+<main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    <div class="max-w-4xl mx-auto">
+        <div class="space-y-12">
 
-    <!-- Content Sections -->
-    <div id="content-container">
+            <section id="intro" class="text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Combining PDFs: The Automated Workflow</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Learn how to point Power Query to a folder of PDFs, define a cleaning process once, and have Excel apply it to every file automatically. The result is a single, clean table, ready for analysis and updated with one click.</p>
+            </section>
 
-        <!-- Overview Section -->
-        <section id="overview" class="main-content">
-            <div class="text-center">
-                <h2 class="text-2xl md:text-3xl font-bold text-gray-900">How It Works: The Big Picture</h2>
-                <p class="mt-3 text-lg text-gray-600 max-w-3xl mx-auto">This guide demonstrates a powerful, automated workflow in Excel. You will learn how to point Power Query to a folder of similarly structured PDFs, define a cleaning process for one file, and then have Excel automatically apply those same steps to every file in the folder. The result is a single, clean table ready for analysis, updated with one click.</p>
-            </div>
-
-            <div class="mt-12 bg-white p-6 md:p-8 rounded-xl shadow-sm border border-gray-200">
-                <h3 class="text-xl font-semibold text-center mb-8">The Automated Workflow</h3>
-                <div class="flex flex-col md:flex-row justify-around items-center text-center">
-                    <div class="flex-1 mb-8 md:mb-0 md:mr-4">
-                        <div class="arrow arrow-stack flex items-center justify-center bg-green-50 text-green-800 p-4 rounded-lg h-24 border border-green-200">
-                            <p class="font-semibold">1. A Folder of PDFs</p>
-                        </div>
-                        <p class="mt-2 text-sm text-gray-600">All your source files, in one place.</p>
-                    </div>
-                    <div class="flex-1 mb-8 md:mb-0 md:mr-4">
-                         <div class="arrow arrow-stack flex items-center justify-center bg-blue-50 text-blue-800 p-4 rounded-lg h-24 border border-blue-200">
-                            <p class="font-semibold">2. Power Query Magic</p>
-                        </div>
-                        <p class="mt-2 text-sm text-gray-600">Teach Excel once how to clean and transform the data.</p>
-                    </div>
-                    <div class="flex-1">
-                        <div class="flex items-center justify-center bg-gray-100 text-gray-800 p-4 rounded-lg h-24 border border-gray-200">
-                            <p class="font-semibold">3. One Clean Excel Table</p>
-                        </div>
-                         <p class="mt-2 text-sm text-gray-600">All your data, combined and ready for analysis.</p>
+            <section id="step1" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">1</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Connect to the Source Folder</h2>
+                        <p class="mt-2 text-gray-700">First, tell Excel where to find your files. This establishes the connection to the folder, allowing Power Query to access its contents.</p>
                     </div>
                 </div>
-            </div>
-
-            <div class="mt-10">
-                <h3 class="text-xl font-semibold text-center mb-6">What You'll Need</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                        <h4 class="font-bold text-lg">Excel for Microsoft 365</h4>
-                        <p class="text-gray-600 mt-2">Power Query is a core, built-in feature in modern desktop versions of Excel.</p>
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+                    <div>
+                        <ul class="list-decimal list-inside space-y-2 text-gray-600">
+                            <li>Begin with a new, blank Excel workbook.</li>
+                            <li>Go to the <strong class="font-semibold text-gray-800">Data</strong> tab on the ribbon.</li>
+                            <li>Click <strong class="font-semibold text-gray-800">Get Data > From File > From Folder</strong>.</li>
+                            <li>Browse to and select your folder, then click <strong class="font-semibold text-gray-800">Open</strong>.</li>
+                            <li>In the preview window, click the dropdown on the <strong class="font-semibold text-gray-800">Combine</strong> button and select <strong class="font-semibold text-gray-800">Combine & Transform Data</strong>.</li>
+                        </ul>
                     </div>
-                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                        <h4 class="font-bold text-lg">Consistently Structured PDFs</h4>
-                        <p class="text-gray-600 mt-2">The process works best when all your PDFs have the same layout and table structure.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                        <h4 class="font-bold text-lg">A Dedicated Folder</h4>
-                        <p class="text-gray-600 mt-2">Create a specific folder that will contain *only* the PDF files you want to combine.</p>
+                    <div class="flex justify-center">
+                        <img src="https://raw.githubusercontent.com/Laskew/office-guides/main/img/combine-pdf-step-1.png" alt="Screenshot of the 'Get Data > From File > From Folder' menu in the Excel Data ribbon." class="rounded-lg border border-gray-300 shadow-md">
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Interactive Steps Section -->
-        <section id="steps" class="main-content hidden">
-            <div class="text-center">
-                <h2 class="text-2xl md:text-3xl font-bold text-gray-900">The Core Process: A Guided Walkthrough</h2>
-                <p class="mt-3 text-lg text-gray-600 max-w-3xl mx-auto">Follow these five steps to build your automated query. Click each tab on the left to see the detailed instructions and a corresponding screenshot for that part of the process. This is where you tell Excel how to do the heavy lifting.</p>
-            </div>
-
-            <div class="mt-12 md:flex">
-                <div class="md:w-1/3 lg:w-1/4 mb-8 md:mb-0 md:mr-8">
-                    <div class="flex md:flex-col rounded-lg border border-gray-200 bg-white p-2 sticky top-4">
-                        <button data-tab="step1" class="step-tab w-full text-left p-3 rounded font-medium text-sm md:text-base focus:outline-none">1. Connect to Folder</button>
-                        <button data-tab="step2" class="step-tab w-full text-left p-3 rounded font-medium text-sm md:text-base focus:outline-none mt-1">2. Define Transformation</button>
-                        <button data-tab="step3" class="step-tab w-full text-left p-3 rounded font-medium text-sm md:text-base focus:outline-none mt-1">3. Combine & Review</button>
-                        <button data-tab="step4" class="step-tab w-full text-left p-3 rounded font-medium text-sm md:text-base focus:outline-none mt-1">4. Final Polish</button>
-                        <button data-tab="step5" class="step-tab w-full text-left p-3 rounded font-medium text-sm md:text-base focus:outline-none mt-1">5. Close & Load</button>
+            <section id="step2" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">2</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Define the Transformation</h2>
+                        <p class="mt-2 text-gray-700">Teach Power Query how to clean the data by working with a single sample file. Every action you take here is recorded and applied to all other files.</p>
                     </div>
                 </div>
-
-                <div class="md:w-2/3 lg:w-3/4">
-                    <div id="step1" class="step-content bg-white p-6 md:p-8 rounded-xl shadow-sm border border-gray-200">
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-                            <div>
-                                <h3 class="text-xl font-bold text-gray-900 mb-4">Step 1: Connect to the Source Folder</h3>
-                                <div class="prose">
-                                    <p>The first move is to tell Excel where to find your files. This establishes the connection to the folder, allowing Power Query to access its contents.</p>
-                                    <ol>
-                                        <li>Begin with a new, blank Excel workbook.</li>
-                                        <li>Go to the <code class="bg-gray-100 text-sm px-1.5 py-0.5 rounded">Data</code> tab on the ribbon.</li>
-                                        <li>Click <code class="bg-gray-100 text-sm px-1.5 py-0.5 rounded">Get Data > From File > From Folder</code>.</li>
-                                        <li>Browse to and select your folder, then click <code class="bg-gray-100 text-sm px-1.5 py-0.5 rounded">Open</code>.</li>
-                                        <li>In the preview window, click the dropdown on the <code class="bg-gray-100 text-sm px-1.5 py-0.5 rounded">Combine</code> button and select <code class="bg-gray-100 text-sm px-1.5 py-0.5 rounded">Combine & Transform Data</code>. This opens the Power Query Editor.</li>
-                                    </ol>
-                                </div>
-                            </div>
-                            <div class="flex justify-center">
-                                <img src="https://placehold.co/400x300/e2e8f0/2d3748?text=Data+Tab+Screenshot" alt="Screenshot of the 'Get Data > From File > From Folder' menu in the Excel Data ribbon." class="rounded-lg border border-gray-300 shadow-md">
-                            </div>
-                        </div>
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+                    <div>
+                        <ul class="list-decimal list-inside space-y-2 text-gray-600">
+                            <li>In the "Combine Files" window, select the table or page from the sample PDF that contains your data.</li>
+                            <li>Click <strong class="font-semibold text-gray-800">OK</strong> to enter the main Power Query Editor.</li>
+                            <li>Use the tools in the ribbon to clean the sample data, such as "Use First Row as Headers," changing data types, and removing unnecessary columns.</li>
+                        </ul>
                     </div>
-                    <div id="step2" class="step-content hidden bg-white p-6 md:p-8 rounded-xl shadow-sm border border-gray-200 mt-8">
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-                            <div>
-                                <h3 class="text-xl font-bold text-gray-900 mb-4">Step 2: Define the Transformation</h3>
-                                <div class="prose">
-                                    <p>You'll now teach Power Query how to clean the data by working with a single sample file. Every action you take here is recorded and applied to all other files.</p>
-                                    <ol>
-                                        <li>In the "Combine Files" window, select the table or page from the sample PDF that contains your data.</li>
-                                        <li>Click <code class="bg-gray-100 text-sm px-1.5 py-0.5 rounded">OK</code> to enter the main Power Query Editor.</li>
-                                        <li>Use the tools in the ribbon to clean the sample data:
-                                            <ul class="list-disc list-inside ml-4 mt-2">
-                                                <li>Use "Use First Row as Headers".</li>
-                                                <li>Change data types.</li>
-                                                <li>Remove unnecessary columns.</li>
-                                            </ul>
-                                        </li>
-                                    </ol>
-                                </div>
-                            </div>
-                            <div class="flex justify-center">
-                                <img src="https://placehold.co/400x300/e2e8f0/2d3748?text=Transform+Screenshot" alt="Screenshot of the Power Query Editor showing the 'Use First Row as Headers' button." class="rounded-lg border border-gray-300 shadow-md">
-                            </div>
-                        </div>
-                    </div>
-                     <div id="step3" class="step-content hidden bg-white p-6 md:p-8 rounded-xl shadow-sm border border-gray-200 mt-8">
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-                            <div>
-                                <h3 class="text-xl font-bold text-gray-900 mb-4">Step 3: Review Combined Data</h3>
-                                <div class="prose">
-                                    <p>Power Query automatically applies your steps to all files and stacks them into one table. Review the result.</p>
-                                     <ol>
-                                         <li>Scroll through the data to check for correctness.</li>
-                                         <li>The <code class="bg-gray-100 text-sm px-1.5 py-0.5 rounded">Source.Name</code> column shows the origin filename for each row, which is useful for verification.</li>
-                                         <li>If you see errors, you can go back to the "Transform Sample File" query to adjust your steps.</li>
-                                    </ol>
-                                </div>
-                            </div>
-                            <div class="flex justify-center">
-                                <img src="https://placehold.co/400x300/e2e8f0/2d3748?text=Review+Screenshot" alt="Screenshot of the Power Query Editor showing the combined data with the Source.Name column." class="rounded-lg border border-gray-300 shadow-md">
-                            </div>
-                        </div>
-                    </div>
-                     <div id="step4" class="step-content hidden bg-white p-6 md:p-8 rounded-xl shadow-sm border border-gray-200 mt-8">
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-                            <div>
-                                <h3 class="text-xl font-bold text-gray-900 mb-4">Step 4: Final Polish</h3>
-                                <div class="prose">
-                                    <p>Perform final checks on the combined dataset before loading it into Excel.</p>
-                                    <ol>
-                                        <li>Double-check that all columns have the correct data type (e.g., number, text, date).</li>
-                                        <li>Rename or remove the <code class="bg-gray-100 text-sm px-1.5 py-0.5 rounded">Source.Name</code> column if you don't need it.</li>
-                                        <li>In the "Query Settings" pane on the right, give your query a descriptive name (e.g., `CombinedPDFData`).</li>
-                                    </ol>
-                                </div>
-                            </div>
-                             <div class="flex justify-center">
-                                <img src="https://placehold.co/400x300/e2e8f0/2d3748?text=Polish+Screenshot" alt="Screenshot of the Query Settings pane where the query can be renamed." class="rounded-lg border border-gray-300 shadow-md">
-                            </div>
-                        </div>
-                    </div>
-                     <div id="step5" class="step-content hidden bg-white p-6 md:p-8 rounded-xl shadow-sm border border-gray-200 mt-8">
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-                            <div>
-                                <h3 class="text-xl font-bold text-gray-900 mb-4">Step 5: Close & Load to Excel</h3>
-                                <div class="prose">
-                                    <p>The transformation is complete. It's time to send the clean, combined data back to your Excel worksheet.</p>
-                                    <ol>
-                                        <li>On the <code class="bg-gray-100 text-sm px-1.5 py-0.5 rounded">Home</code> tab of the Power Query Editor, click the <code class="bg-gray-100 text-sm px-1.5 py-0.5 rounded">Close & Load</code> button.</li>
-                                        <li>Power Query creates a new worksheet and loads your data into a formatted Excel Table.</li>
-                                        <li>Your data is now ready for analysis, PivotTables, or charts.</li>
-                                    </ol>
-                                </div>
-                            </div>
-                            <div class="flex justify-center">
-                                <img src="https://placehold.co/400x300/e2e8f0/2d3748?text=Load+Screenshot" alt="Screenshot of the final data loaded into an Excel sheet as a formatted table." class="rounded-lg border border-gray-300 shadow-md">
-                            </div>
-                        </div>
+                    <div class="flex justify-center">
+                        <img src="https://raw.githubusercontent.com/Laskew/office-guides/main/img/combine-pdf-step-2.png" alt="Screenshot of the Power Query Editor showing the 'Use First Row as Headers' button." class="rounded-lg border border-gray-300 shadow-md">
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Key Techniques Section -->
-        <section id="techniques" class="main-content hidden">
-            <div class="text-center">
-                <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Key Techniques & The Payoff</h2>
-                <p class="mt-3 text-lg text-gray-600 max-w-3xl mx-auto">These are the most common actions you'll take to clean your data in Power Query, plus an explanation of how to refresh your query when new data arrives.</p>
-            </div>
-
-            <div class="mt-12">
-                 <h3 class="text-xl font-semibold text-center mb-6">Common Data Cleaning Steps</h3>
-                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                        <h4 class="font-bold text-green-700">Use First Row as Headers</h4>
-                        <p class="text-gray-600 mt-2">Promotes the first row of your data to become the column headers. Usually the first step after connecting.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                        <h4 class="font-bold text-green-700">Change Data Type</h4>
-                        <p class="text-gray-600 mt-2">Essential for calculations and sorting. Set columns to Text, Whole Number, Decimal, Date, etc.</p>
-                    </div>
-                     <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                        <h4 class="font-bold text-green-700">Remove & Reorder Columns</h4>
-                        <p class="text-gray-600 mt-2">Right-click a column header to remove it. Drag and drop headers to change their order.</p>
-                    </div>
-                     <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                        <h4 class="font-bold text-green-700">Filter Rows</h4>
-                        <p class="text-gray-600 mt-2">Use the filter dropdown on any column to exclude rows you don't need, such as totals, subtotals, or blanks.</p>
+            <section id="step3" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">3</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Review Combined Data</h2>
+                        <p class="mt-2 text-gray-700">Power Query automatically applies your steps to all files and stacks them into one table. Review the result.</p>
                     </div>
                 </div>
-            </div>
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+                    <div>
+                        <ul class="list-decimal list-inside space-y-2 text-gray-600">
+                            <li>Scroll through the data to check for correctness.</li>
+                            <li>The <strong class="font-semibold text-gray-800">Source.Name</strong> column shows the origin filename for each row, which is useful for verification.</li>
+                            <li>If you see errors, you can go back to the "Transform Sample File" query to adjust your steps.</li>
+                        </ul>
+                    </div>
+                    <div class="flex justify-center">
+                        <img src="https://raw.githubusercontent.com/Laskew/office-guides/main/img/combine-pdf-step-3.png" alt="Screenshot of the Power Query Editor showing the combined data with the Source.Name column." class="rounded-lg border border-gray-300 shadow-md">
+                    </div>
+                </div>
+            </section>
 
-            <div class="mt-12 bg-blue-50 border border-blue-200 p-8 rounded-xl text-center">
-                <h3 class="text-2xl font-bold text-blue-900">The Payoff: One-Click Refresh</h3>
-                <p class="mt-3 text-lg text-blue-800 max-w-3xl mx-auto">The initial setup is a one-time investment. The real power is in the refresh. When you add new PDFs to your source folder (or remove old ones), simply go to the <code class="bg-blue-100 text-sm px-1.5 py-0.5 rounded">Data</code> tab in the main Excel window and click the <code class="bg-blue-100 text-sm px-1.5 py-0.5 rounded">Refresh All</code> button. Power Query will instantly re-run all your defined steps on the folder's new contents and update the final Excel table. This transforms a repetitive, manual task into a fully automated, one-click process.</p>
-            </div>
-        </section>
+            <section id="step4" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">4</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Final Polish</h2>
+                        <p class="mt-2 text-gray-700">Perform final checks on the combined dataset before loading it into Excel.</p>
+                    </div>
+                </div>
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+                    <div>
+                        <ul class="list-decimal list-inside space-y-2 text-gray-600">
+                            <li>Double-check that all columns have the correct data type (e.g., number, text, date).</li>
+                            <li>Rename or remove the <strong class="font-semibold text-gray-800">Source.Name</strong> column if you don't need it.</li>
+                            <li>In the "Query Settings" pane on the right, give your query a descriptive name (e.g., `CombinedPDFData`).</li>
+                        </ul>
+                    </div>
+                    <div class="flex justify-center">
+                        <img src="https://raw.githubusercontent.com/Laskew/office-guides/main/img/combine-pdf-step-4.png" alt="Screenshot of the Query Settings pane where the query can be renamed." class="rounded-lg border border-gray-300 shadow-md">
+                    </div>
+                </div>
+            </section>
+
+            <section id="step5" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">5</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Close & Load to Excel</h2>
+                        <p class="mt-2 text-gray-700">The transformation is complete. It's time to send the clean, combined data back to your Excel worksheet.</p>
+                    </div>
+                </div>
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+                    <div>
+                        <ul class="list-decimal list-inside space-y-2 text-gray-600">
+                            <li>On the <strong class="font-semibold text-gray-800">Home</strong> tab of the Power Query Editor, click the <strong class="font-semibold text-gray-800">Close & Load</strong> button.</li>
+                            <li>Power Query creates a new worksheet and loads your data into a formatted Excel Table.</li>
+                            <li>Your data is now ready for analysis, PivotTables, or charts.</li>
+                        </ul>
+                    </div>
+                    <div class="flex justify-center">
+                        <img src="https://raw.githubusercontent.com/Laskew/office-guides/main/img/combine-pdf-step-5.png" alt="Screenshot of the final data loaded into an Excel sheet as a formatted table." class="rounded-lg border border-gray-300 shadow-md">
+                    </div>
+                </div>
+            </section>
+
+            <section id="step6" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">6</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Refresh Your Data (The Best Part)</h2>
+                        <p class="mt-2 text-gray-700">You've built a connection, not just a one-time import. If the source data changes, you don't have to repeat these steps. Just refresh!</p>
+                    </div>
+                </div>
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+                     <div>
+                        <p class="font-semibold text-gray-800 mb-2">To refresh the data:</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-600">
+                            <li>Go to the <strong class="font-semibold text-gray-800">Data</strong> tab and click the <strong class="font-semibold text-gray-800">Refresh All</strong> button.</li>
+                            <li>Alternatively, right-click anywhere inside the new data table and select <strong class="font-semibold text-gray-800">Refresh</strong>.</li>
+                        </ul>
+                        <p class="mt-4 text-gray-700">Excel will automatically re-run all your saved steps and pull in the latest data from the source file. No more manual updates.</p>
+                    </div>
+                    <div class="flex justify-center">
+                        <img src="https://raw.githubusercontent.com/Laskew/office-guides/main/img/combine-pdf-step-6.png" alt="Animation showing the data refresh process in Excel." class="rounded-lg border border-gray-300 shadow-md">
+                    </div>
+                </div>
+            </section>
+        </div>
     </div>
 </main>
-
 <script>
-    /**
-     * Initializes the navigation logic for the 'Combine Multiple PDFs' guide.
-     * This function sets up the main navigation (Overview, Steps, Techniques) and
-     * the nested step-by-step tabbed navigation, ensuring that only the
-     * content corresponding to the active tab is visible.
-     */
-    window.init_combine_pdfs = function() {
-        const mainNavBtns = document.querySelectorAll('.main-nav-btn');
-        const mainContentSections = document.querySelectorAll('.main-content');
-
-        const stepTabs = document.querySelectorAll('.step-tab');
-        const stepContents = document.querySelectorAll('.step-content');
-
-        /**
-         * Handles the main navigation logic (Overview, Steps, Techniques).
-         * It styles the active navigation button and shows the corresponding content section.
-         * @param {string} targetId - The ID of the content section to display.
-         */
-        function activateMainNav(targetId) {
-            mainNavBtns.forEach(btn => {
-                if (btn.dataset.target === targetId) {
-                    btn.classList.add('border-green-500', 'text-green-600');
-                    btn.classList.remove('text-gray-500', 'border-transparent');
-                } else {
-                    btn.classList.remove('border-green-500', 'text-green-600');
-                    btn.classList.add('text-gray-500', 'border-transparent');
-                }
-            });
-
-            mainContentSections.forEach(section => {
-                if (section.id === targetId) {
-                    section.classList.remove('hidden');
-                } else {
-                    section.classList.add('hidden');
-                }
-            });
-        }
-
-        /**
-         * Handles the logic for the step-by-step interactive tabs.
-         * It styles the active step tab and shows the corresponding step description.
-         * @param {string} targetId - The ID of the step content to display.
-         */
-        function activateStepTab(targetId) {
-            stepTabs.forEach(tab => {
-                if (tab.dataset.tab === targetId) {
-                    tab.classList.add('tab-active');
-                } else {
-                    tab.classList.remove('tab-active');
-                }
-            });
-
-            stepContents.forEach(content => {
-                // All step-content divs are now direct children of the container,
-                // so we don't need to search within a specific parent.
-                const targetContent = document.getElementById(targetId);
-                if(targetContent) {
-                    if (content.id === targetId) {
-                        content.classList.remove('hidden');
-                    } else {
-                        content.classList.add('hidden');
-                    }
-                }
-            });
-        }
-
-        // Set up event listeners for main navigation
-        mainNavBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                activateMainNav(btn.dataset.target);
-            });
-        });
-
-        // Set up event listeners for step-by-step tabs
-        stepTabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                activateStepTab(tab.dataset.tab);
-            });
-        });
-
-        // Initialize the default view
-        activateMainNav('overview');
-        activateStepTab('step1');
-    };
+    // This script is no longer needed as the tabbed navigation has been removed.
+    window.init_combine_pdfs = function() {};
 </script>
