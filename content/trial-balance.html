@@ -1,0 +1,303 @@
+<main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    <div class="max-w-4xl mx-auto">
+        <div class="space-y-12">
+            
+            <!-- Intro Section -->
+            <section id="intro" class="text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Simplify Your Trial Balance</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Transform messy, period-based trial balance reports into clean, analysis-ready data. This guide teaches a fundamental Power Query pattern—unpivoting—that applies to any wide-format financial or operational report.</p>
+                <div class="pro-tip p-4 rounded-md my-6 max-w-2xl mx-auto">
+                    <p><strong class="font-semibold text-yellow-800">Why This Matters:</strong> Finance teams receive trial balances with periods as columns (Jan, Feb, Mar...). This makes analysis painful. By unpivoting to a tidy format (one row per account-period), you unlock pivot tables, trend analysis, and report automation. This pattern works for budgets, actuals, forecasts—any time-series data.</p>
+                </div>
+                <div class="bg-green-50 border-l-4 border-green-500 p-4 my-6 max-w-2xl mx-auto">
+                    <p class="text-left"><strong class="font-semibold text-green-800">What You'll Build:</strong> A tidy trial balance table with columns for Account, Period, Balance, and Reporting Code, plus control-total diagnostics to verify accuracy.</p>
+                </div>
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 my-6 max-w-2xl mx-auto">
+                    <p class="text-left"><strong class="font-semibold text-blue-800">Key Skills:</strong> Unpivot, mapping tables, sign-normalization, data validation</p>
+                </div>
+            </section>
+
+            <!-- Step 1 -->
+            <section id="step1" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">1</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Load Your Trial Balance Report</h2>
+                        <p class="mt-2 text-gray-700">Start by connecting to your trial balance file—typically an Excel export from your accounting system with accounts in rows and periods in columns.</p>
+                    </div>
+                </div>
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                    <div>
+                        <ul class="list-decimal list-inside space-y-2 text-gray-600">
+                            <li>Go to <strong class="font-semibold text-gray-800">Data > Get Data > From File > From Excel Workbook</strong>.</li>
+                            <li>Select your trial balance file and click <strong class="font-semibold text-gray-800">Import</strong>.</li>
+                            <li>Choose the sheet or table containing the trial balance.</li>
+                            <li>Click <strong class="font-semibold text-gray-800">Transform Data</strong> to open the Power Query Editor.</li>
+                        </ul>
+                        <div class="pro-tip p-4 rounded-md mt-4">
+                            <p><strong class="font-semibold text-yellow-800">Tip:</strong> Your source might have header rows or subtotals. We'll clean those in the next step.</p>
+                        </div>
+                    </div>
+                    <div class="interactive-diagram p-4 rounded-lg">
+                        <p class="text-center text-sm font-semibold text-gray-700 mb-3">Typical Trial Balance Structure</p>
+                        <div class="bg-white rounded border overflow-hidden text-xs">
+                            <table class="w-full">
+                                <thead class="bg-gray-100">
+                                    <tr>
+                                        <th class="p-2 text-left border">Account</th>
+                                        <th class="p-2 text-right border">Jan 2025</th>
+                                        <th class="p-2 text-right border">Feb 2025</th>
+                                        <th class="p-2 text-right border">Mar 2025</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="p-2 border">Cash</td>
+                                        <td class="p-2 text-right border">50,000</td>
+                                        <td class="p-2 text-right border">52,300</td>
+                                        <td class="p-2 text-right border">48,900</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2 border">Accounts Receivable</td>
+                                        <td class="p-2 text-right border">32,100</td>
+                                        <td class="p-2 text-right border">35,600</td>
+                                        <td class="p-2 text-right border">30,200</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2 border">Revenue</td>
+                                        <td class="p-2 text-right border">(120,000)</td>
+                                        <td class="p-2 text-right border">(125,400)</td>
+                                        <td class="p-2 text-right border">(118,700)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-center text-xs text-gray-500 mt-2 italic">Wide format → Hard to analyze</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 2 -->
+            <section id="step2" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">2</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Promote Headers and Clean Rows</h2>
+                        <p class="mt-2 text-gray-700">Ensure the first row becomes proper column headers, and remove any subtotal or blank rows.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-2xl">
+                        <li>In the Power Query Editor, click <strong class="font-semibold text-gray-800">Use First Row as Headers</strong> (in the Transform tab).</li>
+                        <li>Remove any rows that contain subtotals or section headers:
+                            <ul class="list-disc list-inside ml-6 mt-2 space-y-1">
+                                <li>Click the dropdown on the Account column.</li>
+                                <li>Uncheck rows like "Total Assets" or blank entries.</li>
+                            </ul>
+                        </li>
+                        <li>Ensure account names are clean and consistent.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 3 -->
+            <section id="step3" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">3</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Unpivot Period Columns</h2>
+                        <p class="mt-2 text-gray-700">This is the key step: transform period columns (Jan, Feb, Mar...) into rows with a Period column and a Balance column.</p>
+                    </div>
+                </div>
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                    <div>
+                        <ul class="list-decimal list-inside space-y-2 text-gray-600">
+                            <li>Select the <strong class="font-semibold text-gray-800">Account</strong> column (and any other identifier columns you want to keep).</li>
+                            <li>Right-click and choose <strong class="font-semibold text-gray-800">Unpivot Other Columns</strong>.</li>
+                            <li>Power Query will create two new columns:
+                                <ul class="list-disc list-inside ml-6 mt-2">
+                                    <li><strong>Attribute</strong> (the period names)</li>
+                                    <li><strong>Value</strong> (the balances)</li>
+                                </ul>
+                            </li>
+                            <li>Rename these columns to <strong class="font-semibold text-gray-800">Period</strong> and <strong class="font-semibold text-gray-800">Balance</strong>.</li>
+                        </ul>
+                        <div class="pro-tip p-4 rounded-md mt-4">
+                            <p><strong class="font-semibold text-yellow-800">Pro Tip:</strong> "Unpivot Other Columns" is safer than "Unpivot Columns" because if new periods are added to your source, they'll automatically be included.</p>
+                        </div>
+                    </div>
+                    <div class="interactive-diagram p-4 rounded-lg">
+                        <p class="text-center text-sm font-semibold text-gray-700 mb-3">After Unpivoting</p>
+                        <div class="bg-white rounded border overflow-hidden text-xs">
+                            <table class="w-full">
+                                <thead class="bg-gray-100">
+                                    <tr>
+                                        <th class="p-2 text-left border">Account</th>
+                                        <th class="p-2 text-left border">Period</th>
+                                        <th class="p-2 text-right border">Balance</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="p-2 border">Cash</td>
+                                        <td class="p-2 border">Jan 2025</td>
+                                        <td class="p-2 text-right border">50,000</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2 border">Cash</td>
+                                        <td class="p-2 border">Feb 2025</td>
+                                        <td class="p-2 text-right border">52,300</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2 border">Cash</td>
+                                        <td class="p-2 border">Mar 2025</td>
+                                        <td class="p-2 text-right border">48,900</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2 border">Revenue</td>
+                                        <td class="p-2 border">Jan 2025</td>
+                                        <td class="p-2 text-right border">(120,000)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-center text-xs text-gray-500 mt-2 italic">Tidy format → Easy to analyze!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 4 -->
+            <section id="step4" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">4</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Add Reporting Codes with a Mapping Table</h2>
+                        <p class="mt-2 text-gray-700">Enrich your data by merging a mapping table that assigns each account to a reporting category (Assets, Liabilities, Revenue, Expenses, etc.).</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Create or load a mapping table with two columns: <strong class="font-semibold text-gray-800">Account</strong> and <strong class="font-semibold text-gray-800">Reporting Code</strong>.</li>
+                        <li>In the Power Query Editor, click <strong class="font-semibold text-gray-800">Merge Queries</strong> (Home tab).</li>
+                        <li>Select the <strong class="font-semibold text-gray-800">Account</strong> column from your trial balance.</li>
+                        <li>Select your mapping table and its <strong class="font-semibold text-gray-800">Account</strong> column.</li>
+                        <li>Choose <strong class="font-semibold text-gray-800">Left Outer</strong> join to keep all accounts.</li>
+                        <li>Expand the merged column to bring in the <strong class="font-semibold text-gray-800">Reporting Code</strong>.</li>
+                    </ul>
+                    <div class="bg-white rounded border p-4 mt-4 max-w-2xl">
+                        <p class="text-sm font-semibold text-gray-700 mb-2">Sample Mapping Table:</p>
+                        <table class="w-full text-xs">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="p-2 text-left border">Account</th>
+                                    <th class="p-2 text-left border">Reporting Code</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="p-2 border">Cash</td><td class="p-2 border">Current Assets</td></tr>
+                                <tr><td class="p-2 border">Accounts Receivable</td><td class="p-2 border">Current Assets</td></tr>
+                                <tr><td class="p-2 border">Revenue</td><td class="p-2 border">Income</td></tr>
+                                <tr><td class="p-2 border">Cost of Goods Sold</td><td class="p-2 border">Expenses</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 5 -->
+            <section id="step5" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">5</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Normalize Signs (Optional)</h2>
+                        <p class="mt-2 text-gray-700">In accounting, some systems show revenue and liabilities as negative numbers. Standardize this for easier analysis.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Add a custom column with this formula to flip signs for revenue/liability accounts:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-4 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>if [Reporting Code] = "Income" or [Reporting Code] = "Liabilities" 
+then [Balance] * -1 
+else [Balance]</code></pre>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="2">
+                        <li>Name this column <strong class="font-semibold text-gray-800">Normalized Balance</strong>.</li>
+                        <li>Now all debits are positive and credits are positive in their natural state.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 6 -->
+            <section id="step6" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">6</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Add Control Totals</h2>
+                        <p class="mt-2 text-gray-700">Verify your transformation didn't lose or duplicate data by comparing totals to the original report.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Create a duplicate of your query (right-click > Duplicate).</li>
+                        <li>Name it <strong class="font-semibold text-gray-800">Control Totals</strong>.</li>
+                        <li>Group by Period and sum the Balance:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li>Click <strong class="font-semibold text-gray-800">Group By</strong> (Transform tab).</li>
+                                <li>Group by <strong class="font-semibold text-gray-800">Period</strong>.</li>
+                                <li>Add aggregation: Sum of <strong class="font-semibold text-gray-800">Balance</strong>.</li>
+                            </ul>
+                        </li>
+                        <li>Compare these totals to your source report—they should match!</li>
+                    </ul>
+                    <div class="pro-tip p-4 rounded-md mt-4 max-w-3xl">
+                        <p><strong class="font-semibold text-yellow-800">Best Practice:</strong> Always include control totals when transforming financial data. It builds trust and catches errors early.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 7 -->
+            <section id="step7" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">7</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Load and Use Your Data</h2>
+                        <p class="mt-2 text-gray-700">Load your tidy trial balance into Excel and unlock powerful analysis capabilities.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Click <strong class="font-semibold text-gray-800">Close & Load</strong> to send the data to a new worksheet.</li>
+                        <li>Now you can:
+                            <ul class="list-disc list-inside ml-6 mt-2 space-y-1">
+                                <li>Create pivot tables by Reporting Code and Period</li>
+                                <li>Build trend charts showing account balances over time</li>
+                                <li>Filter to specific accounts or periods instantly</li>
+                                <li>Combine with budget data for variance analysis</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="bg-green-50 border-l-4 border-green-500 p-4 my-6 max-w-3xl">
+                        <p><strong class="font-semibold text-green-800">Success!</strong> You've transformed a wide, messy trial balance into clean, analysis-ready data. This same unpivot pattern works for budgets, forecasts, sales reports, and any data where time periods are stored as columns.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bonus Section -->
+            <section id="bonus" class="step-card rounded-xl p-6 sm:p-8 bg-indigo-50 border-indigo-200">
+                <h2 class="text-xl sm:text-2xl font-bold text-indigo-900 mb-4">🚀 Next Level: Automate Monthly Refresh</h2>
+                <div class="space-y-3 text-gray-700">
+                    <p>Once set up, this query can refresh automatically each month:</p>
+                    <ul class="list-disc list-inside space-y-2 ml-4">
+                        <li>Save your trial balance exports to the same folder with a consistent naming pattern</li>
+                        <li>Update the source connection to point to "Latest file" or use a folder connector</li>
+                        <li>Click <strong class="font-semibold">Refresh</strong> in Excel to pull the latest data</li>
+                        <li>All your downstream pivot tables and charts update automatically!</li>
+                    </ul>
+                </div>
+            </section>
+
+        </div>
+    </div>
+</main>
