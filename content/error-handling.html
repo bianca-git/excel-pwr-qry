@@ -90,27 +90,52 @@ in
                         <p class="mt-2 text-gray-700">For each wrapped operation, add a companion column storing the error message when conversion fails.</p>
                     </div>
                 </div>
-                <div class="mt-6">
-                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
-                        <li>Add a custom column <strong class="font-semibold text-gray-800">Amount_Error</strong>:</li>
-                    </ul>
-                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
-                        <pre class="text-sm"><code>let
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                    <div>
+                        <ul class="list-decimal list-inside space-y-2 text-gray-600">
+                            <li>Add a custom column <strong class="font-semibold text-gray-800">Amount_Error</strong>:</li>
+                        </ul>
+                        <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 overflow-x-auto">
+                            <pre class="text-sm"><code>let
     result = try Number.From([Amount])
 in
     if result[HasError] 
     then result[Error][Message] 
     else null</code></pre>
+                        </div>
+                        <ul class="list-decimal list-inside space-y-2 text-gray-600 mt-4" start="2">
+                            <li>Now when a conversion fails, you get both:
+                                <ul class="list-disc list-inside ml-6 mt-2">
+                                    <li><strong>Amount_Safe = null</strong> (won't break downstream logic)</li>
+                                    <li><strong>Amount_Error = "Unable to convert 'abc' to number"</strong> (tells you why)</li>
+                                </ul>
+                            </li>
+                            <li>Repeat for all risky conversions (dates, numbers, booleans).</li>
+                        </ul>
                     </div>
-                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="2">
-                        <li>Now when a conversion fails, you get both:
-                            <ul class="list-disc list-inside ml-6 mt-2">
-                                <li><strong>Amount_Safe = null</strong> (won't break downstream logic)</li>
-                                <li><strong>Amount_Error = "Unable to convert 'abc' to number"</strong> (tells you why)</li>
-                            </ul>
-                        </li>
-                        <li>Repeat for all risky conversions (dates, numbers, booleans).</li>
-                    </ul>
+                    <div id="diagram3" class="interactive-diagram p-4 rounded-lg">
+                        <p class="text-center text-sm text-gray-500 mb-2">Interactive: Validation Rule Tester</p>
+                        <div class="bg-white rounded-lg border border-gray-300 shadow-md w-full p-4">
+                            <div class="mb-3">
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Test Value:</label>
+                                <input id="d3-test-value" type="text" class="w-full border rounded px-3 py-1.5 text-sm" placeholder="Enter value to test...">
+                            </div>
+                            <div class="mb-3">
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Validation Type:</label>
+                                <select id="d3-validation-type" class="w-full border rounded px-3 py-1.5 text-sm">
+                                    <option value="number">Convert to Number</option>
+                                    <option value="date">Convert to Date</option>
+                                    <option value="email">Validate Email</option>
+                                </select>
+                            </div>
+                            <button id="d3-test" class="w-full px-4 py-2 rounded-md font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-all">
+                                Test Validation
+                            </button>
+                            <div id="d3-result" class="mt-3 p-2 rounded text-xs border hidden">
+                                <div id="d3-result-text"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -187,39 +212,92 @@ else false</code></pre>
                         <p class="mt-2 text-gray-700">Create a summary query showing data quality metrics: total rows, error count, error rate, error types.</p>
                     </div>
                 </div>
-                <div class="mt-6">
-                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
-                        <li>Create a new query referencing your main query.</li>
-                        <li>Use <strong class="font-semibold text-gray-800">Group By</strong> to summarize:</li>
-                    </ul>
-                    <div class="bg-white rounded border p-4 mt-3 max-w-2xl text-xs">
-                        <table class="w-full">
-                            <thead class="bg-gray-100">
-                                <tr>
-                                    <th class="p-2 text-left border">Metric</th>
-                                    <th class="p-2 text-left border">Calculation</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr><td class="p-2 border">Total_Rows</td><td class="p-2 border">Count all rows</td></tr>
-                                <tr><td class="p-2 border">Error_Rows</td><td class="p-2 border">Count where Has_Error = true</td></tr>
-                                <tr><td class="p-2 border">Clean_Rows</td><td class="p-2 border">Count where Has_Error = false</td></tr>
-                                <tr><td class="p-2 border">Error_Rate</td><td class="p-2 border">Error_Rows / Total_Rows</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="3">
-                        <li>Add a row for each error type:</li>
-                    </ul>
-                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
-                        <pre class="text-sm"><code>// Count of amount conversion errors
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                    <div>
+                        <ul class="list-decimal list-inside space-y-2 text-gray-600">
+                            <li>Create a new query referencing your main query.</li>
+                            <li>Use <strong class="font-semibold text-gray-800">Group By</strong> to summarize:</li>
+                        </ul>
+                        <div class="bg-white rounded border p-4 mt-3 text-xs">
+                            <table class="w-full">
+                                <thead class="bg-gray-100">
+                                    <tr>
+                                        <th class="p-2 text-left border">Metric</th>
+                                        <th class="p-2 text-left border">Calculation</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td class="p-2 border">Total_Rows</td><td class="p-2 border">Count all rows</td></tr>
+                                    <tr><td class="p-2 border">Error_Rows</td><td class="p-2 border">Count where Has_Error = true</td></tr>
+                                    <tr><td class="p-2 border">Clean_Rows</td><td class="p-2 border">Count where Has_Error = false</td></tr>
+                                    <tr><td class="p-2 border">Error_Rate</td><td class="p-2 border">Error_Rows / Total_Rows</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <ul class="list-decimal list-inside space-y-2 text-gray-600 mt-4" start="3">
+                            <li>Add a row for each error type:</li>
+                        </ul>
+                        <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 overflow-x-auto">
+                            <pre class="text-sm"><code>// Count of amount conversion errors
 Amount_Errors = Table.RowCount(
     Table.SelectRows(Source, each [Amount_Error] <> null)
 )</code></pre>
+                        </div>
+                        <ul class="list-decimal list-inside space-y-2 text-gray-600 mt-4" start="4">
+                            <li>Load this as a single-row summary table you can monitor.</li>
+                        </ul>
                     </div>
-                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="4">
-                        <li>Load this as a single-row summary table you can monitor.</li>
-                    </ul>
+                    <div id="diagram6" class="interactive-diagram p-4 rounded-lg">
+                        <p class="text-center text-sm text-gray-500 mb-2">Interactive: Error Log Viewer</p>
+                        <div class="bg-white rounded-lg border border-gray-300 shadow-md w-full p-4">
+                            <div class="mb-3 flex justify-between items-center">
+                                <div>
+                                    <div class="text-xs font-semibold text-gray-700">Data Quality Dashboard</div>
+                                    <div class="text-xs text-gray-500">Last refresh: Just now</div>
+                                </div>
+                                <button id="d6-refresh" class="text-xs px-3 py-1 rounded bg-blue-100 text-blue-700 font-semibold hover:bg-blue-200">
+                                    ↻ Refresh
+                                </button>
+                            </div>
+                            <div class="border rounded p-2 mb-3">
+                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                    <div class="p-2 bg-gray-50 rounded">
+                                        <div class="text-gray-500">Total Rows</div>
+                                        <div id="d6-total" class="text-lg font-bold">1,000</div>
+                                    </div>
+                                    <div class="p-2 bg-green-50 rounded">
+                                        <div class="text-gray-500">Clean Rows</div>
+                                        <div id="d6-clean" class="text-lg font-bold text-green-700">975</div>
+                                    </div>
+                                    <div class="p-2 bg-red-50 rounded">
+                                        <div class="text-gray-500">Error Rows</div>
+                                        <div id="d6-errors" class="text-lg font-bold text-red-700">25</div>
+                                    </div>
+                                    <div class="p-2 bg-yellow-50 rounded">
+                                        <div class="text-gray-500">Error Rate</div>
+                                        <div id="d6-rate" class="text-lg font-bold text-yellow-700">2.5%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="border-t pt-2">
+                                <div class="text-xs font-semibold text-gray-700 mb-1">Recent Errors:</div>
+                                <div id="d6-log" class="space-y-1 text-xs max-h-32 overflow-y-auto">
+                                    <div class="p-1 bg-red-50 rounded flex justify-between">
+                                        <span>Row 47: Invalid date "13/25/2025"</span>
+                                        <span class="text-red-600">!</span>
+                                    </div>
+                                    <div class="p-1 bg-red-50 rounded flex justify-between">
+                                        <span>Row 152: Cannot convert "abc" to number</span>
+                                        <span class="text-red-600">!</span>
+                                    </div>
+                                    <div class="p-1 bg-red-50 rounded flex justify-between">
+                                        <span>Row 389: Division by zero</span>
+                                        <span class="text-red-600">!</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -306,3 +384,132 @@ Batch_ID = Text.From(Date.Year(Loaded_DateTime)) &
         </div>
     </div>
 </main>
+<script>
+/**
+ * Initializes the interactive diagrams for the 'Error Reporting and Audit Trail' guide.
+ * Sets up event listeners for the validation rule tester and error log viewer.
+ */
+window.init_error_handling = function() {
+    
+    /**
+     * --- Diagram 3: Validation Rule Tester ---
+     * Tests different validation rules on user input
+     */
+    const d3_test = document.getElementById('d3-test');
+    if (d3_test) {
+        const d3 = {
+            testBtn: d3_test,
+            testValue: document.getElementById('d3-test-value'),
+            validationType: document.getElementById('d3-validation-type'),
+            result: document.getElementById('d3-result'),
+            resultText: document.getElementById('d3-result-text'),
+        };
+
+        d3.testBtn.addEventListener('click', () => {
+            const value = d3.testValue.value;
+            const type = d3.validationType.value;
+            
+            if (!value) {
+                d3.result.classList.remove('hidden', 'bg-green-50', 'bg-red-50', 'border-green-300', 'border-red-300');
+                d3.result.classList.add('bg-yellow-50', 'border-yellow-300');
+                d3.resultText.innerHTML = '<span class="text-yellow-700 font-semibold">⚠ Enter a test value first</span>';
+                d3.result.classList.remove('hidden');
+                return;
+            }
+            
+            let success = false;
+            let message = '';
+            
+            if (type === 'number') {
+                const num = Number(value);
+                success = !isNaN(num) && value.trim() !== '';
+                message = success 
+                    ? `✓ Successfully converted to number: ${num}`
+                    : `✗ Error: Cannot convert "${value}" to number`;
+            } else if (type === 'date') {
+                const date = new Date(value);
+                success = !isNaN(date.getTime());
+                message = success 
+                    ? `✓ Successfully parsed as date: ${date.toLocaleDateString()}`
+                    : `✗ Error: "${value}" is not a valid date`;
+            } else if (type === 'email') {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                success = emailRegex.test(value);
+                message = success 
+                    ? `✓ Valid email format: ${value}`
+                    : `✗ Error: "${value}" is not a valid email address`;
+            }
+            
+            d3.result.classList.remove('hidden', 'bg-green-50', 'bg-red-50', 'border-green-300', 'border-red-300');
+            if (success) {
+                d3.result.classList.add('bg-green-50', 'border-green-300');
+                d3.resultText.innerHTML = `<span class="text-green-700 font-semibold">${message}</span>`;
+            } else {
+                d3.result.classList.add('bg-red-50', 'border-red-300');
+                d3.resultText.innerHTML = `<span class="text-red-700 font-semibold">${message}</span>`;
+            }
+            d3.result.classList.remove('hidden');
+        });
+        
+        // Allow Enter key to trigger test
+        d3.testValue.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                d3.testBtn.click();
+            }
+        });
+    }
+
+    /**
+     * --- Diagram 6: Error Log Viewer ---
+     * Simulates refreshing error statistics
+     */
+    const d6_refresh = document.getElementById('d6-refresh');
+    if (d6_refresh) {
+        const d6 = {
+            refreshBtn: d6_refresh,
+            total: document.getElementById('d6-total'),
+            clean: document.getElementById('d6-clean'),
+            errors: document.getElementById('d6-errors'),
+            rate: document.getElementById('d6-rate'),
+            log: document.getElementById('d6-log'),
+        };
+
+        d6.refreshBtn.addEventListener('click', () => {
+            d6.refreshBtn.textContent = '↻ Refreshing...';
+            d6.refreshBtn.disabled = true;
+            
+            setTimeout(() => {
+                // Simulate new data
+                const total = 1000 + Math.floor(Math.random() * 100);
+                const errorCount = 15 + Math.floor(Math.random() * 20);
+                const cleanCount = total - errorCount;
+                const errorRate = ((errorCount / total) * 100).toFixed(1);
+                
+                d6.total.textContent = total.toLocaleString();
+                d6.clean.textContent = cleanCount.toLocaleString();
+                d6.errors.textContent = errorCount.toLocaleString();
+                d6.rate.textContent = errorRate + '%';
+                
+                // Update rate color based on threshold
+                d6.rate.classList.remove('text-green-700', 'text-yellow-700', 'text-red-700');
+                const rateParent = d6.rate.parentElement;
+                rateParent.classList.remove('bg-green-50', 'bg-yellow-50', 'bg-red-50');
+                
+                if (parseFloat(errorRate) < 1) {
+                    d6.rate.classList.add('text-green-700');
+                    rateParent.classList.add('bg-green-50');
+                } else if (parseFloat(errorRate) < 5) {
+                    d6.rate.classList.add('text-yellow-700');
+                    rateParent.classList.add('bg-yellow-50');
+                } else {
+                    d6.rate.classList.add('text-red-700');
+                    rateParent.classList.add('bg-red-50');
+                }
+                
+                d6.refreshBtn.textContent = '↻ Refresh';
+                d6.refreshBtn.disabled = false;
+            }, 800);
+        });
+    }
+};
+</script>
