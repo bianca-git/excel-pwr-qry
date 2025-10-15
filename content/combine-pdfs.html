@@ -4,7 +4,10 @@
 
             <section id="intro" class="text-center">
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Combining PDFs: The Automated Workflow</h2>
-                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Learn how to point Power Query to a folder of PDFs, define a cleaning process once, and have Excel apply it to every file automatically. The result is a single, clean table, ready for analysis and updated with one click.</p>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Learn how to point Power Query to a folder of PDFs, define a cleaning process once, and have Excel apply it to every file automatically. This is one of Power Query's most powerful features—turning hours of manual work into a single click.</p>
+                <div class="pro-tip p-4 rounded-md my-6 max-w-2xl mx-auto">
+                    <p><strong class="font-semibold text-yellow-800">Why This Matters:</strong> PDFs are notoriously difficult to work with in Excel. They're designed for reading, not data analysis. Power Query's folder connector lets you extract data from dozens or even hundreds of PDFs at once, applying the same transformation steps to each file. Once set up, adding new PDFs to the folder automatically includes them in your dataset.</p>
+                </div>
             </section>
 
             <section id="step1" class="step-card rounded-xl p-6 sm:p-8">
@@ -12,21 +15,71 @@
                     <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">1</div>
                     <div>
                         <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Connect to the Source Folder</h2>
-                        <p class="mt-2 text-gray-700">First, tell Excel where to find your files. This establishes the connection to the folder, allowing Power Query to access its contents.</p>
+                        <p class="mt-2 text-gray-700">First, tell Excel where to find your PDF files. This establishes the connection to the folder, allowing Power Query to access all PDFs inside it—both now and in the future.</p>
                     </div>
                 </div>
-                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
                     <div>
                         <ul class="list-decimal list-inside space-y-2 text-gray-600">
                             <li>Begin with a new, blank Excel workbook.</li>
                             <li>Go to the <strong class="font-semibold text-gray-800">Data</strong> tab on the ribbon.</li>
                             <li>Click <strong class="font-semibold text-gray-800">Get Data > From File > From Folder</strong>.</li>
-                            <li>Browse to and select your folder, then click <strong class="font-semibold text-gray-800">Open</strong>.</li>
-                            <li>In the preview window, click the dropdown on the <strong class="font-semibold text-gray-800">Combine</strong> button and select <strong class="font-semibold text-gray-800">Combine & Transform Data</strong>.</li>
+                            <li>Browse to and select your folder containing the PDF files, then click <strong class="font-semibold text-gray-800">Open</strong>.</li>
+                            <li>In the preview window, click the dropdown arrow on the <strong class="font-semibold text-gray-800">Combine</strong> button and select <strong class="font-semibold text-gray-800">Combine & Transform Data</strong>.</li>
                         </ul>
+                        <div class="pro-tip p-4 rounded-md mt-4">
+                            <p><strong class="font-semibold text-yellow-800">Important:</strong> Don't click "Load" yet! We need to use <strong>Combine & Transform</strong> so we can teach Power Query how to extract the data from each PDF.</p>
+                        </div>
                     </div>
-                    <div class="flex justify-center">
-                        <img src="https://raw.githubusercontent.com/Laskew/office-guides/main/img/combine-pdf-step-1.png" alt="Screenshot of the 'Get Data > From File > From Folder' menu in the Excel Data ribbon." class="rounded-lg border border-gray-300 shadow-md">
+                    <div id="diagram1" class="interactive-diagram p-4 rounded-lg">
+                        <p class="text-center text-sm text-gray-500 mb-2">Interactive: Select a PDF file</p>
+                        <div class="bg-white rounded-lg border border-gray-300 shadow-md w-full">
+                            <div class="bg-gray-100 p-2 border-b flex justify-between items-center">
+                                <h3 class="font-semibold text-sm">Browse For Folder</h3>
+                                <span class="text-gray-400">✖</span>
+                            </div>
+                            <div class="p-4 flex space-x-4">
+                                <div class="w-1/3 text-sm space-y-1">
+                                    <div class="p-1 rounded bg-blue-100 text-blue-800">▶ Documents</div>
+                                    <div class="p-1 rounded ml-2">└ 📁 Invoices_2024</div>
+                                    <div class="p-1 rounded ml-2">└ 📁 Reports</div>
+                                </div>
+                                <div class="w-2/3 border rounded-md p-2 space-y-1">
+                                    <div id="d1-pdf1" class="p-2 text-sm rounded cursor-pointer hover:bg-gray-100">📄 Invoice_Jan.pdf</div>
+                                    <div id="d1-pdf2" class="p-2 text-sm rounded cursor-pointer hover:bg-gray-100">📄 Invoice_Feb.pdf</div>
+                                    <div id="d1-pdf3" class="p-2 text-sm rounded cursor-pointer hover:bg-gray-100">📄 Invoice_Mar.pdf</div>
+                                    <div class="p-2 text-sm text-gray-400">📄 Invoice_Apr.pdf</div>
+                                    <div class="p-2 text-sm text-gray-400">📄 Invoice_May.pdf</div>
+                                </div>
+                            </div>
+                            <div class="p-2 border-t bg-gray-50 flex justify-end space-x-2">
+                                <button class="text-sm px-4 py-1.5 rounded excel-button">Cancel</button>
+                                <button id="d1-open" class="text-sm px-4 py-1.5 rounded excel-button">Open</button>
+                            </div>
+                        </div>
+                        <div id="d1-combine-window" class="hidden mt-4 bg-white rounded-lg border border-gray-300 shadow-md w-full">
+                            <div class="bg-gray-100 p-2 border-b">
+                                <h3 class="font-semibold text-sm">Folder Preview</h3>
+                            </div>
+                            <div class="p-4">
+                                <p class="text-xs text-gray-600 mb-2">5 PDF files found in folder</p>
+                                <div class="flex space-x-2">
+                                    <button class="text-sm px-3 py-1.5 rounded excel-button">Load</button>
+                                    <div class="relative">
+                                        <button id="d1-combine-btn" class="text-sm px-3 py-1.5 rounded excel-button flex items-center gap-1">
+                                            Combine ▼
+                                        </button>
+                                        <div id="d1-combine-dropdown" class="hidden absolute top-full left-0 mt-1 bg-white border rounded-md shadow-lg z-10 w-56">
+                                            <div class="p-1">
+                                                <div class="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100 cursor-pointer">Combine & Load</div>
+                                                <div id="d1-combine-transform" class="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100 cursor-pointer font-semibold">Combine & Transform Data</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p id="d1-message" class="text-center mt-2 font-medium text-green-700 h-5"></p>
                     </div>
                 </div>
             </section>
@@ -35,20 +88,75 @@
                 <div class="flex items-start gap-4">
                     <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">2</div>
                     <div>
-                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Define the Transformation</h2>
-                        <p class="mt-2 text-gray-700">Teach Power Query how to clean the data by working with a single sample file. Every action you take here is recorded and applied to all other files.</p>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Select the Sample Data Structure</h2>
+                        <p class="mt-2 text-gray-700">Power Query will open a "Combine Files" window showing a preview of one PDF. This is your <strong class="font-semibold">sample file</strong>. The table or page you select here will be used as a template for all other PDFs in the folder.</p>
                     </div>
                 </div>
-                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
                     <div>
                         <ul class="list-decimal list-inside space-y-2 text-gray-600">
-                            <li>In the "Combine Files" window, select the table or page from the sample PDF that contains your data.</li>
-                            <li>Click <strong class="font-semibold text-gray-800">OK</strong> to enter the main Power Query Editor.</li>
-                            <li>Use the tools in the ribbon to clean the sample data, such as "Use First Row as Headers," changing data types, and removing unnecessary columns.</li>
+                            <li>In the "Combine Files" window, you'll see a list of tables or pages detected in the sample PDF.</li>
+                            <li>Click on each table to preview its contents in the right pane.</li>
+                            <li>Select the table or page that contains the data you want to extract.</li>
+                            <li>Click <strong class="font-semibold text-gray-800">OK</strong> to proceed to the Power Query Editor.</li>
                         </ul>
+                        <div class="pro-tip p-4 rounded-md mt-4">
+                            <p><strong class="font-semibold text-yellow-800">Pro Tip:</strong> Power Query will look for this same table structure in every PDF. If your PDFs have different layouts, you may need to clean them manually or use more advanced M code. For best results, ensure all PDFs share the same basic structure.</p>
+                        </div>
                     </div>
-                    <div class="flex justify-center">
-                        <img src="https://raw.githubusercontent.com/Laskew/office-guides/main/img/combine-pdf-step-2.png" alt="Screenshot of the Power Query Editor showing the 'Use First Row as Headers' button." class="rounded-lg border border-gray-300 shadow-md">
+                    <div id="diagram2" class="interactive-diagram p-4 rounded-lg">
+                        <p class="text-center text-sm text-gray-500 mb-2">Interactive: Select the table to extract</p>
+                        <div class="bg-white rounded-lg border border-gray-300 shadow-md w-full">
+                            <div class="bg-gray-100 p-2 border-b"><h3 class="font-semibold text-sm">Combine Files - Invoice_Jan.pdf</h3></div>
+                            <div class="flex">
+                                <div class="w-1/3 border-r p-2">
+                                    <p class="text-xs font-bold text-gray-500 mb-2">Detected Tables</p>
+                                    <div id="d2-table1" class="p-2 text-sm rounded cursor-pointer hover:bg-gray-100 flex items-center gap-2">
+                                        <span>📋</span>
+                                        <span>Table001</span>
+                                    </div>
+                                    <div id="d2-table2" class="p-2 text-sm rounded cursor-pointer hover:bg-gray-100 flex items-center gap-2">
+                                        <span>📋</span>
+                                        <span>Table002 (Invoice Items)</span>
+                                    </div>
+                                    <div id="d2-page1" class="p-2 text-sm rounded cursor-pointer hover:bg-gray-100 flex items-center gap-2">
+                                        <span>📄</span>
+                                        <span>Page 1</span>
+                                    </div>
+                                </div>
+                                <div class="w-2/3 p-2">
+                                    <p id="d2-preview-title" class="text-xs font-bold text-gray-500 mb-2">Preview (Select a table)</p>
+                                    <div id="d2-preview-area" class="h-40 overflow-auto text-xs border rounded bg-gray-50">
+                                        <div id="d2-preview-placeholder" class="h-full flex items-center justify-center text-gray-400">
+                                            Click a table to preview
+                                        </div>
+                                        <table id="d2-preview-table1" class="w-full hidden">
+                                            <thead class="bg-gray-200"><tr><th class="p-1 font-semibold">Header Info</th></tr></thead>
+                                            <tbody>
+                                                <tr><td class="p-1 border-t">Invoice #12345</td></tr>
+                                                <tr><td class="p-1 border-t">Date: 2024-01-15</td></tr>
+                                            </tbody>
+                                        </table>
+                                        <table id="d2-preview-table2" class="w-full hidden">
+                                            <thead class="bg-gray-200"><tr><th class="p-1 font-semibold">Item</th><th class="p-1 font-semibold">Qty</th><th class="p-1 font-semibold">Price</th></tr></thead>
+                                            <tbody>
+                                                <tr><td class="p-1 border-t">Widget A</td><td class="p-1 border-t">5</td><td class="p-1 border-t">$25.00</td></tr>
+                                                <tr><td class="p-1 border-t">Widget B</td><td class="p-1 border-t">3</td><td class="p-1 border-t">$45.00</td></tr>
+                                            </tbody>
+                                        </table>
+                                        <div id="d2-preview-page1" class="p-2 text-gray-600 hidden">
+                                            <p class="text-xs">Full page content (less structured)</p>
+                                            <p class="text-xs mt-2">Invoice #12345<br>Date: 2024-01-15<br>Items: Widget A, Widget B...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-2 border-t bg-gray-50 flex justify-end space-x-2">
+                                <button class="text-sm px-4 py-1.5 rounded excel-button">Cancel</button>
+                                <button id="d2-ok" class="text-sm px-4 py-1.5 rounded excel-button">OK</button>
+                            </div>
+                        </div>
+                        <p id="d2-message" class="text-center mt-2 font-medium text-green-700 h-5"></p>
                     </div>
                 </div>
             </section>
@@ -57,20 +165,84 @@
                 <div class="flex items-start gap-4">
                     <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">3</div>
                     <div>
-                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Review Combined Data</h2>
-                        <p class="mt-2 text-gray-700">Power Query automatically applies your steps to all files and stacks them into one table. Review the result.</p>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Define the Transformation on the Sample File</h2>
+                        <p class="mt-2 text-gray-700">You're now in the Power Query Editor. On the left, you'll see a special query called <strong class="font-semibold">"Transform Sample File"</strong>. This is where the magic happens. Every cleaning step you perform here will be automatically applied to all PDFs in the folder.</p>
                     </div>
                 </div>
-                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
                     <div>
-                        <ul class="list-decimal list-inside space-y-2 text-gray-600">
-                            <li>Scroll through the data to check for correctness.</li>
-                            <li>The <strong class="font-semibold text-gray-800">Source.Name</strong> column shows the origin filename for each row, which is useful for verification.</li>
-                            <li>If you see errors, you can go back to the "Transform Sample File" query to adjust your steps.</li>
+                        <p class="mb-3 font-semibold text-gray-800">Common transformations for PDF data:</p>
+                        <ul class="space-y-3 mb-4">
+                            <li class="flex items-start gap-3">
+                                <span class="text-green-600 mt-1">✓</span>
+                                <div><strong class="font-semibold text-gray-800">Use First Row as Headers:</strong> PDF tables often import with generic column names. Promote the first row if it contains your actual headers.</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-green-600 mt-1">✓</span>
+                                <div><strong class="font-semibold text-gray-800">Change Data Types:</strong> Set columns to Number, Date, or Text as appropriate. Power Query defaults to Text for PDF imports.</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-green-600 mt-1">✓</span>
+                                <div><strong class="font-semibold text-gray-800">Remove Empty Rows:</strong> PDFs often have blank rows for formatting. Filter these out.</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-green-600 mt-1">✓</span>
+                                <div><strong class="font-semibold text-gray-800">Trim & Clean Text:</strong> Use "Trim" to remove extra spaces and "Clean" to remove non-printable characters.</div>
+                            </li>
                         </ul>
+                        <div class="pro-tip p-4 rounded-md">
+                            <p><strong class="font-semibold text-yellow-800">Key Concept:</strong> You're teaching Power Query a recipe. The "Transform Sample File" query records your actions, then Power Query loops through every PDF in the folder and applies the same recipe. You only do the work once!</p>
+                        </div>
                     </div>
-                    <div class="flex justify-center">
-                        <img src="https://raw.githubusercontent.com/Laskew/office-guides/main/img/combine-pdf-step-3.png" alt="Screenshot of the Power Query Editor showing the combined data with the Source.Name column." class="rounded-lg border border-gray-300 shadow-md">
+                    <div id="diagram3" class="interactive-diagram p-4 rounded-lg">
+                        <p class="text-center text-sm text-gray-500 mb-2">Interactive: Apply transformation steps</p>
+                        <div class="bg-white rounded-lg border border-gray-300 shadow-md w-full">
+                            <div class="bg-gray-100 p-2 border-b"><h3 class="font-semibold text-sm">Power Query Editor - Transform Sample File</h3></div>
+                            <div class="flex p-2 space-x-2 border-b bg-gray-50">
+                                <div id="d3-btn-headers" class="text-xs px-2 py-1 excel-button rounded cursor-pointer">Use First Row as Headers</div>
+                                <div id="d3-btn-type" class="text-xs px-2 py-1 excel-button rounded cursor-pointer">Change Type</div>
+                                <div id="d3-btn-remove" class="text-xs px-2 py-1 excel-button rounded cursor-pointer">Remove Blanks</div>
+                            </div>
+                            <div class="p-2">
+                                <table id="d3-data-table" class="w-full text-xs">
+                                    <thead>
+                                        <tr id="d3-header-row">
+                                            <th class="p-1 font-semibold border bg-gray-200">Column1</th>
+                                            <th class="p-1 font-semibold border bg-gray-200">Column2</th>
+                                            <th class="p-1 font-semibold border bg-gray-200">Column3</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="d3-data-body">
+                                        <tr class="d3-row-data">
+                                            <td class="p-1 border bg-blue-50">Item</td>
+                                            <td class="p-1 border bg-blue-50">Qty</td>
+                                            <td class="p-1 border bg-blue-50">Price</td>
+                                        </tr>
+                                        <tr class="d3-row-data">
+                                            <td class="p-1 border">Widget A</td>
+                                            <td class="p-1 border">5</td>
+                                            <td class="p-1 border">$25.00</td>
+                                        </tr>
+                                        <tr class="d3-row-blank">
+                                            <td class="p-1 border text-gray-300" colspan="3">(blank row)</td>
+                                        </tr>
+                                        <tr class="d3-row-data">
+                                            <td class="p-1 border">Widget B</td>
+                                            <td class="p-1 border">3</td>
+                                            <td class="p-1 border">$45.00</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="p-2 border-t bg-gray-50">
+                                <h4 class="font-semibold text-xs mb-2">Applied Steps</h4>
+                                <div id="d3-steps" class="text-xs space-y-1">
+                                    <p class="text-gray-400">✔️ Source</p>
+                                    <p class="text-gray-400">✔️ Navigation</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p id="d3-message" class="text-center mt-2 font-medium text-green-700 text-sm h-5"></p>
                     </div>
                 </div>
             </section>
@@ -79,20 +251,62 @@
                 <div class="flex items-start gap-4">
                     <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">4</div>
                     <div>
-                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Final Polish</h2>
-                        <p class="mt-2 text-gray-700">Perform final checks on the combined dataset before loading it into Excel.</p>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Review the Combined Data & Final Polish</h2>
+                        <p class="mt-2 text-gray-700">Return to the main query (it will be named something like "Invoices_2024" after your folder). Power Query has now applied all your transformation steps to every PDF and stacked them into one unified table. This is where you verify everything worked correctly.</p>
                     </div>
                 </div>
-                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
                     <div>
                         <ul class="list-decimal list-inside space-y-2 text-gray-600">
-                            <li>Double-check that all columns have the correct data type (e.g., number, text, date).</li>
-                            <li>Rename or remove the <strong class="font-semibold text-gray-800">Source.Name</strong> column if you don't need it.</li>
-                            <li>In the "Query Settings" pane on the right, give your query a descriptive name (e.g., `CombinedPDFData`).</li>
+                            <li>In the Queries pane (left side), click on the main query (the one named after your folder, not "Transform Sample File").</li>
+                            <li>Scroll through the combined data. The <strong class="font-semibold text-gray-800">Source.Name</strong> column shows which PDF each row came from.</li>
+                            <li>Check for errors in any column. If you see errors, go back to "Transform Sample File" and adjust your steps.</li>
+                            <li>Verify data types are correct for each column (Number, Date, Text, etc.).</li>
+                            <li>Optionally rename or remove the <strong class="font-semibold text-gray-800">Source.Name</strong> column if you don't need file tracking.</li>
+                            <li>Give your query a descriptive name in the Query Settings pane (e.g., "Combined_Invoice_Data").</li>
                         </ul>
+                        <div class="pro-tip p-4 rounded-md mt-4">
+                            <p><strong class="font-semibold text-yellow-800">Troubleshooting:</strong> If some PDFs produce errors while others don't, they likely have a different structure. You may need to manually exclude problem files or create separate queries for different PDF formats.</p>
+                        </div>
                     </div>
-                    <div class="flex justify-center">
-                        <img src="https://raw.githubusercontent.com/Laskew/office-guides/main/img/combine-pdf-step-4.png" alt="Screenshot of the Query Settings pane where the query can be renamed." class="rounded-lg border border-gray-300 shadow-md">
+                    <div id="diagram4" class="interactive-diagram p-4 rounded-lg">
+                        <p class="text-center text-sm text-gray-500 mb-2">Interactive: Review combined data</p>
+                        <div class="bg-white rounded-lg border border-gray-300 shadow-md w-full">
+                            <div class="bg-gray-100 p-2 border-b flex justify-between items-center">
+                                <h3 class="font-semibold text-sm">Combined Data Preview</h3>
+                                <div class="text-xs text-gray-500">15 rows from 5 files</div>
+                            </div>
+                            <div class="p-2 overflow-auto">
+                                <table class="w-full text-xs">
+                                    <thead class="bg-teal-700 text-white">
+                                        <tr>
+                                            <th class="p-1 font-semibold">Source.Name</th>
+                                            <th class="p-1 font-semibold">Item</th>
+                                            <th class="p-1 font-semibold">Qty</th>
+                                            <th class="p-1 font-semibold">Price</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-teal-50">
+                                        <tr><td class="p-1 border-t text-gray-500">Invoice_Jan.pdf</td><td class="p-1 border-t">Widget A</td><td class="p-1 border-t">5</td><td class="p-1 border-t">$25.00</td></tr>
+                                        <tr><td class="p-1 border-t text-gray-500">Invoice_Jan.pdf</td><td class="p-1 border-t">Widget B</td><td class="p-1 border-t">3</td><td class="p-1 border-t">$45.00</td></tr>
+                                        <tr><td class="p-1 border-t text-gray-500">Invoice_Feb.pdf</td><td class="p-1 border-t">Widget A</td><td class="p-1 border-t">8</td><td class="p-1 border-t">$25.00</td></tr>
+                                        <tr><td class="p-1 border-t text-gray-500">Invoice_Feb.pdf</td><td class="p-1 border-t">Widget C</td><td class="p-1 border-t">2</td><td class="p-1 border-t">$65.00</td></tr>
+                                        <tr><td class="p-1 border-t text-gray-500">Invoice_Mar.pdf</td><td class="p-1 border-t">Widget B</td><td class="p-1 border-t">6</td><td class="p-1 border-t">$45.00</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="p-2 border-t bg-gray-50 flex items-center justify-between">
+                                <div class="text-xs text-gray-600">
+                                    <span class="font-semibold">Column Types:</span>
+                                    <span class="ml-2">Source.Name: Text</span>
+                                    <span class="ml-2">Item: Text</span>
+                                    <span class="ml-2">Qty: <span id="d4-qty-type" class="text-orange-600 font-semibold">Text ⚠️</span></span>
+                                    <span class="ml-2">Price: <span id="d4-price-type" class="text-orange-600 font-semibold">Text ⚠️</span></span>
+                                </div>
+                                <button id="d4-fix-types" class="text-xs px-3 py-1.5 rounded excel-button">Fix Types</button>
+                            </div>
+                        </div>
+                        <p id="d4-message" class="text-center mt-2 font-medium text-green-700 text-sm h-5"></p>
                     </div>
                 </div>
             </section>
@@ -102,20 +316,24 @@
                     <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">5</div>
                     <div>
                         <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Close & Load to Excel</h2>
-                        <p class="mt-2 text-gray-700">The transformation is complete. It's time to send the clean, combined data back to your Excel worksheet.</p>
+                        <p class="mt-2 text-gray-700">Your transformation pipeline is complete. Time to send the clean, combined data back to your Excel worksheet where you can analyze it, build PivotTables, or create charts.</p>
                     </div>
                 </div>
-                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
-                    <div>
-                        <ul class="list-decimal list-inside space-y-2 text-gray-600">
-                            <li>On the <strong class="font-semibold text-gray-800">Home</strong> tab of the Power Query Editor, click the <strong class="font-semibold text-gray-800">Close & Load</strong> button.</li>
-                            <li>Power Query creates a new worksheet and loads your data into a formatted Excel Table.</li>
-                            <li>Your data is now ready for analysis, PivotTables, or charts.</li>
-                        </ul>
+                <div class="mt-6 flex flex-col items-center">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 mb-6 self-start">
+                        <li>On the <strong class="font-semibold text-gray-800">Home</strong> tab of the Power Query Editor, click the <strong class="font-semibold text-gray-800">Close & Load</strong> button dropdown.</li>
+                        <li>Choose <strong class="font-semibold text-gray-800">Close & Load</strong> (to create a new worksheet) or <strong class="font-semibold text-gray-800">Close & Load To...</strong> (to specify where the data goes).</li>
+                        <li>Power Query creates a formatted Excel Table with all your combined, cleaned data.</li>
+                        <li>Your data is now ready for analysis, reporting, or further processing.</li>
+                    </ul>
+                    <div class="interactive-diagram p-4 rounded-lg w-full max-w-md text-center">
+                        <p class="text-center text-sm text-gray-500 mb-2">Click "Close & Load"</p>
+                        <button id="d5-close-load" class="px-4 py-2 rounded-md font-semibold text-white bg-green-700 hover:bg-green-800 transition-all duration-200 transform hover:scale-105">
+                            ⏏️ Close & Load
+                        </button>
+                        <p id="d5-message" class="mt-4 text-gray-600 h-5 font-medium"></p>
                     </div>
-                    <div class="flex justify-center">
-                        <img src="https://raw.githubusercontent.com/Laskew/office-guides/main/img/combine-pdf-step-5.png" alt="Screenshot of the final data loaded into an Excel sheet as a formatted table." class="rounded-lg border border-gray-300 shadow-md">
-                    </div>
+                    <p class="mt-6 font-semibold text-lg text-gray-800">All your PDF data is now consolidated in one Excel table!</p>
                 </div>
             </section>
 
@@ -124,20 +342,45 @@
                     <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">6</div>
                     <div>
                         <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Refresh Your Data (The Best Part)</h2>
-                        <p class="mt-2 text-gray-700">You've built a connection, not just a one-time import. If the source data changes, you don't have to repeat these steps. Just refresh!</p>
+                        <p class="mt-2 text-gray-700">You've built a living connection, not a one-time import. When you add new PDFs to the source folder, you don't have to repeat any of these steps. Power Query will automatically detect them and apply all your transformation steps. Just refresh!</p>
                     </div>
                 </div>
-                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
                      <div>
                         <p class="font-semibold text-gray-800 mb-2">To refresh the data:</p>
-                        <ul class="list-disc list-inside space-y-2 text-gray-600">
-                            <li>Go to the <strong class="font-semibold text-gray-800">Data</strong> tab and click the <strong class="font-semibold text-gray-800">Refresh All</strong> button.</li>
-                            <li>Alternatively, right-click anywhere inside the new data table and select <strong class="font-semibold text-gray-800">Refresh</strong>.</li>
+                        <ul class="list-disc list-inside space-y-2 text-gray-600 mb-4">
+                            <li>Go to the <strong class="font-semibold text-gray-800">Data</strong> tab and click <strong class="font-semibold text-gray-800">Refresh All</strong>.</li>
+                            <li>Alternatively, right-click anywhere inside the data table and select <strong class="font-semibold text-gray-800">Refresh</strong>.</li>
                         </ul>
-                        <p class="mt-4 text-gray-700">Excel will automatically re-run all your saved steps and pull in the latest data from the source file. No more manual updates.</p>
+                        <p class="text-gray-700 mb-4">Excel will re-scan the folder, detect any new PDFs, apply your saved transformation steps to them, and append them to your existing dataset. Old files remain unchanged.</p>
+                        <div class="pro-tip p-4 rounded-md">
+                            <p><strong class="font-semibold text-yellow-800">Real-World Example:</strong> Imagine you receive 10 new invoice PDFs each month. Instead of manually copying data from each one, you simply drop them in the folder and click Refresh. In seconds, all 10 are processed and added to your analysis. That's the power of automation!</p>
+                        </div>
                     </div>
-                    <div class="flex justify-center">
-                        <img src="https://raw.githubusercontent.com/Laskew/office-guides/main/img/combine-pdf-step-6.png" alt="Animation showing the data refresh process in Excel." class="rounded-lg border border-gray-300 shadow-md">
+                    <div id="diagram6" class="interactive-diagram p-4 rounded-lg">
+                        <p class="text-center text-sm text-gray-500 mb-2">Simulate adding new PDFs and refreshing</p>
+                        <div class="bg-white rounded-lg border border-gray-300 shadow-md w-full p-4">
+                            <div class="mb-3">
+                                <p class="text-xs font-semibold text-gray-700 mb-2">Source Folder Contents:</p>
+                                <div id="d6-file-list" class="space-y-1 text-xs">
+                                    <div class="p-1 bg-gray-100 rounded">📄 Invoice_Jan.pdf</div>
+                                    <div class="p-1 bg-gray-100 rounded">📄 Invoice_Feb.pdf</div>
+                                    <div class="p-1 bg-gray-100 rounded">📄 Invoice_Mar.pdf</div>
+                                </div>
+                            </div>
+                            <button id="d6-add-file" class="w-full text-xs px-3 py-2 rounded excel-button mb-3 flex items-center justify-center gap-2">
+                                ➕ Add New PDF to Folder
+                            </button>
+                            <hr class="my-3">
+                            <button id="d6-refresh" class="w-full text-center px-4 py-2 rounded-md font-semibold text-gray-700 excel-button mb-3 flex items-center justify-center gap-2">
+                                <span id="d6-refresh-icon">🔄</span> Refresh All
+                            </button>
+                            <div class="border rounded p-2">
+                                <p class="text-xs font-semibold text-gray-700 mb-1">Current Data Table:</p>
+                                <div id="d6-row-count" class="text-sm font-bold text-teal-700">9 rows (from 3 files)</div>
+                            </div>
+                        </div>
+                        <p id="d6-message" class="text-center mt-2 font-medium text-green-700 text-sm h-5"></p>
                     </div>
                 </div>
             </section>
@@ -145,6 +388,295 @@
     </div>
 </main>
 <script>
-    // This script is no longer needed as the interactive diagrams have been removed.
-    window.init_combine_pdfs = function() {};
+/**
+ * Initializes all interactive diagrams for the 'Combine PDFs' guide.
+ * Each diagram simulates a step in the Power Query workflow for combining PDF files.
+ */
+window.init_combine_pdfs = function() {
+    
+    /**
+     * --- Diagram 1: Folder Selection & Combine Button ---
+     * Simulates browsing to a folder and selecting "Combine & Transform Data"
+     */
+    const d1_pdf1 = document.getElementById('d1-pdf1');
+    if (d1_pdf1) {
+        const d1 = {
+            pdf1: d1_pdf1,
+            pdf2: document.getElementById('d1-pdf2'),
+            pdf3: document.getElementById('d1-pdf3'),
+            openBtn: document.getElementById('d1-open'),
+            combineWindow: document.getElementById('d1-combine-window'),
+            combineBtn: document.getElementById('d1-combine-btn'),
+            combineDropdown: document.getElementById('d1-combine-dropdown'),
+            combineTransform: document.getElementById('d1-combine-transform'),
+            message: document.getElementById('d1-message'),
+        };
+
+        let selectedPdf = null;
+
+        // Select PDF files
+        [d1.pdf1, d1.pdf2, d1.pdf3].forEach(pdf => {
+            pdf.addEventListener('click', () => {
+                [d1.pdf1, d1.pdf2, d1.pdf3].forEach(p => p.classList.remove('bg-blue-100', 'border', 'border-blue-400'));
+                pdf.classList.add('bg-blue-100', 'border', 'border-blue-400');
+                selectedPdf = pdf;
+            });
+        });
+
+        // Open folder
+        d1.openBtn.addEventListener('click', () => {
+            if (selectedPdf) {
+                d1.combineWindow.classList.remove('hidden');
+                d1.message.textContent = 'Folder opened! Now click "Combine ▼" button.';
+            }
+        });
+
+        // Show dropdown
+        d1.combineBtn.addEventListener('click', () => {
+            d1.combineDropdown.classList.toggle('hidden');
+            if (!d1.combineDropdown.classList.contains('hidden')) {
+                d1.message.textContent = 'Select "Combine & Transform Data".';
+            }
+        });
+
+        // Select Combine & Transform
+        d1.combineTransform.addEventListener('click', () => {
+            d1.combineTransform.classList.add('bg-green-100', 'font-bold');
+            d1.message.textContent = 'Step 1 complete! Moving to sample file selection...';
+        });
+    }
+
+    /**
+     * --- Diagram 2: Table Selection from Sample PDF ---
+     * Simulates selecting which table/page to extract from a sample PDF
+     */
+    const d2_table1 = document.getElementById('d2-table1');
+    if (d2_table1) {
+        const d2 = {
+            table1: d2_table1,
+            table2: document.getElementById('d2-table2'),
+            page1: document.getElementById('d2-page1'),
+            previewTitle: document.getElementById('d2-preview-title'),
+            previewPlaceholder: document.getElementById('d2-preview-placeholder'),
+            previewTable1: document.getElementById('d2-preview-table1'),
+            previewTable2: document.getElementById('d2-preview-table2'),
+            previewPage1: document.getElementById('d2-preview-page1'),
+            okBtn: document.getElementById('d2-ok'),
+            message: document.getElementById('d2-message'),
+        };
+
+        let selectedTable = null;
+
+        function selectTable(table, previewElement, title) {
+            [d2.table1, d2.table2, d2.page1].forEach(t => t.classList.remove('bg-blue-100'));
+            table.classList.add('bg-blue-100');
+            selectedTable = table;
+
+            [d2.previewPlaceholder, d2.previewTable1, d2.previewTable2, d2.previewPage1].forEach(p => p.classList.add('hidden'));
+            previewElement.classList.remove('hidden');
+            d2.previewTitle.textContent = title;
+        }
+
+        d2.table1.addEventListener('click', () => {
+            selectTable(d2.table1, d2.previewTable1, 'Preview: Table001 (Header Info)');
+            d2.message.textContent = 'This table has invoice headers. Try Table002 for item details.';
+        });
+
+        d2.table2.addEventListener('click', () => {
+            selectTable(d2.table2, d2.previewTable2, 'Preview: Table002 (Invoice Items)');
+            d2.message.textContent = 'Perfect! This table has structured item data. Click OK.';
+        });
+
+        d2.page1.addEventListener('click', () => {
+            selectTable(d2.page1, d2.previewPage1, 'Preview: Page 1 (Full Page)');
+            d2.message.textContent = 'Full page is less structured. Table002 is a better choice.';
+        });
+
+        d2.okBtn.addEventListener('click', () => {
+            if (selectedTable) {
+                d2.message.textContent = 'Table selected! Opening Power Query Editor...';
+                d2.okBtn.disabled = true;
+                d2.okBtn.classList.add('opacity-50');
+            }
+        });
+    }
+
+    /**
+     * --- Diagram 3: Transform Sample File with Step Recording ---
+     * Simulates applying transformation steps and seeing them recorded
+     */
+    const d3_btn_headers = document.getElementById('d3-btn-headers');
+    if (d3_btn_headers) {
+        const d3 = {
+            btnHeaders: d3_btn_headers,
+            btnType: document.getElementById('d3-btn-type'),
+            btnRemove: document.getElementById('d3-btn-remove'),
+            headerRow: document.getElementById('d3-header-row'),
+            dataBody: document.getElementById('d3-data-body'),
+            stepsContainer: document.getElementById('d3-steps'),
+            message: document.getElementById('d3-message'),
+        };
+
+        let stepsApplied = [];
+
+        function addStep(stepName) {
+            stepsApplied.push(stepName);
+            const stepEl = document.createElement('p');
+            stepEl.textContent = `✔️ ${stepName}`;
+            stepEl.classList.add('text-green-700', 'font-semibold');
+            d3.stepsContainer.appendChild(stepEl);
+        }
+
+        // Use First Row as Headers
+        d3.btnHeaders.addEventListener('click', () => {
+            if (!stepsApplied.includes('Promoted Headers')) {
+                d3.headerRow.innerHTML = `
+                    <th class="p-1 font-semibold border bg-teal-600 text-white">Item</th>
+                    <th class="p-1 font-semibold border bg-teal-600 text-white">Qty</th>
+                    <th class="p-1 font-semibold border bg-teal-600 text-white">Price</th>
+                `;
+                d3.dataBody.querySelector('.d3-row-data').remove();
+                addStep('Promoted Headers');
+                d3.message.textContent = 'Headers promoted! Now try "Change Type" or "Remove Blanks".';
+            }
+        });
+
+        // Change Type
+        d3.btnType.addEventListener('click', () => {
+            if (!stepsApplied.includes('Changed Type')) {
+                addStep('Changed Type');
+                d3.message.textContent = 'Data types set! Try "Remove Blanks" to clean up.';
+            }
+        });
+
+        // Remove Blanks
+        d3.btnRemove.addEventListener('click', () => {
+            if (!stepsApplied.includes('Removed Blank Rows')) {
+                const blankRow = d3.dataBody.querySelector('.d3-row-blank');
+                if (blankRow) blankRow.remove();
+                addStep('Removed Blank Rows');
+                d3.message.textContent = 'All steps recorded! These will apply to every PDF.';
+            }
+        });
+    }
+
+    /**
+     * --- Diagram 4: Fix Column Types in Combined Data ---
+     * Simulates fixing incorrect data types in the combined result
+     */
+    const d4_fix_btn = document.getElementById('d4-fix-types');
+    if (d4_fix_btn) {
+        const d4 = {
+            fixBtn: d4_fix_btn,
+            qtyType: document.getElementById('d4-qty-type'),
+            priceType: document.getElementById('d4-price-type'),
+            message: document.getElementById('d4-message'),
+        };
+
+        d4.fixBtn.addEventListener('click', () => {
+            d4.qtyType.textContent = 'Whole Number ✓';
+            d4.qtyType.classList.remove('text-orange-600');
+            d4.qtyType.classList.add('text-green-600');
+
+            d4.priceType.textContent = 'Currency ✓';
+            d4.priceType.classList.remove('text-orange-600');
+            d4.priceType.classList.add('text-green-600');
+
+            d4.fixBtn.disabled = true;
+            d4.fixBtn.classList.add('opacity-50');
+            d4.message.textContent = 'Data types corrected! Ready to load.';
+        });
+    }
+
+    /**
+     * --- Diagram 5: Close & Load ---
+     * Simulates the final load step
+     */
+    const d5_close_btn = document.getElementById('d5-close-load');
+    if (d5_close_btn) {
+        const d5 = {
+            closeLoadBtn: d5_close_btn,
+            message: document.getElementById('d5-message'),
+        };
+
+        d5.closeLoadBtn.addEventListener('click', () => {
+            d5.message.textContent = 'Loading combined data into Excel...';
+            d5.closeLoadBtn.disabled = true;
+            d5.closeLoadBtn.classList.remove('hover:scale-105');
+            d5.closeLoadBtn.classList.add('opacity-50');
+            setTimeout(() => {
+                d5.message.textContent = 'Done! All PDFs combined in one table.';
+            }, 1500);
+        });
+    }
+
+    /**
+     * --- Diagram 6: Refresh with New Files ---
+     * Simulates adding new PDFs to the folder and refreshing the data
+     */
+    const d6_add_btn = document.getElementById('d6-add-file');
+    if (d6_add_btn) {
+        const d6 = {
+            addBtn: d6_add_btn,
+            refreshBtn: document.getElementById('d6-refresh'),
+            refreshIcon: document.getElementById('d6-refresh-icon'),
+            fileList: document.getElementById('d6-file-list'),
+            rowCount: document.getElementById('d6-row-count'),
+            message: document.getElementById('d6-message'),
+        };
+
+        let fileCount = 3;
+        let rowCount = 9;
+        const monthNames = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        let monthIndex = 0;
+        let newFilesAdded = [];
+
+        d6.addBtn.addEventListener('click', () => {
+            if (monthIndex < monthNames.length) {
+                const newFile = document.createElement('div');
+                newFile.classList.add('p-1', 'bg-yellow-100', 'rounded', 'border', 'border-yellow-400', 'font-semibold');
+                newFile.textContent = `📄 Invoice_${monthNames[monthIndex]}.pdf (NEW)`;
+                d6.fileList.appendChild(newFile);
+                newFilesAdded.push(newFile);
+                fileCount++;
+                monthIndex++;
+                d6.message.textContent = `New file added! Click "Refresh All" to process it.`;
+            } else {
+                d6.message.textContent = 'No more sample files to add!';
+            }
+        });
+
+        d6.refreshBtn.addEventListener('click', () => {
+            if (newFilesAdded.length > 0) {
+                d6.refreshIcon.innerHTML = `<svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+                d6.refreshBtn.disabled = true;
+
+                setTimeout(() => {
+                    // Remove "NEW" styling
+                    newFilesAdded.forEach(file => {
+                        file.classList.remove('bg-yellow-100', 'border', 'border-yellow-400', 'font-semibold');
+                        file.classList.add('bg-gray-100');
+                        file.textContent = file.textContent.replace(' (NEW)', '');
+                    });
+                    newFilesAdded = [];
+
+                    rowCount += 3; // Assume 3 rows per file
+                    d6.rowCount.textContent = `${rowCount} rows (from ${fileCount} files)`;
+                    d6.rowCount.classList.add('text-green-700');
+                    
+                    d6.refreshIcon.textContent = '🔄';
+                    d6.refreshBtn.disabled = false;
+                    d6.message.textContent = `Refresh complete! New files processed automatically.`;
+                    
+                    setTimeout(() => {
+                        d6.rowCount.classList.remove('text-green-700');
+                        d6.rowCount.classList.add('text-teal-700');
+                    }, 2000);
+                }, 2000);
+            } else {
+                d6.message.textContent = 'No new files to process. Add a file first!';
+            }
+        });
+    }
+};
 </script>
