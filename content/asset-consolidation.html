@@ -58,6 +58,33 @@
                         </table>
                         <p class="text-xs text-gray-500 mt-2 italic">Same asset, different formats!</p>
                     </div>
+                    <div class="interactive-diagram p-4 rounded-lg mt-4">
+                        <p class="text-center text-sm text-gray-500 mb-2">Interactive: Duplicate Detector</p>
+                        <div class="bg-white rounded-lg border border-gray-300 shadow-md w-full p-4">
+                            <div class="text-xs space-y-2 mb-3">
+                                <div class="flex items-center gap-2 p-2 bg-gray-50 rounded border">
+                                    <div class="w-16 font-semibold">IT</div>
+                                    <div class="flex-1">SN12345ABC</div>
+                                    <div class="w-24">LAPTOP-JD01</div>
+                                </div>
+                                <div class="flex items-center gap-2 p-2 bg-gray-50 rounded border">
+                                    <div class="w-16 font-semibold">Finance</div>
+                                    <div class="flex-1">SN12345ABC</div>
+                                    <div class="w-24">-</div>
+                                </div>
+                                <div class="flex items-center gap-2 p-2 bg-gray-50 rounded border">
+                                    <div class="w-16 font-semibold">Facilities</div>
+                                    <div class="flex-1">SN-12345-ABC</div>
+                                    <div class="w-24">laptop-jd01</div>
+                                </div>
+                            </div>
+                            <button id="d1-detect-btn" class="w-full px-4 py-2 text-sm rounded bg-blue-500 text-white hover:bg-blue-600 font-medium">Detect Duplicates</button>
+                            <div id="d1-result" class="mt-3 hidden">
+                                <!-- Results will appear here -->
+                            </div>
+                            <p id="d1-message" class="text-center mt-3 text-sm font-medium h-5"></p>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -241,51 +268,6 @@ in
     else if Table.RowCount(Finance_Row) > 0 
     then Finance_Row{0}[Serial Number]
     else null</code></pre>
-                        </div>
-                    </div>
-                    <div id="diagram6" class="interactive-diagram p-4 rounded-lg">
-                        <p class="text-center text-sm text-gray-500 mb-2">Interactive: Merge Conflict Resolver</p>
-                        <div class="bg-white rounded-lg border border-gray-300 shadow-md w-full p-4">
-                            <div class="mb-3">
-                                <p class="text-xs font-semibold text-gray-700 mb-2">Asset: LAPTOP-JD01 (Conflicts Found)</p>
-                                <div class="space-y-3 text-xs">
-                                    <div class="border rounded p-2">
-                                        <div class="font-semibold mb-1">Current User:</div>
-                                        <div class="space-y-1">
-                                            <label class="flex items-center gap-2">
-                                                <input type="radio" name="user" value="IT" class="d6-choice" checked>
-                                                <span>IT: "John Doe" ✓</span>
-                                            </label>
-                                            <label class="flex items-center gap-2">
-                                                <input type="radio" name="user" value="Finance" class="d6-choice">
-                                                <span>Finance: "J. Doe"</span>
-                                            </label>
-                                            <label class="flex items-center gap-2">
-                                                <input type="radio" name="user" value="Facilities" class="d6-choice">
-                                                <span>Facilities: "John D"</span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="border rounded p-2">
-                                        <div class="font-semibold mb-1">Location:</div>
-                                        <div class="space-y-1">
-                                            <label class="flex items-center gap-2">
-                                                <input type="radio" name="location" value="IT" class="d6-choice">
-                                                <span>IT: "Floor 3"</span>
-                                            </label>
-                                            <label class="flex items-center gap-2">
-                                                <input type="radio" name="location" value="Facilities" class="d6-choice" checked>
-                                                <span>Facilities: "Floor 3, Desk 42" ✓</span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <button id="d6-resolve" class="w-full mt-3 px-4 py-2 rounded-md font-semibold text-white bg-green-600 hover:bg-green-700 transition-all">
-                                    Resolve Conflicts
-                                </button>
-                            </div>
-                            <p id="d6-message" class="text-xs text-center font-medium text-gray-600 h-4"></p>
-                        </div>
                     </div>
                 </div>
             </section>
@@ -374,92 +356,3 @@ IT_Only =
         </div>
     </div>
 </main>
-<script>
-/**
- * Initializes the interactive diagrams for the 'Inventory / IT Asset Consolidation' guide.
- * Sets up event listeners for the duplicate detector and merge conflict resolver.
- */
-window.init_asset_consolidation = function() {
-    
-    /**
-     * --- Diagram 5: Duplicate Detector ---
-     * Shows how similarity threshold affects duplicate detection
-     */
-    const d5_threshold = document.getElementById('d5-threshold');
-    if (d5_threshold) {
-        const d5 = {
-            threshold: d5_threshold,
-            thresholdValue: document.getElementById('d5-threshold-value'),
-            matches: document.getElementById('d5-matches'),
-            message: document.getElementById('d5-message'),
-        };
-
-        d5.threshold.addEventListener('input', () => {
-            const threshold = parseInt(d5.threshold.value);
-            d5.thresholdValue.textContent = `${threshold}%`;
-            
-            // Update match highlighting based on threshold
-            const matchData = [
-                { text: 'SN12345ABC', score: 0, isBase: true },
-                { text: 'SN-12345-ABC', score: 100 },
-                { text: 'SN12345AB', score: 90 },
-                { text: 'SN67890XYZ', score: 20 }
-            ];
-            
-            let matchCount = 0;
-            d5.matches.innerHTML = matchData.map(item => {
-                if (item.isBase) {
-                    return `<div class="p-1 bg-gray-100 rounded flex justify-between">
-                        <span>${item.text}</span>
-                        <span class="text-gray-500">Base</span>
-                    </div>`;
-                }
-                
-                const matches = item.score >= threshold;
-                if (matches && !item.isBase) matchCount++;
-                
-                const bgColor = matches ? 'bg-green-50' : 'bg-red-50';
-                const textColor = matches ? 'text-green-700' : 'text-red-700';
-                
-                return `<div class="p-1 ${bgColor} rounded flex justify-between">
-                    <span>${item.text}</span>
-                    <span class="${textColor} font-semibold">${item.score}% ${matches ? '✓' : '✗'}</span>
-                </div>`;
-            }).join('');
-            
-            d5.message.textContent = `${matchCount} duplicate${matchCount !== 1 ? 's' : ''} detected at ${threshold}% threshold`;
-            d5.message.classList.add('text-blue-700');
-        });
-
-        // Trigger initial state
-        d5.threshold.dispatchEvent(new Event('input'));
-    }
-
-    /**
-     * --- Diagram 6: Merge Conflict Resolver ---
-     * Interactive conflict resolution demo
-     */
-    const d6_resolve = document.getElementById('d6-resolve');
-    if (d6_resolve) {
-        const d6 = {
-            resolveBtn: d6_resolve,
-            message: document.getElementById('d6-message'),
-        };
-
-        d6.resolveBtn.addEventListener('click', () => {
-            const userChoice = document.querySelector('input[name="user"]:checked').value;
-            const locationChoice = document.querySelector('input[name="location"]:checked').value;
-            
-            d6.message.textContent = `Conflicts resolved! User from ${userChoice}, Location from ${locationChoice}`;
-            d6.message.classList.add('text-green-700');
-            d6.resolveBtn.disabled = true;
-            d6.resolveBtn.classList.add('opacity-50', 'cursor-not-allowed');
-            
-            // Visual feedback on choices
-            document.querySelectorAll('.d6-choice:checked').forEach(radio => {
-                radio.parentElement.classList.add('font-bold', 'text-green-700');
-            });
-        });
-    }
-};
-</script>

@@ -58,6 +58,24 @@
                         </table>
                         <p class="text-xs text-gray-500 mt-2 italic">Note the 3-hour gap—that's a new session!</p>
                     </div>
+                    <div class="interactive-diagram p-4 rounded-lg mt-4">
+                        <p class="text-center text-sm text-gray-500 mb-2">Interactive: Event Timeline Visualizer</p>
+                        <div class="bg-white rounded-lg border border-gray-300 shadow-md w-full p-4">
+                            <div class="mb-3 text-sm">
+                                <label class="font-semibold text-gray-700">Session Timeout (minutes):</label>
+                                <input id="d1-timeout" type="range" min="5" max="120" value="30" step="5" class="w-full mt-2">
+                                <div class="flex justify-between text-xs text-gray-500">
+                                    <span>5 min</span>
+                                    <span id="d1-timeout-value" class="font-semibold text-blue-600">30 min</span>
+                                    <span>120 min</span>
+                                </div>
+                            </div>
+                            <div id="d1-timeline" class="space-y-4 mt-4">
+                                <!-- Timeline will be populated by JavaScript -->
+                            </div>
+                            <p id="d1-message" class="text-center mt-3 text-sm font-medium text-blue-600 h-5"></p>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -185,6 +203,21 @@ in
                                 </div>
                             </div>
                             <p id="d4-message" class="text-xs text-gray-600 mt-3 text-center"></p>
+                        </div>
+                    </div>
+                    <div class="interactive-diagram p-4 rounded-lg mt-4">
+                        <p class="text-center text-sm text-gray-500 mb-2">Interactive: Session Grouping Demo</p>
+                        <div class="bg-white rounded-lg border border-gray-300 shadow-md w-full p-4">
+                            <div class="mb-3">
+                                <button id="d2-group-btn" class="w-full px-4 py-2 text-sm rounded bg-blue-500 text-white hover:bg-blue-600 font-medium">Group Events into Sessions</button>
+                            </div>
+                            <div id="d2-events" class="space-y-2 text-xs">
+                                <!-- Events will be displayed here -->
+                            </div>
+                            <div id="d2-sessions" class="mt-4 space-y-3 hidden">
+                                <!-- Sessions will be displayed here -->
+                            </div>
+                            <p id="d2-message" class="text-center mt-3 text-sm font-medium h-5"></p>
                         </div>
                     </div>
                 </div>
@@ -395,120 +428,3 @@ in
         </div>
     </div>
 </main>
-<script>
-/**
- * Initializes the interactive diagrams for the 'Sessionize Web Analytics Funnel' guide.
- * Sets up event listeners for the event timeline visualizer and session grouping demo.
- */
-window.init_web_sessionization = function() {
-    
-    /**
-     * --- Diagram 4: Event Timeline Visualizer ---
-     * Shows how session timeout affects session boundaries
-     */
-    const d4_timeout = document.getElementById('d4-timeout');
-    if (d4_timeout) {
-        const d4 = {
-            timeout: d4_timeout,
-            timeoutValue: document.getElementById('d4-timeout-value'),
-            timeline: document.getElementById('d4-timeline'),
-            message: document.getElementById('d4-message'),
-        };
-
-        d4.timeout.addEventListener('input', () => {
-            const minutes = parseInt(d4.timeout.value);
-            d4.timeoutValue.textContent = `${minutes} min`;
-            
-            const gap = 50; // minutes between last event of session 1 and first event of session 2
-            
-            if (gap > minutes) {
-                // New session triggered
-                d4.timeline.innerHTML = `
-                    <div class="flex items-center gap-2">
-                        <div class="w-20 text-xs text-gray-600">09:00</div>
-                        <div class="flex-1 bg-blue-100 border-l-4 border-blue-500 p-2 rounded text-xs">
-                            <span class="font-semibold">Session 1</span> - /home
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <div class="w-20 text-xs text-gray-600">09:05</div>
-                        <div class="flex-1 bg-blue-100 p-2 rounded text-xs">/products</div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <div class="w-20 text-xs text-gray-600">09:10</div>
-                        <div class="flex-1 bg-blue-100 p-2 rounded text-xs">/checkout</div>
-                    </div>
-                    <div class="flex items-center gap-2 opacity-50">
-                        <div class="w-20 text-xs text-gray-600">10:00</div>
-                        <div class="flex-1 text-xs text-center text-gray-500 italic">⏱ 50 min gap</div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <div class="w-20 text-xs text-gray-600">10:00</div>
-                        <div class="flex-1 bg-green-100 border-l-4 border-green-500 p-2 rounded text-xs">
-                            <span class="font-semibold">Session 2</span> - /home
-                        </div>
-                    </div>
-                `;
-                d4.message.textContent = `Gap > ${minutes} min → New session created`;
-                d4.message.classList.add('text-green-700');
-                d4.message.classList.remove('text-blue-700');
-            } else {
-                // Same session continues
-                d4.timeline.innerHTML = `
-                    <div class="flex items-center gap-2">
-                        <div class="w-20 text-xs text-gray-600">09:00</div>
-                        <div class="flex-1 bg-blue-100 border-l-4 border-blue-500 p-2 rounded text-xs">
-                            <span class="font-semibold">Session 1</span> - /home
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <div class="w-20 text-xs text-gray-600">09:05</div>
-                        <div class="flex-1 bg-blue-100 p-2 rounded text-xs">/products</div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <div class="w-20 text-xs text-gray-600">09:10</div>
-                        <div class="flex-1 bg-blue-100 p-2 rounded text-xs">/checkout</div>
-                    </div>
-                    <div class="flex items-center gap-2 opacity-50">
-                        <div class="w-20 text-xs text-gray-600">10:00</div>
-                        <div class="flex-1 text-xs text-center text-gray-500 italic">⏱ 50 min gap</div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <div class="w-20 text-xs text-gray-600">10:00</div>
-                        <div class="flex-1 bg-blue-100 p-2 rounded text-xs">/home (still Session 1)</div>
-                    </div>
-                `;
-                d4.message.textContent = `Gap < ${minutes} min → Same session continues`;
-                d4.message.classList.add('text-blue-700');
-                d4.message.classList.remove('text-green-700');
-            }
-        });
-
-        // Trigger initial state
-        d4.timeout.dispatchEvent(new Event('input'));
-    }
-
-    /**
-     * --- Diagram 7: Session Grouping ---
-     * Demonstrates aggregating event-level data to session-level
-     */
-    const d7_group = document.getElementById('d7-group');
-    if (d7_group) {
-        const d7 = {
-            groupBtn: d7_group,
-            before: document.getElementById('d7-before'),
-            after: document.getElementById('d7-after'),
-            message: document.getElementById('d7-message'),
-        };
-
-        d7.groupBtn.addEventListener('click', () => {
-            d7.before.classList.add('opacity-50');
-            d7.after.classList.remove('hidden');
-            d7.groupBtn.disabled = true;
-            d7.groupBtn.classList.add('opacity-50', 'cursor-not-allowed');
-            d7.message.textContent = '5 events grouped into 2 sessions';
-            d7.message.classList.add('text-green-700');
-        });
-    }
-};
-</script>
