@@ -10,6 +10,7 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
+            overflow: hidden;
         }
         #guide-nav a.active {
             background-color: #eef2ff;
@@ -96,7 +97,7 @@
                 <h1 class="text-xl font-bold text-gray-900">PQ Guides</h1>
             </div>
             <!-- Navigation container that will be dynamically populated by guides.js -->
-            <nav id="guide-nav" class="flex-1 p-4 space-y-2">
+            <nav id="guide-nav" class="flex-1 p-4 space-y-2 overflow-y-auto">
                 <div class="text-center p-4 text-sm text-gray-500">Loading guides...</div>
             </nav>
         </aside>
