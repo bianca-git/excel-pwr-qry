@@ -1,0 +1,271 @@
+<main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    <div class="max-w-4xl mx-auto">
+        <div class="space-y-12">
+            
+            <!-- Intro Section -->
+            <section id="intro" class="text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Merge Transactions with FX Rates API</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Automatically enrich your transaction data with real-time foreign exchange rates from a web API. This guide demonstrates how Power Query can pull live data from the web and join it with your local data—a powerful pattern for any external data source.</p>
+                <div class="pro-tip p-4 rounded-md my-6 max-w-2xl mx-auto">
+                    <p><strong class="font-semibold text-yellow-800">Why This Matters:</strong> Manual FX rate lookup is tedious and error-prone. By connecting to a rates API, you ensure accurate, up-to-date conversions and can refresh rates daily. This same technique works for stock prices, weather data, product catalogs—any JSON or XML web service.</p>
+                </div>
+                <div class="bg-green-50 border-l-4 border-green-500 p-4 my-6 max-w-2xl mx-auto">
+                    <p class="text-left"><strong class="font-semibold text-green-800">What You'll Build:</strong> A transaction table with local currency and base currency columns, the applied FX rate, and metadata showing the rate source and date.</p>
+                </div>
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 my-6 max-w-2xl mx-auto">
+                    <p class="text-left"><strong class="font-semibold text-blue-800">Key Skills:</strong> Web.Contents function, JSON parsing, date-based joins, API authentication basics</p>
+                </div>
+            </section>
+
+            <!-- Step 1 -->
+            <section id="step1" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">1</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Choose Your FX Rates API</h2>
+                        <p class="mt-2 text-gray-700">First, select a foreign exchange rates API. Popular free options include ExchangeRate-API, Fixer.io (free tier), or your bank's API if available.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <div class="bg-white border rounded-lg p-4 space-y-3">
+                        <h3 class="font-semibold text-gray-800">Recommended Free APIs:</h3>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex items-start gap-2">
+                                <span class="text-green-600 font-bold">✓</span>
+                                <div>
+                                    <strong>ExchangeRate-API:</strong> Simple, no signup required for basic rates
+                                    <br><code class="text-xs bg-gray-100 px-2 py-1 rounded">https://api.exchangerate-api.com/v4/latest/USD</code>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="text-green-600 font-bold">✓</span>
+                                <div>
+                                    <strong>Open Exchange Rates:</strong> Free tier with sign-up, 1000 requests/month
+                                    <br><code class="text-xs bg-gray-100 px-2 py-1 rounded">https://openexchangerates.org/api/latest.json</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pro-tip p-4 rounded-md mt-4">
+                        <p><strong class="font-semibold text-yellow-800">Note:</strong> This guide uses ExchangeRate-API for simplicity. Check any API's terms of service for commercial use restrictions.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 2 -->
+            <section id="step2" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">2</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Connect to the API</h2>
+                        <p class="mt-2 text-gray-700">Use Power Query's Web connector to pull JSON data from the API endpoint.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>In Excel, go to <strong class="font-semibold text-gray-800">Data > Get Data > From Other Sources > From Web</strong>.</li>
+                        <li>Enter the API URL (e.g., <code class="text-xs bg-gray-100 px-2 py-1 rounded">https://api.exchangerate-api.com/v4/latest/USD</code>).</li>
+                        <li>Click <strong class="font-semibold text-gray-800">OK</strong>.</li>
+                        <li>If prompted for credentials, select <strong class="font-semibold text-gray-800">Anonymous</strong> for free APIs.</li>
+                        <li>Power Query will show a preview of the JSON response.</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-4 max-w-3xl overflow-x-auto">
+                        <p class="text-xs text-gray-400 mb-2">Sample JSON Response:</p>
+                        <pre class="text-xs"><code>{
+  "base": "USD",
+  "date": "2025-10-15",
+  "rates": {
+    "EUR": 0.85,
+    "GBP": 0.73,
+    "JPY": 110.25,
+    "AUD": 1.35
+  }
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 3 -->
+            <section id="step3" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">3</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Parse JSON into a Table</h2>
+                        <p class="mt-2 text-gray-700">Transform the nested JSON structure into a flat table with one row per currency and its rate.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Click <strong class="font-semibold text-gray-800">Transform Data</strong> to open Power Query Editor.</li>
+                        <li>You'll see a Record with fields like "base", "date", "rates".</li>
+                        <li>Click on the <strong class="font-semibold text-gray-800">Table</strong> icon next to "rates" to expand it.</li>
+                        <li>Power Query converts the rates object into a table with two columns:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li><strong>Name</strong> (currency code: EUR, GBP, etc.)</li>
+                                <li><strong>Value</strong> (exchange rate)</li>
+                            </ul>
+                        </li>
+                        <li>Rename columns to <strong class="font-semibold text-gray-800">Currency</strong> and <strong class="font-semibold text-gray-800">Rate</strong>.</li>
+                        <li>Add a custom column for the rate date (from the "date" field in the original JSON).</li>
+                    </ul>
+                    <div class="pro-tip p-4 rounded-md mt-4 max-w-3xl">
+                        <p><strong class="font-semibold text-yellow-800">Advanced:</strong> For historical rates, some APIs let you specify a date in the URL: <code class="text-xs bg-gray-100 px-2 py-1 rounded">https://api.../2025-10-01</code>. You can parameterize this to pull rates for specific dates.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 4 -->
+            <section id="step4" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">4</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Load Your Transaction Data</h2>
+                        <p class="mt-2 text-gray-700">Now connect to your transaction table that needs FX rates—typically with columns for Date, Amount, and Currency.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Load your transactions from Excel, CSV, or your database.</li>
+                        <li>Ensure you have these columns:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li><strong>Transaction Date</strong></li>
+                                <li><strong>Amount</strong> (in local currency)</li>
+                                <li><strong>Currency Code</strong> (e.g., EUR, GBP)</li>
+                            </ul>
+                        </li>
+                        <li>Clean and standardize currency codes if needed (trim spaces, uppercase).</li>
+                    </ul>
+                    <div class="bg-white rounded border p-4 mt-4 max-w-2xl">
+                        <p class="text-sm font-semibold text-gray-700 mb-2">Sample Transaction Data:</p>
+                        <table class="w-full text-xs">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="p-2 text-left border">Date</th>
+                                    <th class="p-2 text-left border">Description</th>
+                                    <th class="p-2 text-right border">Amount</th>
+                                    <th class="p-2 text-left border">Currency</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="p-2 border">2025-10-15</td><td class="p-2 border">Invoice #1234</td><td class="p-2 text-right border">1,000</td><td class="p-2 border">EUR</td></tr>
+                                <tr><td class="p-2 border">2025-10-14</td><td class="p-2 border">Invoice #1235</td><td class="p-2 text-right border">500</td><td class="p-2 border">GBP</td></tr>
+                                <tr><td class="p-2 border">2025-10-13</td><td class="p-2 border">Invoice #1236</td><td class="p-2 text-right border">75,000</td><td class="p-2 border">JPY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 5 -->
+            <section id="step5" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">5</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Merge Transactions with FX Rates</h2>
+                        <p class="mt-2 text-gray-700">Join your transaction table with the FX rates table based on the currency code.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>In your transactions query, click <strong class="font-semibold text-gray-800">Merge Queries</strong> (Home tab).</li>
+                        <li>Select the <strong class="font-semibold text-gray-800">Currency</strong> column from transactions.</li>
+                        <li>Choose your FX rates query and select its <strong class="font-semibold text-gray-800">Currency</strong> column.</li>
+                        <li>Use <strong class="font-semibold text-gray-800">Left Outer</strong> join to keep all transactions.</li>
+                        <li>Expand the merged column to bring in the <strong class="font-semibold text-gray-800">Rate</strong>.</li>
+                    </ul>
+                    <div class="pro-tip p-4 rounded-md mt-4 max-w-3xl">
+                        <p><strong class="font-semibold text-yellow-800">Date Matching:</strong> For historical rates, you'd join on both Currency AND Date. This requires pulling rates for each unique date in your transactions (use a function or API call per date).</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 6 -->
+            <section id="step6" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">6</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Calculate Base Currency Amount</h2>
+                        <p class="mt-2 text-gray-700">Add a custom column to multiply the local amount by the FX rate, giving you the amount in your base currency (e.g., USD).</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Click <strong class="font-semibold text-gray-800">Add Column > Custom Column</strong>.</li>
+                        <li>Use this formula:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-4 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>= [Amount] * [Rate]</code></pre>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="3">
+                        <li>Name it <strong class="font-semibold text-gray-800">Amount (USD)</strong> or your base currency.</li>
+                        <li>Set the data type to <strong class="font-semibold text-gray-800">Decimal Number</strong> and format as currency.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 7 -->
+            <section id="step7" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">7</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Add Rate Metadata (Optional)</h2>
+                        <p class="mt-2 text-gray-700">For audit trails, add columns showing when the rate was pulled and from which source.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Add a custom column for the rate source: <code class="text-xs bg-gray-100 px-2 py-1 rounded">"ExchangeRate-API"</code></li>
+                        <li>Add a column for the refresh date: <code class="text-xs bg-gray-100 px-2 py-1 rounded">DateTime.LocalNow()</code></li>
+                        <li>This helps you track when rates were last updated and troubleshoot discrepancies.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 8 -->
+            <section id="step8" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">8</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Load and Refresh</h2>
+                        <p class="mt-2 text-gray-700">Load your enriched data and set up automatic refresh to keep rates current.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Click <strong class="font-semibold text-gray-800">Close & Load</strong>.</li>
+                        <li>Your transactions now have local amount, base currency amount, and the applied rate.</li>
+                        <li>To refresh rates:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li>Right-click the query in the Queries pane</li>
+                                <li>Select <strong class="font-semibold text-gray-800">Refresh</strong></li>
+                                <li>Or enable automatic refresh (Data > Queries & Connections > Properties)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="bg-green-50 border-l-4 border-green-500 p-4 my-6 max-w-3xl">
+                        <p><strong class="font-semibold text-green-800">Success!</strong> You've enriched your transactions with live FX rates from an API. This same pattern works for any web data: stock prices, product catalogs, weather, geocoding—anything with a JSON or XML endpoint.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bonus Section -->
+            <section id="bonus" class="step-card rounded-xl p-6 sm:p-8 bg-indigo-50 border-indigo-200">
+                <h2 class="text-xl sm:text-2xl font-bold text-indigo-900 mb-4">🚀 Advanced: Historical Rates Function</h2>
+                <div class="space-y-3 text-gray-700">
+                    <p>For transactions across multiple dates, create a custom function that pulls rates for a specific date:</p>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto">
+                        <pre class="text-xs"><code>(date as date) =>
+let
+    url = "https://api.exchangerate-api.com/v4/historical/" & Date.ToText(date, "yyyy-MM-dd"),
+    source = Json.Document(Web.Contents(url)),
+    rates = Record.ToTable(source[rates])
+in
+    rates</code></pre>
+                    </div>
+                    <p class="text-sm">Then invoke this function for each unique transaction date to get historical rates. Handle API rate limits with error handling and caching!</p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+</main>
