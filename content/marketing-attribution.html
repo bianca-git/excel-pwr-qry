@@ -187,38 +187,81 @@
                         <p class="mt-2 text-gray-700">Calculate attribution credit using first-touch, last-touch, and weighted models.</p>
                     </div>
                 </div>
-                <div class="mt-6">
-                    <div class="space-y-4 text-gray-600 max-w-3xl">
-                        <div>
-                            <h3 class="font-semibold text-gray-800 mb-2">First-Touch Attribution</h3>
-                            <p class="text-sm">Credit goes entirely to the first touchpoint in the journey.</p>
-                            <ul class="list-disc list-inside ml-4 mt-2 space-y-1 text-sm">
-                                <li>Group by ConversionID, order by Timestamp ascending</li>
-                                <li>Add Index column (starting at 1)</li>
-                                <li>Filter where Index = 1</li>
-                                <li>Add column: <code class="text-xs bg-gray-100 px-2 py-1 rounded">FirstTouch_Credit = 1.0</code></li>
-                            </ul>
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                    <div>
+                        <div class="space-y-4 text-gray-600 max-w-3xl">
+                            <div>
+                                <h3 class="font-semibold text-gray-800 mb-2">First-Touch Attribution</h3>
+                                <p class="text-sm">Credit goes entirely to the first touchpoint in the journey.</p>
+                                <ul class="list-disc list-inside ml-4 mt-2 space-y-1 text-sm">
+                                    <li>Group by ConversionID, order by Timestamp ascending</li>
+                                    <li>Add Index column (starting at 1)</li>
+                                    <li>Filter where Index = 1</li>
+                                    <li>Add column: <code class="text-xs bg-gray-100 px-2 py-1 rounded">FirstTouch_Credit = 1.0</code></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-800 mb-2">Last-Touch Attribution</h3>
+                                <p class="text-sm">Credit goes entirely to the last touchpoint before conversion.</p>
+                                <ul class="list-disc list-inside ml-4 mt-2 space-y-1 text-sm">
+                                    <li>Group by ConversionID, order by Timestamp descending</li>
+                                    <li>Filter where Index = 1</li>
+                                    <li>Add column: <code class="text-xs bg-gray-100 px-2 py-1 rounded">LastTouch_Credit = 1.0</code></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-800 mb-2">Linear (Weighted) Attribution</h3>
+                                <p class="text-sm">Credit is split equally across all touchpoints.</p>
+                                <ul class="list-disc list-inside ml-4 mt-2 space-y-1 text-sm">
+                                    <li>Group by ConversionID, count touchpoints</li>
+                                    <li>Add column: <code class="text-xs bg-gray-100 px-2 py-1 rounded">Linear_Credit = 1 / [Touchpoint Count]</code></li>
+                                </ul>
+                            </div>
                         </div>
-                        <div>
-                            <h3 class="font-semibold text-gray-800 mb-2">Last-Touch Attribution</h3>
-                            <p class="text-sm">Credit goes entirely to the last touchpoint before conversion.</p>
-                            <ul class="list-disc list-inside ml-4 mt-2 space-y-1 text-sm">
-                                <li>Group by ConversionID, order by Timestamp descending</li>
-                                <li>Filter where Index = 1</li>
-                                <li>Add column: <code class="text-xs bg-gray-100 px-2 py-1 rounded">LastTouch_Credit = 1.0</code></li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h3 class="font-semibold text-gray-800 mb-2">Linear (Weighted) Attribution</h3>
-                            <p class="text-sm">Credit is split equally across all touchpoints.</p>
-                            <ul class="list-disc list-inside ml-4 mt-2 space-y-1 text-sm">
-                                <li>Group by ConversionID, count touchpoints</li>
-                                <li>Add column: <code class="text-xs bg-gray-100 px-2 py-1 rounded">Linear_Credit = 1 / [Touchpoint Count]</code></li>
-                            </ul>
+                        <div class="pro-tip p-4 rounded-md mt-4">
+                            <p><strong class="font-semibold text-yellow-800">Advanced:</strong> Use an attribution weights table to apply custom models (e.g., 40% first, 40% last, 20% middle).</p>
                         </div>
                     </div>
-                    <div class="pro-tip p-4 rounded-md mt-4 max-w-3xl">
-                        <p><strong class="font-semibold text-yellow-800">Advanced:</strong> Use an attribution weights table to apply custom models (e.g., 40% first, 40% last, 20% middle).</p>
+                    <div id="diagram1" class="interactive-diagram p-4 rounded-lg">
+                        <p class="text-center text-sm text-gray-500 mb-2">Interactive: Attribution Model Selector</p>
+                        <div class="bg-white rounded-lg border border-gray-300 shadow-md w-full p-4">
+                            <div class="mb-3">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Select Attribution Model:</label>
+                                <div class="flex gap-2">
+                                    <button id="d1-first-touch" class="flex-1 px-3 py-2 text-xs rounded border border-gray-300 hover:bg-gray-50">First Touch</button>
+                                    <button id="d1-last-touch" class="flex-1 px-3 py-2 text-xs rounded border border-gray-300 hover:bg-gray-50">Last Touch</button>
+                                    <button id="d1-linear" class="flex-1 px-3 py-2 text-xs rounded border border-gray-300 hover:bg-gray-50">Linear</button>
+                                </div>
+                            </div>
+                            <div class="border-t pt-3">
+                                <p class="text-xs font-semibold text-gray-700 mb-2">Customer Journey:</p>
+                                <div class="flex items-center justify-between text-xs mb-3">
+                                    <div id="d1-google" class="flex flex-col items-center">
+                                        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-1">G</div>
+                                        <span class="text-gray-600">Google</span>
+                                        <span id="d1-google-credit" class="font-bold text-blue-600 mt-1">0%</span>
+                                    </div>
+                                    <div class="flex-1 h-0.5 bg-gray-300 mx-1"></div>
+                                    <div id="d1-facebook" class="flex flex-col items-center">
+                                        <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center mb-1">F</div>
+                                        <span class="text-gray-600">Facebook</span>
+                                        <span id="d1-facebook-credit" class="font-bold text-blue-600 mt-1">0%</span>
+                                    </div>
+                                    <div class="flex-1 h-0.5 bg-gray-300 mx-1"></div>
+                                    <div id="d1-email" class="flex flex-col items-center">
+                                        <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mb-1">E</div>
+                                        <span class="text-gray-600">Email</span>
+                                        <span id="d1-email-credit" class="font-bold text-blue-600 mt-1">0%</span>
+                                    </div>
+                                    <div class="flex-1 h-0.5 bg-gray-300 mx-1"></div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-12 h-12 rounded-full bg-green-500 text-white flex items-center justify-center mb-1">✓</div>
+                                        <span class="text-gray-600">Convert</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p id="d1-message" class="text-center mt-2 text-sm font-medium h-5"></p>
                     </div>
                 </div>
             </section>
@@ -269,3 +312,71 @@ TimeDecay_Credit = Number.Power(0.5, [DaysToConversion] / 7)</code></pre>
         </div>
     </div>
 </main>
+<script>
+/**
+ * Initializes the interactive diagrams for the 'Marketing Campaign Attribution' guide.
+ * Sets up event listeners for the attribution model selector.
+ */
+window.init_marketing_attribution = function() {
+    
+    /**
+     * --- Diagram 1: Attribution Model Selector ---
+     * Simulates different attribution models showing credit distribution
+     */
+    const d1_firstTouch = document.getElementById('d1-first-touch');
+    if (d1_firstTouch) {
+        const d1 = {
+            firstTouch: d1_firstTouch,
+            lastTouch: document.getElementById('d1-last-touch'),
+            linear: document.getElementById('d1-linear'),
+            googleCredit: document.getElementById('d1-google-credit'),
+            facebookCredit: document.getElementById('d1-facebook-credit'),
+            emailCredit: document.getElementById('d1-email-credit'),
+            message: document.getElementById('d1-message'),
+        };
+
+        function updateCredits(model) {
+            // Reset all button styles
+            [d1.firstTouch, d1.lastTouch, d1.linear].forEach(btn => {
+                btn.classList.remove('bg-blue-500', 'text-white', 'font-bold');
+                btn.classList.add('border-gray-300');
+            });
+
+            // Highlight active button
+            const activeBtn = model === 'first' ? d1.firstTouch : 
+                            model === 'last' ? d1.lastTouch : d1.linear;
+            activeBtn.classList.add('bg-blue-500', 'text-white', 'font-bold');
+            activeBtn.classList.remove('border-gray-300');
+
+            // Update credit distribution
+            if (model === 'first') {
+                d1.googleCredit.textContent = '100%';
+                d1.facebookCredit.textContent = '0%';
+                d1.emailCredit.textContent = '0%';
+                d1.message.textContent = 'All credit goes to the first touchpoint!';
+                d1.message.classList.add('text-blue-600');
+            } else if (model === 'last') {
+                d1.googleCredit.textContent = '0%';
+                d1.facebookCredit.textContent = '0%';
+                d1.emailCredit.textContent = '100%';
+                d1.message.textContent = 'All credit goes to the last touchpoint!';
+                d1.message.classList.add('text-green-600');
+            } else {
+                d1.googleCredit.textContent = '33%';
+                d1.facebookCredit.textContent = '33%';
+                d1.emailCredit.textContent = '33%';
+                d1.message.textContent = 'Credit split equally across all touchpoints!';
+                d1.message.classList.add('text-purple-600');
+            }
+        }
+
+        d1.firstTouch.addEventListener('click', () => updateCredits('first'));
+        d1.lastTouch.addEventListener('click', () => updateCredits('last'));
+        d1.linear.addEventListener('click', () => updateCredits('linear'));
+
+        // Set initial state
+        d1.message.textContent = 'Click a model to see credit distribution!';
+        d1.message.classList.add('text-gray-600');
+    }
+};
+</script>
