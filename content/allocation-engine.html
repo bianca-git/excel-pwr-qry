@@ -1,0 +1,420 @@
+<main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    <div class="max-w-4xl mx-auto">
+        <div class="space-y-12">
+            
+            <!-- Intro Section -->
+            <section id="intro" class="text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Build Reusable Allocation Engine</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Create a sophisticated yet repeatable cost allocation engine using custom functions. Allocate shared costs (IT, facilities, corporate overhead) to departments or projects based on flexible driver tables—all parameterized for reuse across any cost pool.</p>
+                <div class="pro-tip p-4 rounded-md my-6 max-w-2xl mx-auto">
+                    <p><strong class="font-semibold text-yellow-800">Why This Matters:</strong> Manual cost allocations in Excel are error-prone and time-consuming. Building an allocation function lets you apply consistent methodology across all cost pools, refresh monthly with new actuals, and try different allocation scenarios (headcount, revenue, square footage) instantly.</p>
+                </div>
+                <div class="bg-green-50 border-l-4 border-green-500 p-4 my-6 max-w-2xl mx-auto">
+                    <p class="text-left"><strong class="font-semibold text-green-800">What You'll Build:</strong> A reusable Allocate(costTable, driverTable, method) function that splits any cost pool into detail rows based on driver percentages, with support for priority rules and multiple allocation methods.</p>
+                </div>
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 my-6 max-w-2xl mx-auto">
+                    <p class="text-left"><strong class="font-semibold text-blue-800">Key Skills:</strong> Custom functions, cross-join allocations, parameter tables, percentage calculations, function composition</p>
+                </div>
+            </section>
+
+            <!-- Step 1 -->
+            <section id="step1" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">1</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Understand the Allocation Pattern</h2>
+                        <p class="mt-2 text-gray-700">Before building, understand the inputs and outputs of a typical cost allocation.</p>
+                    </div>
+                </div>
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                    <div>
+                        <h3 class="font-semibold text-gray-800 mb-2">Inputs:</h3>
+                        <div class="bg-white rounded border p-3 text-xs mb-4">
+                            <p class="font-semibold mb-1">Cost Pool:</p>
+                            <table class="w-full">
+                                <thead class="bg-gray-100">
+                                    <tr>
+                                        <th class="p-2 text-left border">Cost Center</th>
+                                        <th class="p-2 text-right border">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td class="p-2 border">IT Support</td><td class="p-2 text-right border">$100,000</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="bg-white rounded border p-3 text-xs">
+                            <p class="font-semibold mb-1">Driver Table:</p>
+                            <table class="w-full">
+                                <thead class="bg-gray-100">
+                                    <tr>
+                                        <th class="p-2 text-left border">Department</th>
+                                        <th class="p-2 text-right border">Headcount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td class="p-2 border">Sales</td><td class="p-2 text-right border">20</td></tr>
+                                    <tr><td class="p-2 border">Marketing</td><td class="p-2 text-right border">10</td></tr>
+                                    <tr><td class="p-2 border">Finance</td><td class="p-2 text-right border">5</td></tr>
+                                    <tr class="font-semibold"><td class="p-2 border">Total</td><td class="p-2 text-right border">35</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-800 mb-2">Output (Allocated):</h3>
+                        <div class="bg-white rounded border p-3 text-xs">
+                            <table class="w-full">
+                                <thead class="bg-gray-100">
+                                    <tr>
+                                        <th class="p-2 text-left border">Cost Center</th>
+                                        <th class="p-2 text-left border">Dept</th>
+                                        <th class="p-2 text-right border">%</th>
+                                        <th class="p-2 text-right border">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td class="p-2 border">IT Support</td><td class="p-2 border">Sales</td><td class="p-2 text-right border">57%</td><td class="p-2 text-right border">$57,143</td></tr>
+                                    <tr><td class="p-2 border">IT Support</td><td class="p-2 border">Marketing</td><td class="p-2 text-right border">29%</td><td class="p-2 text-right border">$28,571</td></tr>
+                                    <tr><td class="p-2 border">IT Support</td><td class="p-2 border">Finance</td><td class="p-2 text-right border">14%</td><td class="p-2 text-right border">$14,286</td></tr>
+                                    <tr class="font-semibold bg-gray-50"><td class="p-2 border" colspan="3">Total</td><td class="p-2 text-right border">$100,000</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2 italic">One cost pool row → Multiple allocated rows</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 2 -->
+            <section id="step2" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">2</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Prepare Your Driver Table</h2>
+                        <p class="mt-2 text-gray-700">Create or load a table showing how costs should be split: by headcount, revenue, square footage, transaction volume, etc.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Create a table with:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li><strong>Recipient</strong> (department, project, entity receiving the allocation)</li>
+                                <li><strong>Driver_Value</strong> (the number: headcount, revenue, sqft)</li>
+                            </ul>
+                        </li>
+                        <li>Add a calculated percentage column:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>// Calculate each recipient's share
+Driver_Percent = [Driver_Value] / List.Sum(#"Driver Table"[Driver_Value])</code></pre>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="3">
+                        <li>Verify percentages sum to 100% (or 1.0).</li>
+                        <li>Name this query <strong class="font-semibold text-gray-800">Driver_Headcount</strong> (or whatever metric you're using).</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 3 -->
+            <section id="step3" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">3</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Load Your Cost Pool</h2>
+                        <p class="mt-2 text-gray-700">Connect to the costs you want to allocate—typically a table of cost centers, GL accounts, or expense categories with amounts.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Load your cost data with columns:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li><strong>Cost_Center</strong> or Account</li>
+                                <li><strong>Description</strong></li>
+                                <li><strong>Amount</strong> (the cost to allocate)</li>
+                                <li>Any other metadata (period, GL code, etc.)</li>
+                            </ul>
+                        </li>
+                        <li>Filter to costs you want to allocate (exclude direct costs that shouldn't be split).</li>
+                        <li>Name this query <strong class="font-semibold text-gray-800">Costs_To_Allocate</strong>.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 4 -->
+            <section id="step4" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">4</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Create the Allocation Function</h2>
+                        <p class="mt-2 text-gray-700">Build a custom function that takes a cost table and driver table, returning allocated rows.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Create a new <strong class="font-semibold text-gray-800">Blank Query</strong>.</li>
+                        <li>Open <strong class="font-semibold text-gray-800">Advanced Editor</strong> and paste this function:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>(costTable as table, driverTable as table) as table =>
+let
+    // Add an index to the cost table
+    IndexedCosts = Table.AddIndexColumn(costTable, "CostIndex", 0, 1),
+    
+    // Add an index to the driver table
+    IndexedDrivers = Table.AddIndexColumn(driverTable, "DriverIndex", 0, 1),
+    
+    // Cross join: Create a row for every cost × driver combination
+    CrossJoin = Table.AddColumn(
+        IndexedCosts,
+        "Allocation",
+        each IndexedDrivers
+    ),
+    
+    // Expand the driver table
+    Expanded = Table.ExpandTableColumn(
+        CrossJoin,
+        "Allocation",
+        {"Recipient", "Driver_Percent", "DriverIndex"},
+        {"Recipient", "Driver_Percent", "DriverIndex"}
+    ),
+    
+    // Calculate allocated amount
+    AddAllocated = Table.AddColumn(
+        Expanded,
+        "Allocated_Amount",
+        each [Amount] * [Driver_Percent]
+    ),
+    
+    // Clean up - remove index columns
+    RemoveIndices = Table.RemoveColumns(AddAllocated, {"CostIndex", "DriverIndex"}),
+    
+    // Reorder columns
+    Result = Table.ReorderColumns(
+        RemoveIndices,
+        {"Cost_Center", "Recipient", "Driver_Percent", "Amount", "Allocated_Amount"}
+    )
+in
+    Result</code></pre>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="3">
+                        <li>Name this query <strong class="font-semibold text-gray-800">fnAllocate</strong>.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 5 -->
+            <section id="step5" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">5</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Invoke the Function</h2>
+                        <p class="mt-2 text-gray-700">Call your allocation function with your cost and driver tables to generate allocated rows.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Create a new <strong class="font-semibold text-gray-800">Blank Query</strong>.</li>
+                        <li>Use this formula:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>= fnAllocate(Costs_To_Allocate, Driver_Headcount)</code></pre>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="3">
+                        <li>Name it <strong class="font-semibold text-gray-800">Allocations_Headcount</strong>.</li>
+                        <li>You'll instantly see your costs split across all recipients!</li>
+                    </ul>
+                    <div class="pro-tip p-4 rounded-md mt-4 max-w-3xl">
+                        <p><strong class="font-semibold text-yellow-800">Reusability:</strong> Create multiple driver tables (revenue, sqft, transactions) and invoke the same function to see different allocation scenarios side-by-side.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 6 -->
+            <section id="step6" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">6</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Add Allocation Method Parameter</h2>
+                        <p class="mt-2 text-gray-700">Enhance your function to support multiple allocation methods (equal split, weighted, tiered) via a parameter.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Update your function signature to include a method parameter:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>(costTable as table, driverTable as table, method as text) as table =>
+let
+    // Add different calculation logic based on method
+    CalculatedDrivers = 
+        if method = "Equal" then
+            // Equal split - ignore driver values, use 1/count
+            Table.AddColumn(
+                driverTable,
+                "Driver_Percent",
+                each 1 / Table.RowCount(driverTable)
+            )
+        else if method = "Weighted" then
+            // Weighted by driver value (your original logic)
+            Table.AddColumn(
+                driverTable,
+                "Driver_Percent",
+                each [Driver_Value] / List.Sum(driverTable[Driver_Value])
+            )
+        else if method = "Tiered" then
+            // Tiered: First 50% to top recipient, rest split equally
+            // ... custom logic here
+            driverTable
+        else
+            error "Invalid method. Use 'Equal', 'Weighted', or 'Tiered'"
+    ,
+    
+    // Rest of allocation logic...
+    // (same as before)
+in
+    Result</code></pre>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="2">
+                        <li>Now invoke with: <code class="text-xs bg-gray-100 px-2 py-1 rounded">fnAllocate(Costs, Drivers, "Weighted")</code></li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 7 -->
+            <section id="step7" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">7</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Handle Priority Rules and Exclusions</h2>
+                        <p class="mt-2 text-gray-700">Some recipients shouldn't receive certain allocations (e.g., don't allocate IT costs to the IT department itself).</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Add an exclusion table:</li>
+                    </ul>
+                    <div class="bg-white rounded border p-4 mt-3 max-w-2xl text-xs">
+                        <p class="font-semibold mb-2">Exclusion Rules:</p>
+                        <table class="w-full">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="p-2 text-left border">Cost_Center</th>
+                                    <th class="p-2 text-left border">Exclude_Recipient</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="p-2 border">IT Support</td><td class="p-2 border">IT</td></tr>
+                                <tr><td class="p-2 border">HR Shared Services</td><td class="p-2 border">HR</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="2">
+                        <li>In your function, filter out excluded combinations:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>// After cross join, remove excluded pairs
+FilterExclusions = Table.SelectRows(
+    Expanded,
+    each not List.Contains(
+        Table.SelectRows(
+            Exclusions,
+            (e) => e[Cost_Center] = [Cost_Center]
+        )[Exclude_Recipient],
+        [Recipient]
+    )
+),
+
+// Recalculate percentages to sum to 100% after exclusions
+RecalcPercent = Table.TransformColumns(
+    Table.Group(
+        FilterExclusions,
+        {"Cost_Center"},
+        {{"Data", each 
+            Table.AddColumn(
+                _,
+                "Recalc_Percent",
+                each [Driver_Percent] / List.Sum([Driver_Percent])
+            )
+        }}
+    )[Data]
+)</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 8 -->
+            <section id="step8" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">8</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Validate and Audit Allocations</h2>
+                        <p class="mt-2 text-gray-700">Ensure allocated amounts match source totals—critical for finance credibility.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Create a validation query:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>let
+    // Sum original amounts
+    OriginalTotal = List.Sum(Costs_To_Allocate[Amount]),
+    
+    // Sum allocated amounts
+    AllocatedTotal = List.Sum(Allocations_Headcount[Allocated_Amount]),
+    
+    // Variance (should be zero or close to zero due to rounding)
+    Variance = AllocatedTotal - OriginalTotal,
+    
+    Result = #table(
+        {"Original_Total", "Allocated_Total", "Variance"},
+        {{OriginalTotal, AllocatedTotal, Variance}}
+    )
+in
+    Result</code></pre>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="2">
+                        <li>Variance should be $0 (or within rounding tolerance like $0.01).</li>
+                        <li>If variance exists, check:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li>Driver percentages sum to 100%</li>
+                                <li>No costs were dropped during cross join</li>
+                                <li>Rounding precision settings</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="bg-green-50 border-l-4 border-green-500 p-4 my-6 max-w-3xl">
+                        <p><strong class="font-semibold text-green-800">Success!</strong> You've built a sophisticated, reusable allocation engine. Apply it to any cost pool with any driver—IT, facilities, corporate overhead. Change drivers monthly and refresh instantly.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bonus Section -->
+            <section id="bonus" class="step-card rounded-xl p-6 sm:p-8 bg-indigo-50 border-indigo-200">
+                <h2 class="text-xl sm:text-2xl font-bold text-indigo-900 mb-4">🚀 Advanced: Multi-Stage Cascading Allocations</h2>
+                <div class="space-y-3 text-gray-700">
+                    <p>Allocate costs in stages (e.g., allocate IT first, then allocate Finance including its share of IT):</p>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto">
+                        <pre class="text-xs"><code>// Stage 1: Allocate IT
+Stage1 = fnAllocate(IT_Costs, Driver_Headcount, "Weighted")
+
+// Stage 2: Add Stage 1 results to Finance costs
+Finance_Plus_IT = Table.Combine({
+    Finance_Costs,
+    Table.SelectRows(Stage1, each [Recipient] = "Finance")
+})
+
+// Stage 3: Allocate combined Finance costs
+Stage2 = fnAllocate(Finance_Plus_IT, Driver_Revenue, "Weighted")
+
+// Final: Append all allocations
+Final_Allocations = Table.Combine({Stage1, Stage2})</code></pre>
+                    </div>
+                    <p class="text-sm">This creates a waterfall allocation where support departments allocate to each other before hitting final cost objects.</p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+</main>
