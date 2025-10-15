@@ -126,9 +126,42 @@
                             <p><strong class="font-semibold text-yellow-800">Pro Tip:</strong> "Unpivot Other Columns" is safer than "Unpivot Columns" because if new periods are added to your source, they'll automatically be included.</p>
                         </div>
                     </div>
-                    <div class="interactive-diagram p-4 rounded-lg">
-                        <p class="text-center text-sm font-semibold text-gray-700 mb-3">After Unpivoting</p>
-                        <div class="bg-white rounded border overflow-hidden text-xs">
+                    <div id="diagram3" class="interactive-diagram p-4 rounded-lg">
+                        <p class="text-center text-sm text-gray-500 mb-2">Interactive: Click to unpivot</p>
+                        <div id="d3-before-table" class="bg-white rounded border overflow-hidden text-xs mb-4">
+                            <div class="bg-blue-100 p-2 border-b font-semibold text-sm">Before: Wide Format</div>
+                            <table class="w-full">
+                                <thead class="bg-gray-100">
+                                    <tr>
+                                        <th class="p-2 text-left border">Account</th>
+                                        <th class="p-2 text-right border">Jan 2025</th>
+                                        <th class="p-2 text-right border">Feb 2025</th>
+                                        <th class="p-2 text-right border">Mar 2025</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="p-2 border bg-yellow-50">Cash</td>
+                                        <td class="p-2 text-right border bg-green-50">50,000</td>
+                                        <td class="p-2 text-right border bg-green-50">52,300</td>
+                                        <td class="p-2 text-right border bg-green-50">48,900</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2 border bg-yellow-50">Revenue</td>
+                                        <td class="p-2 text-right border bg-green-50">(120,000)</td>
+                                        <td class="p-2 text-right border bg-green-50">(125,400)</td>
+                                        <td class="p-2 text-right border bg-green-50">(118,700)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-center">
+                            <button id="d3-unpivot-btn" class="px-6 py-2 rounded-md font-semibold text-white bg-green-700 hover:bg-green-800 transition-all">
+                                ⬇️ Unpivot Other Columns
+                            </button>
+                        </div>
+                        <div id="d3-after-table" class="hidden bg-white rounded border overflow-hidden text-xs mt-4">
+                            <div class="bg-green-100 p-2 border-b font-semibold text-sm">After: Tidy Format (Analysis-Ready!)</div>
                             <table class="w-full">
                                 <thead class="bg-gray-100">
                                     <tr>
@@ -153,13 +186,26 @@
                                         <td class="p-2 border">Mar 2025</td>
                                         <td class="p-2 text-right border">48,900</td>
                                     </tr>
-                                    <tr>
+                                    <tr class="bg-gray-50">
                                         <td class="p-2 border">Revenue</td>
                                         <td class="p-2 border">Jan 2025</td>
                                         <td class="p-2 text-right border">(120,000)</td>
                                     </tr>
+                                    <tr class="bg-gray-50">
+                                        <td class="p-2 border">Revenue</td>
+                                        <td class="p-2 border">Feb 2025</td>
+                                        <td class="p-2 text-right border">(125,400)</td>
+                                    </tr>
+                                    <tr class="bg-gray-50">
+                                        <td class="p-2 border">Revenue</td>
+                                        <td class="p-2 border">Mar 2025</td>
+                                        <td class="p-2 text-right border">(118,700)</td>
+                                    </tr>
                                 </tbody>
                             </table>
+                        </div>
+                        <p id="d3-message" class="text-center mt-2 font-medium text-green-700 text-sm h-5"></p>
+                    </div>
                         </div>
                         <p class="text-center text-xs text-gray-500 mt-2 italic">Tidy format → Easy to analyze!</p>
                     </div>
@@ -301,3 +347,44 @@ else [Balance]</code></pre>
         </div>
     </div>
 </main>
+<script>
+/**
+ * Initializes the interactive diagrams for the 'Simplify Your Trial Balance' guide.
+ * Demonstrates unpivot transformation with before/after visualization.
+ */
+window.init_trial_balance = function() {
+    
+    /**
+     * --- Diagram 3: Unpivot Visualizer ---
+     * Shows the transformation from wide to tidy format
+     */
+    const d3_btn = document.getElementById('d3-unpivot-btn');
+    if (d3_btn) {
+        const d3 = {
+            unpivotBtn: d3_btn,
+            beforeTable: document.getElementById('d3-before-table'),
+            afterTable: document.getElementById('d3-after-table'),
+            message: document.getElementById('d3-message'),
+        };
+
+        d3.unpivotBtn.addEventListener('click', () => {
+            // Animate the transformation
+            d3.beforeTable.style.opacity = '0.5';
+            d3.unpivotBtn.disabled = true;
+            d3.unpivotBtn.classList.add('opacity-50');
+            d3.message.textContent = 'Unpivoting columns...';
+
+            setTimeout(() => {
+                d3.afterTable.classList.remove('hidden');
+                d3.afterTable.style.opacity = '0';
+                setTimeout(() => {
+                    d3.afterTable.style.transition = 'opacity 0.5s';
+                    d3.afterTable.style.opacity = '1';
+                }, 50);
+                d3.message.textContent = 'Success! 2 accounts × 3 periods = 6 tidy rows ✓';
+            }, 1000);
+        });
+    }
+};
+</script>
+
