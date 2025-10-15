@@ -170,20 +170,54 @@ else [Asset_Tag_Clean]</code></pre>
                         <p class="mt-2 text-gray-700">Group records that likely represent the same asset, even if identifiers aren't exactly identical.</p>
                     </div>
                 </div>
-                <div class="mt-6">
-                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
-                        <li>Group by <strong class="font-semibold text-gray-800">Canonical_Key</strong> to find exact matches first.</li>
-                        <li>For remaining records without matches, use <strong class="font-semibold text-gray-800">fuzzy merge</strong>:
-                            <ul class="list-disc list-inside ml-6 mt-2">
-                                <li>Merge table with itself on Canonical_Key</li>
-                                <li>Enable fuzzy matching with 0.8 similarity threshold</li>
-                                <li>This catches variants like "LAPTOP01" vs "LAPTOP-01"</li>
-                            </ul>
-                        </li>
-                        <li>Assign a <strong class="font-semibold text-gray-800">Master_Asset_ID</strong> to each deduplicated group.</li>
-                    </ul>
-                    <div class="pro-tip p-4 rounded-md mt-4 max-w-3xl">
-                        <p><strong class="font-semibold text-yellow-800">Review Fuzzy Matches:</strong> Always export fuzzy matches with scores below 0.95 for manual review. A laptop and a desktop might have similar hostnames but be different assets.</p>
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                    <div>
+                        <ul class="list-decimal list-inside space-y-2 text-gray-600">
+                            <li>Group by <strong class="font-semibold text-gray-800">Canonical_Key</strong> to find exact matches first.</li>
+                            <li>For remaining records without matches, use <strong class="font-semibold text-gray-800">fuzzy merge</strong>:
+                                <ul class="list-disc list-inside ml-6 mt-2">
+                                    <li>Merge table with itself on Canonical_Key</li>
+                                    <li>Enable fuzzy matching with 0.8 similarity threshold</li>
+                                    <li>This catches variants like "LAPTOP01" vs "LAPTOP-01"</li>
+                                </ul>
+                            </li>
+                            <li>Assign a <strong class="font-semibold text-gray-800">Master_Asset_ID</strong> to each deduplicated group.</li>
+                        </ul>
+                        <div class="pro-tip p-4 rounded-md mt-4">
+                            <p><strong class="font-semibold text-yellow-800">Review Fuzzy Matches:</strong> Always export fuzzy matches with scores below 0.95 for manual review. A laptop and a desktop might have similar hostnames but be different assets.</p>
+                        </div>
+                    </div>
+                    <div id="diagram5" class="interactive-diagram p-4 rounded-lg">
+                        <p class="text-center text-sm text-gray-500 mb-2">Interactive: Duplicate Detector</p>
+                        <div class="bg-white rounded-lg border border-gray-300 shadow-md w-full p-4">
+                            <div class="mb-3">
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Similarity Threshold:</label>
+                                <input id="d5-threshold" type="range" min="60" max="100" value="80" class="w-full">
+                                <span id="d5-threshold-value" class="text-sm font-bold text-gray-800">80%</span>
+                            </div>
+                            <div class="border rounded p-2 text-xs">
+                                <p class="font-semibold mb-2">Asset Identifiers to Match:</p>
+                                <div class="space-y-1" id="d5-matches">
+                                    <div class="p-1 bg-gray-100 rounded flex justify-between">
+                                        <span>SN12345ABC</span>
+                                        <span class="text-gray-500">Base</span>
+                                    </div>
+                                    <div class="p-1 bg-yellow-50 rounded flex justify-between">
+                                        <span>SN-12345-ABC</span>
+                                        <span class="text-yellow-700 font-semibold">100%</span>
+                                    </div>
+                                    <div class="p-1 bg-yellow-50 rounded flex justify-between">
+                                        <span>SN12345AB</span>
+                                        <span class="text-yellow-700 font-semibold">90%</span>
+                                    </div>
+                                    <div class="p-1 bg-red-50 rounded flex justify-between">
+                                        <span>SN67890XYZ</span>
+                                        <span class="text-red-700 font-semibold">20%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p id="d5-message" class="text-xs text-center mt-2 font-medium text-gray-600"></p>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -197,33 +231,34 @@ else [Asset_Tag_Clean]</code></pre>
                         <p class="mt-2 text-gray-700">When multiple sources have data for the same asset, decide which source is "authoritative" for each field.</p>
                     </div>
                 </div>
-                <div class="mt-6">
-                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
-                        <li>Create a priority ranking table:</li>
-                    </ul>
-                    <div class="bg-white rounded border p-4 mt-3 max-w-2xl">
-                        <p class="text-sm font-semibold text-gray-700 mb-2">Source Priority Rules:</p>
-                        <table class="w-full text-xs">
-                            <thead class="bg-gray-100">
-                                <tr>
-                                    <th class="p-2 text-left border">Field</th>
-                                    <th class="p-2 text-left border">Preferred Source</th>
-                                    <th class="p-2 text-left border">Fallback</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr><td class="p-2 border">Serial Number</td><td class="p-2 border">IT</td><td class="p-2 border">Finance</td></tr>
-                                <tr><td class="p-2 border">Purchase Value</td><td class="p-2 border">Finance</td><td class="p-2 border">IT</td></tr>
-                                <tr><td class="p-2 border">Current User</td><td class="p-2 border">IT</td><td class="p-2 border">Facilities</td></tr>
-                                <tr><td class="p-2 border">Location</td><td class="p-2 border">Facilities</td><td class="p-2 border">IT</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="2">
-                        <li>For each field, add a custom column that picks the preferred source:</li>
-                    </ul>
-                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
-                        <pre class="text-sm"><code>// Preferred Serial Number
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                    <div>
+                        <ul class="list-decimal list-inside space-y-2 text-gray-600">
+                            <li>Create a priority ranking table:</li>
+                        </ul>
+                        <div class="bg-white rounded border p-4 mt-3">
+                            <p class="text-sm font-semibold text-gray-700 mb-2">Source Priority Rules:</p>
+                            <table class="w-full text-xs">
+                                <thead class="bg-gray-100">
+                                    <tr>
+                                        <th class="p-2 text-left border">Field</th>
+                                        <th class="p-2 text-left border">Preferred Source</th>
+                                        <th class="p-2 text-left border">Fallback</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td class="p-2 border">Serial Number</td><td class="p-2 border">IT</td><td class="p-2 border">Finance</td></tr>
+                                    <tr><td class="p-2 border">Purchase Value</td><td class="p-2 border">Finance</td><td class="p-2 border">IT</td></tr>
+                                    <tr><td class="p-2 border">Current User</td><td class="p-2 border">IT</td><td class="p-2 border">Facilities</td></tr>
+                                    <tr><td class="p-2 border">Location</td><td class="p-2 border">Facilities</td><td class="p-2 border">IT</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <ul class="list-decimal list-inside space-y-2 text-gray-600 mt-4" start="2">
+                            <li>For each field, add a custom column that picks the preferred source:</li>
+                        </ul>
+                        <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 overflow-x-auto">
+                            <pre class="text-sm"><code>// Preferred Serial Number
 let
     IT_Row = Table.SelectRows(#"Grouped", each [Source] = "IT"),
     Finance_Row = Table.SelectRows(#"Grouped", each [Source] = "Finance")
@@ -233,46 +268,6 @@ in
     else if Table.RowCount(Finance_Row) > 0 
     then Finance_Row{0}[Serial Number]
     else null</code></pre>
-                    </div>
-                    <div class="interactive-diagram p-4 rounded-lg mt-4">
-                        <p class="text-center text-sm text-gray-500 mb-2">Interactive: Merge Conflict Resolver</p>
-                        <div class="bg-white rounded-lg border border-gray-300 shadow-md w-full p-4">
-                            <div class="mb-3">
-                                <div class="text-xs font-semibold text-gray-700 mb-2">Asset: LAPTOP-JD01 (3 sources found)</div>
-                                <div class="space-y-2 text-xs">
-                                    <div class="p-2 bg-gray-50 rounded border">
-                                        <div class="flex justify-between">
-                                            <span class="font-semibold">IT:</span>
-                                            <span>User: John Doe, Value: $1,200</span>
-                                        </div>
-                                    </div>
-                                    <div class="p-2 bg-gray-50 rounded border">
-                                        <div class="flex justify-between">
-                                            <span class="font-semibold">Finance:</span>
-                                            <span>User: J. Doe, Value: $1,500</span>
-                                        </div>
-                                    </div>
-                                    <div class="p-2 bg-gray-50 rounded border">
-                                        <div class="flex justify-between">
-                                            <span class="font-semibold">Facilities:</span>
-                                            <span>User: John D, Value: -</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="block text-xs font-semibold text-gray-700 mb-1">Priority Rule:</label>
-                                <select id="d2-priority" class="w-full p-2 text-xs border border-gray-300 rounded">
-                                    <option value="it">User: IT → Finance → Facilities</option>
-                                    <option value="finance">Value: Finance → IT</option>
-                                </select>
-                            </div>
-                            <button id="d2-resolve-btn" class="w-full px-4 py-2 text-sm rounded bg-blue-500 text-white hover:bg-blue-600 font-medium">Resolve Conflicts</button>
-                            <div id="d2-result" class="mt-3 hidden">
-                                <!-- Result will appear here -->
-                            </div>
-                            <p id="d2-message" class="text-center mt-3 text-sm font-medium h-5"></p>
-                        </div>
                     </div>
                 </div>
             </section>
@@ -361,121 +356,3 @@ IT_Only =
         </div>
     </div>
 </main>
-<script>
-/**
- * Initializes the interactive diagrams for the 'Inventory / IT Asset Consolidation' guide.
- * Sets up event listeners for the duplicate detector and merge conflict resolver.
- */
-window.init_asset_consolidation = function() {
-    
-    /**
-     * --- Diagram 1: Duplicate Detector ---
-     * Shows how to identify duplicate assets across sources
-     */
-    const d1_detectBtn = document.getElementById('d1-detect-btn');
-    if (d1_detectBtn) {
-        const d1 = {
-            detectBtn: d1_detectBtn,
-            result: document.getElementById('d1-result'),
-            message: document.getElementById('d1-message'),
-        };
-
-        d1.detectBtn.addEventListener('click', () => {
-            d1.detectBtn.classList.add('opacity-50');
-            d1.detectBtn.disabled = true;
-
-            // Simulate duplicate detection
-            setTimeout(() => {
-                d1.result.innerHTML = `
-                    <div class="p-3 bg-green-50 border-2 border-green-400 rounded">
-                        <div class="font-semibold text-sm text-green-800 mb-2">✓ Duplicate Detected!</div>
-                        <div class="text-xs space-y-1">
-                            <div><strong>Canonical Key:</strong> SN12345ABC</div>
-                            <div><strong>Match Type:</strong> Exact match on cleaned serial number</div>
-                            <div><strong>Sources:</strong> IT, Finance, Facilities (3 records → 1 asset)</div>
-                            <div class="mt-2 pt-2 border-t border-green-300">
-                                <strong>Conflicts Found:</strong>
-                                <ul class="list-disc list-inside ml-2 mt-1">
-                                    <li>Hostname: "LAPTOP-JD01" vs "-" vs "laptop-jd01"</li>
-                                    <li>User: "John Doe" vs "J. Doe" vs "John D"</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                d1.result.classList.remove('hidden');
-                d1.message.textContent = 'Duplicate detected with conflicts to resolve';
-                d1.message.classList.add('text-green-600');
-            }, 800);
-        });
-    }
-
-    /**
-     * --- Diagram 2: Merge Conflict Resolver ---
-     * Shows how to resolve conflicts using priority rules
-     */
-    const d2_resolveBtn = document.getElementById('d2-resolve-btn');
-    if (d2_resolveBtn) {
-        const d2 = {
-            resolveBtn: d2_resolveBtn,
-            priority: document.getElementById('d2-priority'),
-            result: document.getElementById('d2-result'),
-            message: document.getElementById('d2-message'),
-        };
-
-        d2.resolveBtn.addEventListener('click', () => {
-            const priorityRule = d2.priority.value;
-            
-            let resolvedUser, resolvedValue, userSource, valueSource;
-            
-            if (priorityRule === 'it') {
-                resolvedUser = 'John Doe';
-                userSource = 'IT';
-                resolvedValue = '$1,200';
-                valueSource = 'IT';
-            } else {
-                resolvedUser = 'John Doe';
-                userSource = 'IT';
-                resolvedValue = '$1,500';
-                valueSource = 'Finance';
-            }
-
-            d2.result.innerHTML = `
-                <div class="p-3 bg-blue-50 border-2 border-blue-400 rounded">
-                    <div class="font-semibold text-sm text-blue-800 mb-2">Resolved Canonical Record</div>
-                    <div class="text-xs space-y-2">
-                        <div class="flex justify-between items-center p-2 bg-white rounded">
-                            <span class="font-semibold">User:</span>
-                            <div class="text-right">
-                                <div>${resolvedUser}</div>
-                                <div class="text-gray-500 text-xs">from ${userSource}</div>
-                            </div>
-                        </div>
-                        <div class="flex justify-between items-center p-2 bg-white rounded">
-                            <span class="font-semibold">Value:</span>
-                            <div class="text-right">
-                                <div>${resolvedValue}</div>
-                                <div class="text-gray-500 text-xs">from ${valueSource}</div>
-                            </div>
-                        </div>
-                        <div class="mt-2 pt-2 border-t border-blue-300 text-gray-600">
-                            <strong>Metadata:</strong>
-                            <ul class="list-disc list-inside ml-2 mt-1">
-                                <li>Source Count: 3</li>
-                                <li>Has Variance: Yes</li>
-                                <li>Match Quality: Exact</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            `;
-            d2.result.classList.remove('hidden');
-            d2.message.textContent = '✓ Conflicts resolved using priority rules';
-            d2.message.classList.add('text-green-600');
-            d2.resolveBtn.classList.add('opacity-50');
-            d2.resolveBtn.disabled = true;
-        });
-    }
-};
-</script>
-
