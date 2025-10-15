@@ -1,0 +1,352 @@
+<main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12"></main>
+    <div class="max-w-4xl mx-auto">
+        <div class="space-y-12">
+            
+            <!-- Intro Section -->
+            <section id="intro" class="text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Import Folder of CSVs (Parameterized)</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Build a robust, reusable connector that automatically combines all CSV files in a folder—with the folder path as a parameter so anyone can point it to their own data without editing the query.</p>
+                <div class="pro-tip p-4 rounded-md my-6 max-w-2xl mx-auto">
+                    <p><strong class="font-semibold text-yellow-800">Why This Matters:</strong> This is one of the highest ROI Power Query patterns. Sales teams export weekly reports, finance gets monthly CSVs, operations receives daily logs—all scattered in folders. Build this once, and every team can reuse it by just changing the folder path parameter. No more manual copy-paste!</p>
+                </div>
+                <div class="bg-green-50 border-l-4 border-green-500 p-4 my-6 max-w-2xl mx-auto">
+                    <p class="text-left"><strong class="font-semibold text-green-800">What You'll Build:</strong> A robust folder connector with a folder-path parameter, automatic sample-file detection, and column name standardization—ready to share with your team.</p>
+                </div>
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 my-6 max-w-2xl mx-auto">
+                    <p class="text-left"><strong class="font-semibold text-blue-800">Key Skills:</strong> Folder connector, Combine Files, parameterization, column standardization, sample file logic</p>
+                </div>
+            </section>
+
+            <!-- Step 1 -->
+            <section id="step1" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">1</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Connect to a Folder</h2>
+                        <p class="mt-2 text-gray-700">Start by pointing Power Query to a folder containing your CSV files. This will establish the pattern that we'll later parameterize.</p>
+                    </div>
+                </div>
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                    <div>
+                        <ul class="list-decimal list-inside space-y-2 text-gray-600">
+                            <li>Organize your CSV files in a dedicated folder (e.g., <code class="text-xs bg-gray-100 px-2 py-1 rounded">C:\Reports\Sales_Data</code>).</li>
+                            <li>In Excel, go to <strong class="font-semibold text-gray-800">Data > Get Data > From File > From Folder</strong>.</li>
+                            <li>Browse to your folder and click <strong class="font-semibold text-gray-800">OK</strong>.</li>
+                            <li>You'll see a preview showing all files in the folder.</li>
+                        </ul>
+                        <div class="pro-tip p-4 rounded-md mt-4">
+                            <p><strong class="font-semibold text-yellow-800">Tip:</strong> Keep your CSVs in a dedicated folder without other file types. This prevents accidental data imports from unrelated files.</p>
+                        </div>
+                    </div>
+                    <div class="interactive-diagram p-4 rounded-lg">
+                        <p class="text-center text-sm font-semibold text-gray-700 mb-3">Sample Folder Structure</p>
+                        <div class="bg-white rounded border p-3 text-xs font-mono">
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-2">
+                                    <span>📁</span>
+                                    <span class="font-semibold">Sales_Data</span>
+                                </div>
+                                <div class="ml-6 space-y-1">
+                                    <div>📄 Sales_Jan_2025.csv</div>
+                                    <div>📄 Sales_Feb_2025.csv</div>
+                                    <div>📄 Sales_Mar_2025.csv</div>
+                                    <div>📄 Sales_Apr_2025.csv</div>
+                                    <div class="text-gray-400">📄 Sales_May_2025.csv (will auto-import!)</div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-center text-xs text-gray-500 mt-2 italic">Add new CSVs → Refresh → Automatic import</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 2 -->
+            <section id="step2" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">2</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Use "Combine & Transform Data"</h2>
+                        <p class="mt-2 text-gray-700">Instead of just loading the file list, use Power Query's built-in "Combine Files" feature to automatically merge all CSVs.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>In the folder preview window, click the <strong class="font-semibold text-gray-800">Combine</strong> dropdown button.</li>
+                        <li>Select <strong class="font-semibold text-gray-800">Combine & Transform Data</strong>.</li>
+                        <li>Power Query will show the "Combine Files" dialog.</li>
+                        <li>It automatically detects the first CSV as a sample file—click <strong class="font-semibold text-gray-800">OK</strong>.</li>
+                        <li>Power Query opens with three queries:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li><strong>Folder Path</strong> (the source folder)</li>
+                                <li><strong>Sample File</strong> (template for all files)</li>
+                                <li><strong>Main Query</strong> (combined data from all CSVs)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="bg-white border-l-4 border-blue-500 bg-blue-50 p-4 mt-4 max-w-3xl">
+                        <p class="text-sm"><strong class="font-semibold text-blue-800">What Just Happened:</strong> Power Query created a "template" from the first file and applied it to every CSV in the folder. All files are now stacked into one table!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 3 -->
+            <section id="step3" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">3</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Add Source File Name Column</h2>
+                        <p class="mt-2 text-gray-700">Track which file each row came from—essential for troubleshooting and auditing.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>In your combined query, you'll see a column called <strong class="font-semibold text-gray-800">Source.Name</strong>.</li>
+                        <li>This contains the filename for each row (e.g., "Sales_Jan_2025.csv").</li>
+                        <li>Optional: Extract just the month from the filename:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>// Extract month from filename like "Sales_Jan_2025.csv"
+= Text.BeforeDelimiter(Text.AfterDelimiter([Source.Name], "_"), "_")</code></pre>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="4">
+                        <li>This gives you a <strong class="font-semibold text-gray-800">Month</strong> column automatically populated from filenames!</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 4 -->
+            <section id="step4" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">4</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Standardize Column Names and Types</h2>
+                        <p class="mt-2 text-gray-700">Ensure consistent column names and data types, even if source files have slight variations.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Rename columns to a standard format:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li>Remove spaces: "Order ID" → "OrderID"</li>
+                                <li>Use consistent casing: "customer_name" → "CustomerName"</li>
+                            </ul>
+                        </li>
+                        <li>Set correct data types:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li><strong>Date columns</strong> → Date type</li>
+                                <li><strong>Amount columns</strong> → Decimal Number</li>
+                                <li><strong>ID columns</strong> → Text (to preserve leading zeros)</li>
+                            </ul>
+                        </li>
+                        <li>Add a step to handle missing columns gracefully:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>// Add missing columns with null if they don't exist
+= Table.AddColumn(
+    #"Previous Step",
+    "OptionalColumn",
+    each try [OptionalColumn] otherwise null,
+    type text
+)</code></pre>
+                    </div>
+                    <div class="pro-tip p-4 rounded-md mt-4 max-w-3xl">
+                        <p><strong class="font-semibold text-yellow-800">Best Practice:</strong> Document expected column names in a comment at the top of your query so others know what format CSVs should have.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 5 -->
+            <section id="step5" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">5</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Create a Folder Path Parameter</h2>
+                        <p class="mt-2 text-gray-700">Turn the hardcoded folder path into a parameter so users can easily change it without editing the query.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>In Power Query Editor, go to <strong class="font-semibold text-gray-800">Home > Manage Parameters > New Parameter</strong>.</li>
+                        <li>Set up the parameter:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li><strong>Name:</strong> FolderPath</li>
+                                <li><strong>Description:</strong> "Path to folder containing CSV files"</li>
+                                <li><strong>Type:</strong> Text</li>
+                                <li><strong>Current Value:</strong> Your folder path (e.g., <code class="text-xs bg-gray-100 px-1 rounded">C:\Reports\Sales_Data</code>)</li>
+                            </ul>
+                        </li>
+                        <li>Click <strong class="font-semibold text-gray-800">OK</strong>.</li>
+                    </ul>
+                    <div class="bg-white rounded border p-4 mt-4 max-w-2xl">
+                        <p class="text-sm font-semibold text-gray-700 mb-2">Parameter Dialog Example:</p>
+                        <div class="space-y-2 text-xs">
+                            <div class="flex justify-between items-center border-b pb-2">
+                                <span class="font-semibold">Name:</span>
+                                <span class="bg-gray-100 px-2 py-1 rounded">FolderPath</span>
+                            </div>
+                            <div class="flex justify-between items-center border-b pb-2">
+                                <span class="font-semibold">Type:</span>
+                                <span class="bg-gray-100 px-2 py-1 rounded">Text</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="font-semibold">Current Value:</span>
+                                <span class="bg-gray-100 px-2 py-1 rounded font-mono">C:\Reports\Sales_Data</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 6 -->
+            <section id="step6" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">6</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Update Query to Use the Parameter</h2>
+                        <p class="mt-2 text-gray-700">Replace the hardcoded folder path in your query with a reference to the parameter.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Find the first step in your query (usually called "Source").</li>
+                        <li>It will look like this:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>Source = Folder.Files("C:\Reports\Sales_Data")</code></pre>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="3">
+                        <li>Change it to reference your parameter:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>Source = Folder.Files(FolderPath)</code></pre>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="4">
+                        <li>Click the checkmark to apply.</li>
+                        <li>Your query now uses the parameter value!</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 7 -->
+            <section id="step7" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">7</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Test with a Different Folder</h2>
+                        <p class="mt-2 text-gray-700">Verify the parameter works by changing it to point to a different folder of CSVs.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Right-click the <strong class="font-semibold text-gray-800">FolderPath</strong> parameter in the Queries pane.</li>
+                        <li>Select <strong class="font-semibold text-gray-800">Edit</strong>.</li>
+                        <li>Change the <strong class="font-semibold text-gray-800">Current Value</strong> to a different folder path.</li>
+                        <li>Click <strong class="font-semibold text-gray-800">OK</strong>.</li>
+                        <li>Your query automatically refreshes with data from the new folder!</li>
+                    </ul>
+                    <div class="bg-green-50 border-l-4 border-green-500 p-4 my-6 max-w-3xl">
+                        <p><strong class="font-semibold text-green-800">Reusability:</strong> Share this workbook with teammates. They can change the parameter to their own folder path without touching the query logic.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 8 -->
+            <section id="step8" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">8</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Add Error Handling (Optional)</h2>
+                        <p class="mt-2 text-gray-700">Make your connector production-ready by handling common issues like missing folders or corrupt files.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Add a validation step to check if the folder exists:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>// Validate folder exists
+Source = 
+    let
+        folderCheck = try Folder.Files(FolderPath) otherwise null
+    in
+        if folderCheck = null 
+        then error "Folder not found: " & FolderPath 
+        else folderCheck</code></pre>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="2">
+                        <li>Filter out any non-CSV files that snuck into the folder:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>// Keep only CSV files
+FilterCSVs = Table.SelectRows(Source, each Text.EndsWith([Extension], ".csv"))</code></pre>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="3">
+                        <li>Wrap file content access in try/otherwise to skip corrupt files:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>// Skip files that can't be read
+SafeLoad = Table.AddColumn(
+    FilterCSVs,
+    "Content",
+    each try [Content] otherwise null
+)</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 9 -->
+            <section id="step9" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">9</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Load and Share</h2>
+                        <p class="mt-2 text-gray-700">Finalize your query and make it easy for others to use.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Click <strong class="font-semibold text-gray-800">Close & Load</strong> to bring data into Excel.</li>
+                        <li>Document the parameter for users:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li>Add a sheet called "Instructions"</li>
+                                <li>Explain what CSV format is expected (column names, data types)</li>
+                                <li>Show how to update the FolderPath parameter</li>
+                            </ul>
+                        </li>
+                        <li>Save the workbook as a template (.xltx) for team reuse.</li>
+                    </ul>
+                    <div class="bg-green-50 border-l-4 border-green-500 p-4 my-6 max-w-3xl">
+                        <p><strong class="font-semibold text-green-800">Success!</strong> You've built a reusable folder connector that anyone can use by just updating the parameter. This same pattern works for Excel files, text files, JSON—any folder of consistent files.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bonus Section -->
+            <section id="bonus" class="step-card rounded-xl p-6 sm:p-8 bg-indigo-50 border-indigo-200">
+                <h2 class="text-xl sm:text-2xl font-bold text-indigo-900 mb-4">🚀 Advanced: Dynamic File Filtering</h2>
+                <div class="space-y-3 text-gray-700">
+                    <p>Add parameters to filter which files get imported based on date or naming patterns:</p>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto">
+                        <pre class="text-xs"><code>// Parameter: ImportFilesAfterDate
+// Type: Date, Current Value: 2025-01-01
+
+// Filter files modified after the parameter date
+FilterByDate = Table.SelectRows(
+    Source, 
+    each [Date modified] >= ImportFilesAfterDate
+)
+
+// OR filter by filename pattern
+// Parameter: FilenamePattern (e.g., "Sales_")
+FilterByName = Table.SelectRows(
+    Source,
+    each Text.Contains([Name], FilenamePattern)
+)</code></pre>
+                    </div>
+                    <p class="text-sm">This lets users control which subset of files to import without moving files around!</p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+</main>
