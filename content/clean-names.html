@@ -1,0 +1,287 @@
+<main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    <div class="max-w-4xl mx-auto">
+        <div class="space-y-12">
+            
+            <!-- Intro Section -->
+            <section id="intro" class="text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Clean and Canonicalize Names</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Transform messy, inconsistent names (customers, vendors, products) into clean, standardized versions that match a master list. Unlock accurate reporting and consolidation across systems.</p>
+                <div class="pro-tip p-4 rounded-md my-6 max-w-2xl mx-auto">
+                    <p><strong class="font-semibold text-yellow-800">Why This Matters:</strong> "ABC Corp", "ABC Corporation", "A.B.C. Corp." are all the same company—but Excel treats them as different. This guide shows how to clean text and match to a canonical master list, with fuzzy matching to catch variations. High ROI across CRM, purchasing, and any master data.</p>
+                </div>
+                <div class="bg-green-50 border-l-4 border-green-500 p-4 my-6 max-w-2xl mx-auto">
+                    <p class="text-left"><strong class="font-semibold text-green-800">What You'll Build:</strong> A table with a canonical name column plus a match-score column for review, ensuring consistent names across all your data.</p>
+                </div>
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 my-6 max-w-2xl mx-auto">
+                    <p class="text-left"><strong class="font-semibold text-blue-800">Key Skills:</strong> Text cleaning, fuzzy matching, canonical mapping, quality scoring</p>
+                </div>
+            </section>
+
+            <!-- Step 1 -->
+            <section id="step1" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">1</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Load Your Messy Names</h2>
+                        <p class="mt-2 text-gray-700">Start with your data source containing inconsistent names—customer lists, vendor records, product catalogs, etc.</p>
+                    </div>
+                </div>
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                    <div>
+                        <ul class="list-decimal list-inside space-y-2 text-gray-600">
+                            <li>Load your source data (Excel, CSV, database).</li>
+                            <li>Identify the column with messy names (e.g., "Customer Name", "Vendor").</li>
+                            <li>Keep any related columns you'll need (IDs, addresses, etc.).</li>
+                        </ul>
+                    </div>
+                    <div class="interactive-diagram p-4 rounded-lg">
+                        <p class="text-center text-sm font-semibold text-gray-700 mb-3">Example Messy Names</p>
+                        <div class="bg-white rounded border overflow-hidden text-xs">
+                            <table class="w-full">
+                                <thead class="bg-gray-100">
+                                    <tr><th class="p-2 text-left border">Original Name</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td class="p-2 border">Acme Corporation</td></tr>
+                                    <tr><td class="p-2 border">ACME CORP</td></tr>
+                                    <tr><td class="p-2 border">Acme Corp.</td></tr>
+                                    <tr><td class="p-2 border">  acme corporation  </td></tr>
+                                    <tr><td class="p-2 border">A.C.M.E. Corp</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-center text-xs text-gray-500 mt-2 italic">All the same company!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 2 -->
+            <section id="step2" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">2</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Create a CleanText Function</h2>
+                        <p class="mt-2 text-gray-700">Build a reusable function to standardize text: trim spaces, remove punctuation, convert to uppercase.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>In Power Query Editor, go to <strong class="font-semibold text-gray-800">Home > New Source > Blank Query</strong>.</li>
+                        <li>Open Advanced Editor and paste this function:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>(inputText as text) as text =>
+let
+    // Trim leading/trailing spaces
+    Step1 = Text.Trim(inputText),
+    
+    // Convert to uppercase
+    Step2 = Text.Upper(Step1),
+    
+    // Remove common punctuation
+    Step3 = Text.Replace(Step2, ".", ""),
+    Step4 = Text.Replace(Step3, ",", ""),
+    Step5 = Text.Replace(Step4, "-", ""),
+    
+    // Remove extra spaces between words
+    Step6 = Text.Combine(
+        List.Select(
+            Text.Split(Step5, " "),
+            each _ <> ""
+        ),
+        " "
+    )
+in
+    Step6</code></pre>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="3">
+                        <li>Name this query <strong class="font-semibold text-gray-800">fnCleanText</strong>.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 3 -->
+            <section id="step3" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">3</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Apply Cleaning to Your Names</h2>
+                        <p class="mt-2 text-gray-700">Use the function to create a cleaned version of each name.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>In your source data query, add a custom column.</li>
+                        <li>Use this formula to invoke the function:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>= fnCleanText([Customer Name])</code></pre>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="3">
+                        <li>Name it <strong class="font-semibold text-gray-800">Name_Clean</strong>.</li>
+                        <li>Now "  acme corporation  " and "A.C.M.E. Corp" both become "ACME CORPORATION".</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 4 -->
+            <section id="step4" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">4</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Create or Load a Master List</h2>
+                        <p class="mt-2 text-gray-700">Build a canonical master list with the "official" name for each entity.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Create an Excel table or load an existing master list with:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li><strong>Canonical_Name</strong> (official name)</li>
+                                <li><strong>Canonical_ID</strong> (optional unique ID)</li>
+                            </ul>
+                        </li>
+                        <li>Apply the same <strong class="font-semibold text-gray-800">fnCleanText</strong> function to the canonical names.</li>
+                        <li>Name this cleaned column <strong class="font-semibold text-gray-800">Canonical_Clean</strong>.</li>
+                    </ul>
+                    <div class="bg-white rounded border p-4 mt-4 max-w-2xl">
+                        <p class="text-sm font-semibold text-gray-700 mb-2">Sample Master List:</p>
+                        <table class="w-full text-xs">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="p-2 text-left border">Canonical_Name</th>
+                                    <th class="p-2 text-left border">Canonical_Clean</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="p-2 border">Acme Corporation</td><td class="p-2 border">ACME CORPORATION</td></tr>
+                                <tr><td class="p-2 border">Global Industries</td><td class="p-2 border">GLOBAL INDUSTRIES</td></tr>
+                                <tr><td class="p-2 border">TechStart Inc</td><td class="p-2 border">TECHSTART INC</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 5 -->
+            <section id="step5" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">5</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Exact Match Join</h2>
+                        <p class="mt-2 text-gray-700">First, try an exact match join on the cleaned names to catch perfect matches.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Merge your source data with the master list.</li>
+                        <li>Join on <strong class="font-semibold text-gray-800">Name_Clean = Canonical_Clean</strong>.</li>
+                        <li>Use <strong class="font-semibold text-gray-800">Left Outer</strong> join to keep all rows.</li>
+                        <li>Expand to bring in <strong class="font-semibold text-gray-800">Canonical_Name</strong>.</li>
+                        <li>Rows with matches now have the official name; others are null.</li>
+                    </ul>
+                    <div class="pro-tip p-4 rounded-md mt-4 max-w-3xl">
+                        <p><strong class="font-semibold text-yellow-800">Result:</strong> After cleaning, many variants match exactly. But some won't—that's where fuzzy matching comes in.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 6 -->
+            <section id="step6" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">6</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Fuzzy Match for Remaining Names</h2>
+                        <p class="mt-2 text-gray-700">For rows without exact matches, use fuzzy matching to find the closest canonical name.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Filter your data to rows where <strong class="font-semibold text-gray-800">Canonical_Name is null</strong>.</li>
+                        <li>Use <strong class="font-semibold text-gray-800">Merge Queries</strong> again, but this time:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li>Select <strong class="font-semibold text-gray-800">Fuzzy matching options</strong></li>
+                                <li>Set similarity threshold (e.g., 0.7 = 70% match)</li>
+                            </ul>
+                        </li>
+                        <li>Expand to get the matched <strong class="font-semibold text-gray-800">Canonical_Name</strong> and <strong class="font-semibold text-gray-800">Match Score</strong>.</li>
+                        <li>Append this back to your main table.</li>
+                    </ul>
+                    <div class="bg-white border-l-4 border-yellow-500 bg-yellow-50 p-4 mt-4 max-w-3xl">
+                        <p class="text-sm"><strong class="font-semibold text-yellow-800">Review Required:</strong> Fuzzy matches aren't perfect. Always review matches with scores below 0.9 before trusting them.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 7 -->
+            <section id="step7" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">7</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Add Quality Flags</h2>
+                        <p class="mt-2 text-gray-700">Create columns to help you review and trust the matches.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Add a custom column for <strong class="font-semibold text-gray-800">Match Quality</strong>:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>if [Match Score] = 1 then "Exact"
+else if [Match Score] >= 0.9 then "High Confidence"
+else if [Match Score] >= 0.7 then "Review"
+else "Low Match"</code></pre>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="2">
+                        <li>Sort by Match Score (ascending) to see the weakest matches first.</li>
+                        <li>Export matches below 0.9 for manual review by subject matter experts.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 8 -->
+            <section id="step8" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">8</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Load and Use Canonical Names</h2>
+                        <p class="mt-2 text-gray-700">Replace messy names with canonical versions in all downstream reporting.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Click <strong class="font-semibold text-gray-800">Close & Load</strong>.</li>
+                        <li>Use the <strong class="font-semibold text-gray-800">Canonical_Name</strong> column in pivot tables and reports.</li>
+                        <li>Benefits:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li>Accurate customer/vendor totals (no duplication from variants)</li>
+                                <li>Clean data for merging with other systems</li>
+                                <li>Easier filtering and grouping in analysis</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="bg-green-50 border-l-4 border-green-500 p-4 my-6 max-w-3xl">
+                        <p><strong class="font-semibold text-green-800">Success!</strong> You've canonicalized messy names with a blend of exact and fuzzy matching. This pattern works for any master data: products, accounts, locations—anywhere consistency matters.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bonus Section -->
+            <section id="bonus" class="step-card rounded-xl p-6 sm:p-8 bg-indigo-50 border-indigo-200">
+                <h2 class="text-xl sm:text-2xl font-bold text-indigo-900 mb-4">🚀 Advanced: Tokenize for Better Matching</h2>
+                <div class="space-y-3 text-gray-700">
+                    <p>Break names into words (tokens) and compare word sets:</p>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto">
+                        <pre class="text-xs"><code>// Split into words
+Tokens = Text.Split([Name_Clean], " ")
+
+// Match if 80% of words appear in canonical name
+// More sophisticated than character-level fuzzy match</code></pre>
+                    </div>
+                    <p class="text-sm">This catches "ABC Corporation" vs "Corporation ABC" better than character-based fuzzy matching.</p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+</main>

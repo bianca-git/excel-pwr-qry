@@ -1,0 +1,271 @@
+<main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    <div class="max-w-4xl mx-auto">
+        <div class="space-y-12">
+            
+            <!-- Intro Section -->
+            <section id="intro" class="text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Marketing Campaign Attribution</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Connect your marketing spend to actual conversions by combining data from multiple platforms (Google Ads, Facebook, email) and applying attribution models. See which channels drive real results—not just clicks.</p>
+                <div class="pro-tip p-4 rounded-md my-6 max-w-2xl mx-auto">
+                    <p><strong class="font-semibold text-yellow-800">Why This Matters:</strong> Marketing teams waste budget on channels they *think* work. Attribution analysis shows which touchpoints actually lead to conversions. Power Query lets you combine platform exports, normalize messy IDs, and apply first-touch, last-touch, or weighted attribution models—all without expensive tools.</p>
+                </div>
+                <div class="bg-green-50 border-l-4 border-green-500 p-4 my-6 max-w-2xl mx-auto">
+                    <p class="text-left"><strong class="font-semibold text-green-800">What You'll Build:</strong> A single table mapping platform clicks/impressions to conversions with attribution columns showing credit by channel (first-touch, last-touch, weighted).</p>
+                </div>
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 my-6 max-w-2xl mx-auto">
+                    <p class="text-left"><strong class="font-semibold text-blue-800">Key Skills:</strong> Multi-source append, ID normalization, deduplication, attribution logic, timestamp handling</p>
+                </div>
+            </section>
+
+            <!-- Step 1 -->
+            <section id="step1" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">1</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Collect Platform Exports</h2>
+                        <p class="mt-2 text-gray-700">Download event data (clicks, impressions, ad views) from each marketing platform you use.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <div class="space-y-3 text-gray-600">
+                        <p>For each platform, export these minimum fields:</p>
+                        <ul class="list-disc list-inside ml-4 space-y-2">
+                            <li><strong class="font-semibold text-gray-800">Event ID</strong> or Click ID (unique identifier)</li>
+                            <li><strong class="font-semibold text-gray-800">Timestamp</strong> (when the event occurred)</li>
+                            <li><strong class="font-semibold text-gray-800">User ID</strong> or Cookie/Session ID</li>
+                            <li><strong class="font-semibold text-gray-800">Channel</strong> (Google Ads, Facebook, Email, etc.)</li>
+                            <li><strong class="font-semibold text-gray-800">Campaign</strong> name or ID</li>
+                            <li><strong>Cost</strong> (if available)</li>
+                        </ul>
+                    </div>
+                    <div class="pro-tip p-4 rounded-md mt-4">
+                        <p><strong class="font-semibold text-yellow-800">Tip:</strong> Save exports to a dedicated folder with consistent naming: <code class="text-xs bg-gray-100 px-2 py-1 rounded">Google_Ads_Oct2025.csv</code>, <code class="text-xs bg-gray-100 px-2 py-1 rounded">Facebook_Ads_Oct2025.csv</code></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 2 -->
+            <section id="step2" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">2</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Load and Standardize Each Source</h2>
+                        <p class="mt-2 text-gray-700">Connect to each platform's export and normalize column names and data types.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>For each CSV, use <strong class="font-semibold text-gray-800">Get Data > From Text/CSV</strong>.</li>
+                        <li>Rename columns to a standard schema:
+                            <div class="bg-white rounded border p-3 mt-2 text-xs">
+                                <table class="w-full">
+                                    <thead class="bg-gray-100">
+                                        <tr>
+                                            <th class="p-2 text-left">Standard Name</th>
+                                            <th class="p-2 text-left">Google Ads</th>
+                                            <th class="p-2 text-left">Facebook</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td class="p-2 border">EventID</td><td class="p-2 border">GCLID</td><td class="p-2 border">fb_click_id</td></tr>
+                                        <tr><td class="p-2 border">Timestamp</td><td class="p-2 border">Click Time</td><td class="p-2 border">Event Time</td></tr>
+                                        <tr><td class="p-2 border">UserID</td><td class="p-2 border">User ID</td><td class="p-2 border">FB User ID</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </li>
+                        <li>Add a <strong class="font-semibold text-gray-800">Channel</strong> column if not present (e.g., "Google Ads").</li>
+                        <li>Ensure <strong class="font-semibold text-gray-800">Timestamp</strong> is Date/Time type and <strong class="font-semibold text-gray-800">UserID</strong> is Text.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 3 -->
+            <section id="step3" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">3</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Append All Platform Data</h2>
+                        <p class="mt-2 text-gray-700">Combine all platform queries into a single unified touchpoint table.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>In Power Query Editor, go to <strong class="font-semibold text-gray-800">Home > Append Queries > Append Queries as New</strong>.</li>
+                        <li>Select all your platform queries (Google Ads, Facebook, Email, etc.).</li>
+                        <li>Name the new query <strong class="font-semibold text-gray-800">All Touchpoints</strong>.</li>
+                        <li>Verify all rows are present—row count should equal the sum of individual queries.</li>
+                    </ul>
+                    <div class="pro-tip p-4 rounded-md mt-4 max-w-3xl">
+                        <p><strong class="font-semibold text-yellow-800">Why Append Works:</strong> Because we standardized column names, Power Query stacks rows perfectly. Misnamed columns would create extra columns with nulls.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 4 -->
+            <section id="step4" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">4</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Normalize User IDs and Deduplicate Events</h2>
+                        <p class="mt-2 text-gray-700">Clean user identifiers (trim spaces, uppercase) and remove duplicate events to avoid double-counting.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Add a custom column to clean User IDs:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>= Text.Upper(Text.Trim([UserID]))</code></pre>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="2">
+                        <li>Name it <strong class="font-semibold text-gray-800">UserID_Clean</strong>.</li>
+                        <li>Remove duplicate rows based on <strong class="font-semibold text-gray-800">EventID</strong>:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li>Select the EventID column</li>
+                                <li><strong class="font-semibold text-gray-800">Home > Remove Rows > Remove Duplicates</strong></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 5 -->
+            <section id="step5" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">5</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Load Conversion Data</h2>
+                        <p class="mt-2 text-gray-700">Import your conversion events—purchases, signups, form submissions—that you want to attribute back to marketing touchpoints.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Load your conversion data (from your CRM, analytics, or order database).</li>
+                        <li>Required columns:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li><strong>ConversionID</strong> (unique identifier)</li>
+                                <li><strong>UserID</strong> (matching the ID in touchpoints)</li>
+                                <li><strong>Conversion Timestamp</strong></li>
+                                <li><strong>Conversion Value</strong> (revenue, optional)</li>
+                            </ul>
+                        </li>
+                        <li>Apply the same UserID cleaning as step 4.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 6 -->
+            <section id="step6" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">6</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Join Touchpoints to Conversions</h2>
+                        <p class="mt-2 text-gray-700">Link each conversion to all touchpoints for that user that occurred before the conversion.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Merge <strong class="font-semibold text-gray-800">Conversions</strong> with <strong class="font-semibold text-gray-800">All Touchpoints</strong> on <strong class="font-semibold text-gray-800">UserID_Clean</strong>.</li>
+                        <li>Expand the merged touchpoints column to get all fields.</li>
+                        <li>Filter to keep only touchpoints <strong>before</strong> the conversion:
+                            <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 overflow-x-auto">
+                                <pre class="text-sm"><code>= Table.SelectRows(#"Previous Step", each [Timestamp] < [Conversion Timestamp])</code></pre>
+                            </div>
+                        </li>
+                        <li>Now each conversion is linked to its journey of touchpoints.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 7 -->
+            <section id="step7" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">7</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Apply Attribution Models</h2>
+                        <p class="mt-2 text-gray-700">Calculate attribution credit using first-touch, last-touch, and weighted models.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <div class="space-y-4 text-gray-600 max-w-3xl">
+                        <div>
+                            <h3 class="font-semibold text-gray-800 mb-2">First-Touch Attribution</h3>
+                            <p class="text-sm">Credit goes entirely to the first touchpoint in the journey.</p>
+                            <ul class="list-disc list-inside ml-4 mt-2 space-y-1 text-sm">
+                                <li>Group by ConversionID, order by Timestamp ascending</li>
+                                <li>Add Index column (starting at 1)</li>
+                                <li>Filter where Index = 1</li>
+                                <li>Add column: <code class="text-xs bg-gray-100 px-2 py-1 rounded">FirstTouch_Credit = 1.0</code></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-800 mb-2">Last-Touch Attribution</h3>
+                            <p class="text-sm">Credit goes entirely to the last touchpoint before conversion.</p>
+                            <ul class="list-disc list-inside ml-4 mt-2 space-y-1 text-sm">
+                                <li>Group by ConversionID, order by Timestamp descending</li>
+                                <li>Filter where Index = 1</li>
+                                <li>Add column: <code class="text-xs bg-gray-100 px-2 py-1 rounded">LastTouch_Credit = 1.0</code></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-800 mb-2">Linear (Weighted) Attribution</h3>
+                            <p class="text-sm">Credit is split equally across all touchpoints.</p>
+                            <ul class="list-disc list-inside ml-4 mt-2 space-y-1 text-sm">
+                                <li>Group by ConversionID, count touchpoints</li>
+                                <li>Add column: <code class="text-xs bg-gray-100 px-2 py-1 rounded">Linear_Credit = 1 / [Touchpoint Count]</code></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="pro-tip p-4 rounded-md mt-4 max-w-3xl">
+                        <p><strong class="font-semibold text-yellow-800">Advanced:</strong> Use an attribution weights table to apply custom models (e.g., 40% first, 40% last, 20% middle).</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 8 -->
+            <section id="step8" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">8</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Analyze Results</h2>
+                        <p class="mt-2 text-gray-700">Load your attributed data and build reports showing channel performance by attribution model.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Click <strong class="font-semibold text-gray-800">Close & Load</strong>.</li>
+                        <li>Create pivot tables to analyze:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li>Conversions by Channel (first vs. last touch)</li>
+                                <li>Revenue by Channel (weighted attribution)</li>
+                                <li>Cost per conversion by model</li>
+                            </ul>
+                        </li>
+                        <li>Build a dashboard comparing attribution models side-by-side.</li>
+                    </ul>
+                    <div class="bg-green-50 border-l-4 border-green-500 p-4 my-6 max-w-3xl">
+                        <p><strong class="font-semibold text-green-800">Success!</strong> You've built a marketing attribution engine that shows which channels drive real conversions—not just clicks. Refresh monthly to optimize spend allocation.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bonus Section -->
+            <section id="bonus" class="step-card rounded-xl p-6 sm:p-8 bg-indigo-50 border-indigo-200">
+                <h2 class="text-xl sm:text-2xl font-bold text-indigo-900 mb-4">🚀 Next Level: Time-Decay Attribution</h2>
+                <div class="space-y-3 text-gray-700">
+                    <p>Give more credit to touchpoints closer to conversion:</p>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto">
+                        <pre class="text-xs"><code>// Days between touchpoint and conversion
+DaysToConversion = Duration.Days([Conversion Timestamp] - [Timestamp])
+
+// Exponential decay weight (half-life = 7 days)
+TimeDecay_Credit = Number.Power(0.5, [DaysToConversion] / 7)</code></pre>
+                    </div>
+                    <p class="text-sm">Normalize weights so they sum to 1.0 per conversion for accurate reporting.</p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+</main>
