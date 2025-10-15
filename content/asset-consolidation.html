@@ -58,6 +58,33 @@
                         </table>
                         <p class="text-xs text-gray-500 mt-2 italic">Same asset, different formats!</p>
                     </div>
+                    <div class="interactive-diagram p-4 rounded-lg mt-4">
+                        <p class="text-center text-sm text-gray-500 mb-2">Interactive: Duplicate Detector</p>
+                        <div class="bg-white rounded-lg border border-gray-300 shadow-md w-full p-4">
+                            <div class="text-xs space-y-2 mb-3">
+                                <div class="flex items-center gap-2 p-2 bg-gray-50 rounded border">
+                                    <div class="w-16 font-semibold">IT</div>
+                                    <div class="flex-1">SN12345ABC</div>
+                                    <div class="w-24">LAPTOP-JD01</div>
+                                </div>
+                                <div class="flex items-center gap-2 p-2 bg-gray-50 rounded border">
+                                    <div class="w-16 font-semibold">Finance</div>
+                                    <div class="flex-1">SN12345ABC</div>
+                                    <div class="w-24">-</div>
+                                </div>
+                                <div class="flex items-center gap-2 p-2 bg-gray-50 rounded border">
+                                    <div class="w-16 font-semibold">Facilities</div>
+                                    <div class="flex-1">SN-12345-ABC</div>
+                                    <div class="w-24">laptop-jd01</div>
+                                </div>
+                            </div>
+                            <button id="d1-detect-btn" class="w-full px-4 py-2 text-sm rounded bg-blue-500 text-white hover:bg-blue-600 font-medium">Detect Duplicates</button>
+                            <div id="d1-result" class="mt-3 hidden">
+                                <!-- Results will appear here -->
+                            </div>
+                            <p id="d1-message" class="text-center mt-3 text-sm font-medium h-5"></p>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -207,6 +234,46 @@ in
     then Finance_Row{0}[Serial Number]
     else null</code></pre>
                     </div>
+                    <div class="interactive-diagram p-4 rounded-lg mt-4">
+                        <p class="text-center text-sm text-gray-500 mb-2">Interactive: Merge Conflict Resolver</p>
+                        <div class="bg-white rounded-lg border border-gray-300 shadow-md w-full p-4">
+                            <div class="mb-3">
+                                <div class="text-xs font-semibold text-gray-700 mb-2">Asset: LAPTOP-JD01 (3 sources found)</div>
+                                <div class="space-y-2 text-xs">
+                                    <div class="p-2 bg-gray-50 rounded border">
+                                        <div class="flex justify-between">
+                                            <span class="font-semibold">IT:</span>
+                                            <span>User: John Doe, Value: $1,200</span>
+                                        </div>
+                                    </div>
+                                    <div class="p-2 bg-gray-50 rounded border">
+                                        <div class="flex justify-between">
+                                            <span class="font-semibold">Finance:</span>
+                                            <span>User: J. Doe, Value: $1,500</span>
+                                        </div>
+                                    </div>
+                                    <div class="p-2 bg-gray-50 rounded border">
+                                        <div class="flex justify-between">
+                                            <span class="font-semibold">Facilities:</span>
+                                            <span>User: John D, Value: -</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Priority Rule:</label>
+                                <select id="d2-priority" class="w-full p-2 text-xs border border-gray-300 rounded">
+                                    <option value="it">User: IT → Finance → Facilities</option>
+                                    <option value="finance">Value: Finance → IT</option>
+                                </select>
+                            </div>
+                            <button id="d2-resolve-btn" class="w-full px-4 py-2 text-sm rounded bg-blue-500 text-white hover:bg-blue-600 font-medium">Resolve Conflicts</button>
+                            <div id="d2-result" class="mt-3 hidden">
+                                <!-- Result will appear here -->
+                            </div>
+                            <p id="d2-message" class="text-center mt-3 text-sm font-medium h-5"></p>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -294,3 +361,121 @@ IT_Only =
         </div>
     </div>
 </main>
+<script>
+/**
+ * Initializes the interactive diagrams for the 'Inventory / IT Asset Consolidation' guide.
+ * Sets up event listeners for the duplicate detector and merge conflict resolver.
+ */
+window.init_asset_consolidation = function() {
+    
+    /**
+     * --- Diagram 1: Duplicate Detector ---
+     * Shows how to identify duplicate assets across sources
+     */
+    const d1_detectBtn = document.getElementById('d1-detect-btn');
+    if (d1_detectBtn) {
+        const d1 = {
+            detectBtn: d1_detectBtn,
+            result: document.getElementById('d1-result'),
+            message: document.getElementById('d1-message'),
+        };
+
+        d1.detectBtn.addEventListener('click', () => {
+            d1.detectBtn.classList.add('opacity-50');
+            d1.detectBtn.disabled = true;
+
+            // Simulate duplicate detection
+            setTimeout(() => {
+                d1.result.innerHTML = `
+                    <div class="p-3 bg-green-50 border-2 border-green-400 rounded">
+                        <div class="font-semibold text-sm text-green-800 mb-2">✓ Duplicate Detected!</div>
+                        <div class="text-xs space-y-1">
+                            <div><strong>Canonical Key:</strong> SN12345ABC</div>
+                            <div><strong>Match Type:</strong> Exact match on cleaned serial number</div>
+                            <div><strong>Sources:</strong> IT, Finance, Facilities (3 records → 1 asset)</div>
+                            <div class="mt-2 pt-2 border-t border-green-300">
+                                <strong>Conflicts Found:</strong>
+                                <ul class="list-disc list-inside ml-2 mt-1">
+                                    <li>Hostname: "LAPTOP-JD01" vs "-" vs "laptop-jd01"</li>
+                                    <li>User: "John Doe" vs "J. Doe" vs "John D"</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                d1.result.classList.remove('hidden');
+                d1.message.textContent = 'Duplicate detected with conflicts to resolve';
+                d1.message.classList.add('text-green-600');
+            }, 800);
+        });
+    }
+
+    /**
+     * --- Diagram 2: Merge Conflict Resolver ---
+     * Shows how to resolve conflicts using priority rules
+     */
+    const d2_resolveBtn = document.getElementById('d2-resolve-btn');
+    if (d2_resolveBtn) {
+        const d2 = {
+            resolveBtn: d2_resolveBtn,
+            priority: document.getElementById('d2-priority'),
+            result: document.getElementById('d2-result'),
+            message: document.getElementById('d2-message'),
+        };
+
+        d2.resolveBtn.addEventListener('click', () => {
+            const priorityRule = d2.priority.value;
+            
+            let resolvedUser, resolvedValue, userSource, valueSource;
+            
+            if (priorityRule === 'it') {
+                resolvedUser = 'John Doe';
+                userSource = 'IT';
+                resolvedValue = '$1,200';
+                valueSource = 'IT';
+            } else {
+                resolvedUser = 'John Doe';
+                userSource = 'IT';
+                resolvedValue = '$1,500';
+                valueSource = 'Finance';
+            }
+
+            d2.result.innerHTML = `
+                <div class="p-3 bg-blue-50 border-2 border-blue-400 rounded">
+                    <div class="font-semibold text-sm text-blue-800 mb-2">Resolved Canonical Record</div>
+                    <div class="text-xs space-y-2">
+                        <div class="flex justify-between items-center p-2 bg-white rounded">
+                            <span class="font-semibold">User:</span>
+                            <div class="text-right">
+                                <div>${resolvedUser}</div>
+                                <div class="text-gray-500 text-xs">from ${userSource}</div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-white rounded">
+                            <span class="font-semibold">Value:</span>
+                            <div class="text-right">
+                                <div>${resolvedValue}</div>
+                                <div class="text-gray-500 text-xs">from ${valueSource}</div>
+                            </div>
+                        </div>
+                        <div class="mt-2 pt-2 border-t border-blue-300 text-gray-600">
+                            <strong>Metadata:</strong>
+                            <ul class="list-disc list-inside ml-2 mt-1">
+                                <li>Source Count: 3</li>
+                                <li>Has Variance: Yes</li>
+                                <li>Match Quality: Exact</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+            d2.result.classList.remove('hidden');
+            d2.message.textContent = '✓ Conflicts resolved using priority rules';
+            d2.message.classList.add('text-green-600');
+            d2.resolveBtn.classList.add('opacity-50');
+            d2.resolveBtn.disabled = true;
+        });
+    }
+};
+</script>
+

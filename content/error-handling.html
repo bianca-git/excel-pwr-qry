@@ -111,6 +111,28 @@ in
                         </li>
                         <li>Repeat for all risky conversions (dates, numbers, booleans).</li>
                     </ul>
+                    <div class="interactive-diagram p-4 rounded-lg mt-4">
+                        <p class="text-center text-sm text-gray-500 mb-2">Interactive: Validation Rule Tester</p>
+                        <div class="bg-white rounded-lg border border-gray-300 shadow-md w-full p-4">
+                            <div class="mb-3">
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Test Value:</label>
+                                <input id="d1-input" type="text" class="w-full p-2 text-sm border border-gray-300 rounded" placeholder="Enter value (e.g., '123', 'abc', '2025-10-15')">
+                            </div>
+                            <div class="mb-3">
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Validation Type:</label>
+                                <select id="d1-type" class="w-full p-2 text-sm border border-gray-300 rounded">
+                                    <option value="number">Number</option>
+                                    <option value="date">Date</option>
+                                    <option value="email">Email</option>
+                                </select>
+                            </div>
+                            <button id="d1-validate-btn" class="w-full px-4 py-2 text-sm rounded bg-blue-500 text-white hover:bg-blue-600 font-medium">Validate</button>
+                            <div id="d1-result" class="mt-3 hidden">
+                                <!-- Results will appear here -->
+                            </div>
+                            <p id="d1-message" class="text-center mt-3 text-sm font-medium h-5"></p>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -220,6 +242,22 @@ Amount_Errors = Table.RowCount(
                     <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="4">
                         <li>Load this as a single-row summary table you can monitor.</li>
                     </ul>
+                    <div class="interactive-diagram p-4 rounded-lg mt-4">
+                        <p class="text-center text-sm text-gray-500 mb-2">Interactive: Error Log Viewer</p>
+                        <div class="bg-white rounded-lg border border-gray-300 shadow-md w-full p-4">
+                            <div class="mb-3 flex gap-2">
+                                <button id="d2-load-btn" class="flex-1 px-4 py-2 text-sm rounded bg-blue-500 text-white hover:bg-blue-600 font-medium">Load Error Log</button>
+                                <button id="d2-filter-btn" class="px-4 py-2 text-sm rounded bg-gray-300 text-gray-700 hover:bg-gray-400 font-medium disabled:opacity-50" disabled>Filter by Type</button>
+                            </div>
+                            <div id="d2-summary" class="hidden mb-3 p-3 bg-gray-50 rounded border text-xs">
+                                <!-- Summary will appear here -->
+                            </div>
+                            <div id="d2-errors" class="space-y-2 text-xs">
+                                <!-- Error log entries will appear here -->
+                            </div>
+                            <p id="d2-message" class="text-center mt-3 text-sm font-medium h-5"></p>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -306,3 +344,188 @@ Batch_ID = Text.From(Date.Year(Loaded_DateTime)) &
         </div>
     </div>
 </main>
+<script>
+/**
+ * Initializes the interactive diagrams for the 'Error Reporting and Audit Trail' guide.
+ * Sets up event listeners for the validation rule tester and error log viewer.
+ */
+window.init_error_handling = function() {
+    
+    /**
+     * --- Diagram 1: Validation Rule Tester ---
+     * Tests different validation types on user input
+     */
+    const d1_input = document.getElementById('d1-input');
+    if (d1_input) {
+        const d1 = {
+            input: d1_input,
+            type: document.getElementById('d1-type'),
+            validateBtn: document.getElementById('d1-validate-btn'),
+            result: document.getElementById('d1-result'),
+            message: document.getElementById('d1-message'),
+        };
+
+        d1.validateBtn.addEventListener('click', () => {
+            const value = d1.input.value;
+            const type = d1.type.value;
+
+            if (!value) {
+                d1.message.textContent = 'Please enter a value to test';
+                d1.message.classList.add('text-orange-600');
+                return;
+            }
+
+            let isValid = false;
+            let errorMsg = '';
+            let safeValue = null;
+
+            // Validate based on type
+            if (type === 'number') {
+                const num = parseFloat(value);
+                isValid = !isNaN(num) && isFinite(num);
+                errorMsg = isValid ? '' : `Cannot convert '${value}' to a number`;
+                safeValue = isValid ? num : 'null';
+            } else if (type === 'date') {
+                const date = new Date(value);
+                isValid = !isNaN(date.getTime());
+                errorMsg = isValid ? '' : `Cannot convert '${value}' to a valid date`;
+                safeValue = isValid ? date.toLocaleDateString() : 'null';
+            } else if (type === 'email') {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                isValid = emailRegex.test(value);
+                errorMsg = isValid ? '' : `'${value}' is not a valid email format`;
+                safeValue = isValid ? value : 'null';
+            }
+
+            const resultColor = isValid ? 'bg-green-50 border-green-400' : 'bg-red-50 border-red-400';
+            const textColor = isValid ? 'text-green-800' : 'text-red-800';
+
+            d1.result.innerHTML = `
+                <div class="p-3 rounded border-2 ${resultColor}">
+                    <div class="font-semibold text-sm ${textColor} mb-2">
+                        ${isValid ? '✓ Validation Passed' : '✗ Validation Failed'}
+                    </div>
+                    <div class="text-xs space-y-1">
+                        <div><strong>Input:</strong> "${value}"</div>
+                        <div><strong>Type:</strong> ${type}</div>
+                        <div><strong>Safe Value:</strong> ${safeValue}</div>
+                        ${!isValid ? `<div class="mt-2 pt-2 border-t ${isValid ? 'border-green-300' : 'border-red-300'}"><strong>Error Message:</strong> ${errorMsg}</div>` : ''}
+                        ${isValid ? '<div class="mt-2 pt-2 border-t border-green-300 text-gray-600"><strong>Action:</strong> Row will be processed normally</div>' : '<div class="mt-2 pt-2 border-t border-red-300 text-gray-600"><strong>Action:</strong> Row flagged for error table</div>'}
+                    </div>
+                </div>
+            `;
+            d1.result.classList.remove('hidden');
+            d1.message.textContent = isValid ? 'Validation successful' : 'Validation failed - error captured';
+            d1.message.classList.remove('text-orange-600');
+            d1.message.classList.add(isValid ? 'text-green-600' : 'text-red-600');
+
+            setTimeout(() => {
+                d1.message.textContent = '';
+                d1.message.classList.remove('text-green-600', 'text-red-600');
+            }, 3000);
+        });
+
+        d1.input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                d1.validateBtn.click();
+            }
+        });
+    }
+
+    /**
+     * --- Diagram 2: Error Log Viewer ---
+     * Shows sample error log entries with filtering
+     */
+    const d2_loadBtn = document.getElementById('d2-load-btn');
+    if (d2_loadBtn) {
+        const d2 = {
+            loadBtn: d2_loadBtn,
+            filterBtn: document.getElementById('d2-filter-btn'),
+            summary: document.getElementById('d2-summary'),
+            errors: document.getElementById('d2-errors'),
+            message: document.getElementById('d2-message'),
+        };
+
+        const sampleErrors = [
+            { row: 3, field: 'Amount', value: 'abc', error: 'Cannot convert to number', timestamp: '2025-10-15 09:15:23' },
+            { row: 7, field: 'OrderDate', value: '13/45/2025', error: 'Invalid date format', timestamp: '2025-10-15 09:15:23' },
+            { row: 12, field: 'Amount', value: 'N/A', error: 'Cannot convert to number', timestamp: '2025-10-15 09:15:23' },
+            { row: 18, field: 'Quantity', value: '-5', error: 'Negative quantity not allowed', timestamp: '2025-10-15 09:15:23' },
+        ];
+
+        let currentFilter = 'all';
+
+        d2.loadBtn.addEventListener('click', () => {
+            d2.loadBtn.classList.add('opacity-50');
+            d2.loadBtn.disabled = true;
+            
+            // Show summary
+            const totalRows = 100;
+            const errorRows = sampleErrors.length;
+            const errorRate = ((errorRows / totalRows) * 100).toFixed(1);
+
+            d2.summary.innerHTML = `
+                <div class="grid grid-cols-4 gap-2">
+                    <div class="text-center">
+                        <div class="font-semibold text-gray-700">Total Rows</div>
+                        <div class="text-lg font-bold text-blue-600">${totalRows}</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="font-semibold text-gray-700">Error Rows</div>
+                        <div class="text-lg font-bold text-red-600">${errorRows}</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="font-semibold text-gray-700">Clean Rows</div>
+                        <div class="text-lg font-bold text-green-600">${totalRows - errorRows}</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="font-semibold text-gray-700">Error Rate</div>
+                        <div class="text-lg font-bold ${errorRate > 5 ? 'text-red-600' : 'text-yellow-600'}">${errorRate}%</div>
+                    </div>
+                </div>
+            `;
+            d2.summary.classList.remove('hidden');
+
+            // Show errors
+            displayErrors(sampleErrors);
+            
+            d2.filterBtn.disabled = false;
+            d2.filterBtn.classList.remove('opacity-50');
+            d2.message.textContent = `✓ Loaded ${errorRows} error entries`;
+            d2.message.classList.add('text-green-600');
+        });
+
+        d2.filterBtn.addEventListener('click', () => {
+            currentFilter = currentFilter === 'all' ? 'Amount' : 'all';
+            const filtered = currentFilter === 'all' 
+                ? sampleErrors 
+                : sampleErrors.filter(e => e.field === currentFilter);
+            
+            displayErrors(filtered);
+            d2.filterBtn.textContent = currentFilter === 'all' ? 'Filter by Type' : `Showing: ${currentFilter}`;
+            d2.message.textContent = currentFilter === 'all' 
+                ? 'Showing all errors' 
+                : `Filtered to ${currentFilter} errors`;
+        });
+
+        function displayErrors(errors) {
+            let html = '';
+            errors.forEach(error => {
+                html += `
+                    <div class="p-2 bg-red-50 border border-red-200 rounded flex items-start gap-2">
+                        <div class="font-semibold text-red-600 w-12">Row ${error.row}</div>
+                        <div class="flex-1">
+                            <div class="font-semibold">${error.field}</div>
+                            <div class="text-gray-600">Value: "${error.value}"</div>
+                            <div class="text-red-700 mt-1">⚠️ ${error.error}</div>
+                        </div>
+                        <div class="text-gray-400 text-xs whitespace-nowrap">${error.timestamp}</div>
+                    </div>
+                `;
+            });
+            d2.errors.innerHTML = html;
+        }
+    }
+};
+</script>
+
