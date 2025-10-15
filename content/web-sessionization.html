@@ -1,0 +1,307 @@
+<main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    <div class="max-w-4xl mx-auto">
+        <div class="space-y-12">
+            
+            <!-- Intro Section -->
+            <section id="intro" class="text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Sessionize Web Analytics Funnel</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Transform noisy page-view event streams into meaningful user sessions with start/end times, page counts, and conversion flags. Turn clickstream chaos into actionable insights.</p>
+                <div class="pro-tip p-4 rounded-md my-6 max-w-2xl mx-auto">
+                    <p><strong class="font-semibold text-yellow-800">Why This Matters:</strong> Raw analytics are just rows of events. Sessionization groups events into visits, letting you analyze conversion rates, drop-off points, and user journeys. This pattern applies to any time-series event data: logins, API calls, sensor readings.</p>
+                </div>
+                <div class="bg-green-50 border-l-4 border-green-500 p-4 my-6 max-w-2xl mx-auto">
+                    <p class="text-left"><strong class="font-semibold text-green-800">What You'll Build:</strong> A session-level table with session_id, start/end timestamps, page count, conversion flag, and time-on-session metrics.</p>
+                </div>
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 my-6 max-w-2xl mx-auto">
+                    <p class="text-left"><strong class="font-semibold text-blue-800">Key Skills:</strong> Sessionization logic, rolling metrics, indexing, time calculations, group aggregations</p>
+                </div>
+            </section>
+
+            <!-- Step 1 -->
+            <section id="step1" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">1</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Load Web Analytics Events</h2>
+                        <p class="mt-2 text-gray-700">Connect to your page view log or analytics export with timestamp, user ID, and page URL data.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Load your event data (Google Analytics export, server logs, or tracking database).</li>
+                        <li>Ensure you have these columns:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li><strong>Event_Timestamp</strong> (when the page view occurred)</li>
+                                <li><strong>User_ID</strong> or Session_ID (to group events)</li>
+                                <li><strong>Page_URL</strong> or Event_Type</li>
+                                <li><strong>Event_ID</strong> (unique per event, optional)</li>
+                            </ul>
+                        </li>
+                        <li>Set <strong class="font-semibold text-gray-800">Event_Timestamp</strong> to Date/Time type.</li>
+                    </ul>
+                    <div class="bg-white rounded border p-4 mt-4 max-w-2xl">
+                        <p class="text-sm font-semibold text-gray-700 mb-2">Sample Event Data:</p>
+                        <table class="w-full text-xs">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="p-2 text-left border">User_ID</th>
+                                    <th class="p-2 text-left border">Event_Timestamp</th>
+                                    <th class="p-2 text-left border">Page_URL</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="p-2 border">user_123</td><td class="p-2 border">10/15 09:00:00</td><td class="p-2 border">/home</td></tr>
+                                <tr><td class="p-2 border">user_123</td><td class="p-2 border">10/15 09:02:15</td><td class="p-2 border">/products</td></tr>
+                                <tr><td class="p-2 border">user_123</td><td class="p-2 border">10/15 09:05:30</td><td class="p-2 border">/checkout</td></tr>
+                                <tr><td class="p-2 border">user_123</td><td class="p-2 border">10/15 12:00:00</td><td class="p-2 border">/home</td></tr>
+                            </tbody>
+                        </table>
+                        <p class="text-xs text-gray-500 mt-2 italic">Note the 3-hour gap—that's a new session!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 2 -->
+            <section id="step2" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">2</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Sort by User and Timestamp</h2>
+                        <p class="mt-2 text-gray-700">Sessionization requires events to be in chronological order for each user.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Click <strong class="font-semibold text-gray-800">Sort</strong> in the Home tab.</li>
+                        <li>Sort by:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li><strong>User_ID</strong> (ascending)</li>
+                                <li>Then by <strong>Event_Timestamp</strong> (ascending)</li>
+                            </ul>
+                        </li>
+                        <li>Now all events for each user are grouped together in time order.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 3 -->
+            <section id="step3" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">3</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Calculate Time Since Previous Event</h2>
+                        <p class="mt-2 text-gray-700">Add a column showing the gap between this event and the previous one for the same user.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Add an <strong class="font-semibold text-gray-800">Index Column</strong> (starting at 0).</li>
+                        <li>Add a custom column called <strong class="font-semibold text-gray-800">Previous_Timestamp</strong>:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>let
+    currentIndex = [Index],
+    currentUser = [User_ID]
+in
+    if currentIndex = 0 then null
+    else 
+        let
+            prevRow = Table.SelectRows(#"Added Index", each [Index] = currentIndex - 1){0},
+            prevUser = prevRow[User_ID]
+        in
+            if currentUser = prevUser then prevRow[Event_Timestamp] else null</code></pre>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="3">
+                        <li>Add another column for <strong class="font-semibold text-gray-800">Minutes_Since_Previous</strong>:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>if [Previous_Timestamp] = null then null
+else Duration.TotalMinutes([Event_Timestamp] - [Previous_Timestamp])</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 4 -->
+            <section id="step4" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">4</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Flag Session Boundaries</h2>
+                        <p class="mt-2 text-gray-700">Mark rows where a new session starts—either the first event for a user or after a timeout period (e.g., 30 minutes of inactivity).</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Define your session timeout (typically 30 minutes).</li>
+                        <li>Add a custom column <strong class="font-semibold text-gray-800">Is_New_Session</strong>:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>let
+    timeout = 30  // minutes
+in
+    if [Minutes_Since_Previous] = null then 1  // First event
+    else if [Minutes_Since_Previous] > timeout then 1  // New session after timeout
+    else 0  // Same session</code></pre>
+                    </div>
+                    <div class="pro-tip p-4 rounded-md mt-4 max-w-3xl">
+                        <p><strong class="font-semibold text-yellow-800">Session Timeout:</strong> 30 minutes is standard for web analytics. Adjust based on your use case (shorter for high-frequency apps, longer for research sites).</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 5 -->
+            <section id="step5" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">5</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Create Session IDs</h2>
+                        <p class="mt-2 text-gray-700">Generate a unique session ID by doing a cumulative sum of the session boundary flags.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Add a custom column <strong class="font-semibold text-gray-800">Session_ID</strong> using a running total:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>List.Sum(List.FirstN(#"Added Is_New_Session"[Is_New_Session], [Index] + 1))</code></pre>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="2">
+                        <li>This creates a unique session number that increments each time <strong>Is_New_Session = 1</strong>.</li>
+                        <li>Optional: Concatenate with User_ID for globally unique sessions: <code class="text-xs bg-gray-100 px-2 py-1 rounded">[User_ID] & "_" & Text.From([Session_ID])</code></li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 6 -->
+            <section id="step6" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">6</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Add Event Index per Session</h2>
+                        <p class="mt-2 text-gray-700">Number events within each session (1st page, 2nd page, etc.) to identify entry and exit pages.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Group by <strong class="font-semibold text-gray-800">Session_ID</strong>.</li>
+                        <li>Click <strong class="font-semibold text-gray-800">Add Column > Index Column > From 1</strong> within each group.</li>
+                        <li>Name it <strong class="font-semibold text-gray-800">Event_Number</strong>.</li>
+                        <li>This lets you identify:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li>Entry page (Event_Number = 1)</li>
+                                <li>Exit page (Event_Number = MAX for that session)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 7 -->
+            <section id="step7" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">7</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Aggregate to Session Level</h2>
+                        <p class="mt-2 text-gray-700">Roll up events into session-level metrics: start time, end time, page count, duration.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Click <strong class="font-semibold text-gray-800">Group By</strong> (Transform tab).</li>
+                        <li>Group by <strong class="font-semibold text-gray-800">Session_ID</strong> and <strong class="font-semibold text-gray-800">User_ID</strong>.</li>
+                        <li>Add these aggregations:</li>
+                    </ul>
+                    <div class="bg-white rounded border p-4 mt-3 max-w-2xl text-xs">
+                        <table class="w-full">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="p-2 text-left border">New Column</th>
+                                    <th class="p-2 text-left border">Operation</th>
+                                    <th class="p-2 text-left border">Source</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="p-2 border">Session_Start</td><td class="p-2 border">Min</td><td class="p-2 border">Event_Timestamp</td></tr>
+                                <tr><td class="p-2 border">Session_End</td><td class="p-2 border">Max</td><td class="p-2 border">Event_Timestamp</td></tr>
+                                <tr><td class="p-2 border">Page_Count</td><td class="p-2 border">Count Rows</td><td class="p-2 border">-</td></tr>
+                                <tr><td class="p-2 border">All_Rows</td><td class="p-2 border">All Rows</td><td class="p-2 border">-</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="4">
+                        <li>Add a custom column for <strong class="font-semibold text-gray-800">Time_On_Session</strong> (in minutes):</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>Duration.TotalMinutes([Session_End] - [Session_Start])</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 8 -->
+            <section id="step8" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">8</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Add Conversion Flags</h2>
+                        <p class="mt-2 text-gray-700">Mark sessions where a conversion event occurred (e.g., visited /checkout or /thank-you).</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Expand the <strong class="font-semibold text-gray-800">All_Rows</strong> column to access individual event details.</li>
+                        <li>Add a custom column <strong class="font-semibold text-gray-800">Has_Conversion</strong>:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>List.Contains([All_Rows][Page_URL], "/thank-you")</code></pre>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="3">
+                        <li>This returns <strong>true</strong> if any event in the session visited the conversion page.</li>
+                        <li>Remove the <strong>All_Rows</strong> column to clean up your table.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 9 -->
+            <section id="step9" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">9</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Analyze Session Funnel</h2>
+                        <p class="mt-2 text-gray-700">Load your sessionized data and build conversion funnel reports.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Click <strong class="font-semibold text-gray-800">Close & Load</strong>.</li>
+                        <li>Now you can analyze:
+                            <ul class="list-disc list-inside ml-6 mt-2 space-y-1">
+                                <li>Conversion rate = Sessions with conversion / Total sessions</li>
+                                <li>Average pages per session by conversion status</li>
+                                <li>Average time on session for converters vs. non-converters</li>
+                                <li>Entry page performance (conversion rate by landing page)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="bg-green-50 border-l-4 border-green-500 p-4 my-6 max-w-3xl">
+                        <p><strong class="font-semibold text-green-800">Success!</strong> You've turned messy event logs into meaningful sessions with actionable metrics. This pattern works for any time-series events: app usage, sensor data, API calls.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bonus Section -->
+            <section id="bonus" class="step-card rounded-xl p-6 sm:p-8 bg-indigo-50 border-indigo-200">
+                <h2 class="text-xl sm:text-2xl font-bold text-indigo-900 mb-4">🚀 Advanced: Funnel Step Analysis</h2>
+                <div class="space-y-3 text-gray-700">
+                    <p>Track specific funnel steps (Home → Product → Cart → Checkout):</p>
+                    <ul class="list-disc list-inside ml-4 space-y-2 text-sm">
+                        <li>Create boolean columns for each step (e.g., <code class="text-xs bg-gray-100 px-2 py-1 rounded">Visited_Product</code>)</li>
+                        <li>Aggregate these at session level to see which steps were completed</li>
+                        <li>Calculate drop-off rates between each consecutive step</li>
+                        <li>Identify where most users abandon the funnel</li>
+                    </ul>
+                </div>
+            </section>
+
+        </div>
+    </div>
+</main>

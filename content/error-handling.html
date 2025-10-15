@@ -1,0 +1,308 @@
+<main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    <div class="max-w-4xl mx-auto">
+        <div class="space-y-12">
+            
+            <!-- Intro Section -->
+            <section id="intro" class="text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Error Reporting and Audit Trail</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Build robust, production-ready queries by capturing errors instead of failing silently. Create audit trails showing what data was processed, what failed, and why—building trust and enabling safe automation at scale.</p>
+                <div class="pro-tip p-4 rounded-md my-6 max-w-2xl mx-auto">
+                    <p><strong class="font-semibold text-yellow-800">Why This Matters:</strong> Queries that work on sample data often break in production: bad file formats, missing columns, corrupted rows, network timeouts. Without error handling, these fail silently or stop the entire refresh. Proper error handling isolates bad data, logs issues, and keeps the pipeline running.</p>
+                </div>
+                <div class="bg-green-50 border-l-4 border-green-500 p-4 my-6 max-w-2xl mx-auto">
+                    <p class="text-left"><strong class="font-semibold text-green-800">What You'll Build:</strong> An error table capturing failed rows with error messages, a summary diagnostics query showing success/failure rates, and row-level audit metadata.</p>
+                </div>
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 my-6 max-w-2xl mx-auto">
+                    <p class="text-left"><strong class="font-semibold text-blue-800">Key Skills:</strong> Try/otherwise error handling, error tables, lightweight logging, data quality metrics</p>
+                </div>
+            </section>
+
+            <!-- Step 1 -->
+            <section id="step1" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">1</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Identify Risky Steps</h2>
+                        <p class="mt-2 text-gray-700">Look through your query and find steps that might fail: type conversions, calculations on text fields, web API calls, file operations.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <div class="space-y-3 text-gray-600 max-w-3xl">
+                        <p>Common failure points:</p>
+                        <ul class="list-disc list-inside ml-4 space-y-2">
+                            <li><strong class="font-semibold text-gray-800">Type conversions:</strong> "abc" can't convert to a number</li>
+                            <li><strong class="font-semibold text-gray-800">Date parsing:</strong> "13/25/2025" isn't a valid date</li>
+                            <li><strong class="font-semibold text-gray-800">Division:</strong> Divide by zero errors</li>
+                            <li><strong class="font-semibold text-gray-800">API calls:</strong> Network timeouts or 404 errors</li>
+                            <li><strong class="font-semibold text-gray-800">File access:</strong> Missing files in folder connectors</li>
+                            <li><strong class="font-semibold text-gray-800">Lookups:</strong> Missing keys in merge operations</li>
+                        </ul>
+                    </div>
+                    <div class="pro-tip p-4 rounded-md mt-4 max-w-3xl">
+                        <p><strong class="font-semibold text-yellow-800">Strategy:</strong> Wrap each risky operation in try/otherwise logic, returning null or a default value on error while capturing the error message.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 2 -->
+            <section id="step2" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">2</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Add Try/Otherwise for Type Conversions</h2>
+                        <p class="mt-2 text-gray-700">Wrap risky type conversions (text to number, text to date) in error-handling logic.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Instead of directly changing a column type, use a custom column with try/otherwise:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>// Safe number conversion
+let
+    result = try Number.From([Amount])
+in
+    if result[HasError] then null else result[Value]</code></pre>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="2">
+                        <li>For dates:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>// Safe date conversion
+let
+    result = try Date.From([Order Date])
+in
+    if result[HasError] then null else result[Value]</code></pre>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="3">
+                        <li>Name these columns with <strong>_Safe</strong> suffix (e.g., <strong class="font-semibold text-gray-800">Amount_Safe</strong>).</li>
+                        <li>Rows with unconvertible data will have null values instead of causing query failures.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 3 -->
+            <section id="step3" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">3</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Capture Error Messages</h2>
+                        <p class="mt-2 text-gray-700">For each wrapped operation, add a companion column storing the error message when conversion fails.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Add a custom column <strong class="font-semibold text-gray-800">Amount_Error</strong>:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>let
+    result = try Number.From([Amount])
+in
+    if result[HasError] 
+    then result[Error][Message] 
+    else null</code></pre>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="2">
+                        <li>Now when a conversion fails, you get both:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li><strong>Amount_Safe = null</strong> (won't break downstream logic)</li>
+                                <li><strong>Amount_Error = "Unable to convert 'abc' to number"</strong> (tells you why)</li>
+                            </ul>
+                        </li>
+                        <li>Repeat for all risky conversions (dates, numbers, booleans).</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 4 -->
+            <section id="step4" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">4</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Add Row-Level Error Flag</h2>
+                        <p class="mt-2 text-gray-700">Create a single column indicating whether the row has any errors.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Add a custom column <strong class="font-semibold text-gray-800">Has_Error</strong>:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>if [Amount_Error] <> null or [Date_Error] <> null 
+then true 
+else false</code></pre>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="2">
+                        <li>Add a <strong class="font-semibold text-gray-800">Error_Summary</strong> column concatenating all error messages:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>Text.Combine(
+    List.Select(
+        {[Amount_Error], [Date_Error], [Quantity_Error]},
+        each _ <> null
+    ),
+    "; "
+)</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 5 -->
+            <section id="step5" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">5</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Create Separate Good and Error Queries</h2>
+                        <p class="mt-2 text-gray-700">Split your data into two queries: one with clean rows that will load to your destination, and one with errors for review.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Right-click your main query and select <strong class="font-semibold text-gray-800">Reference</strong>.</li>
+                        <li>Name the reference <strong class="font-semibold text-gray-800">Data_Clean</strong>.</li>
+                        <li>Filter to <strong class="font-semibold text-gray-800">Has_Error = false</strong>.</li>
+                        <li>Remove error-tracking columns (Amount_Error, Date_Error, etc.).</li>
+                        <li>This query loads successfully processed rows to your destination.</li>
+                    </ul>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="6">
+                        <li>Create another reference named <strong class="font-semibold text-gray-800">Data_Errors</strong>.</li>
+                        <li>Filter to <strong class="font-semibold text-gray-800">Has_Error = true</strong>.</li>
+                        <li>Keep all columns including error messages.</li>
+                        <li>Add metadata columns:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li><strong>Error_Logged_Date</strong> = <code class="text-xs bg-gray-100 px-2 py-1 rounded">DateTime.LocalNow()</code></li>
+                                <li><strong>Source_File</strong> (if from folder connector)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 6 -->
+            <section id="step6" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">6</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Build a Diagnostics Summary</h2>
+                        <p class="mt-2 text-gray-700">Create a summary query showing data quality metrics: total rows, error count, error rate, error types.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Create a new query referencing your main query.</li>
+                        <li>Use <strong class="font-semibold text-gray-800">Group By</strong> to summarize:</li>
+                    </ul>
+                    <div class="bg-white rounded border p-4 mt-3 max-w-2xl text-xs">
+                        <table class="w-full">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="p-2 text-left border">Metric</th>
+                                    <th class="p-2 text-left border">Calculation</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="p-2 border">Total_Rows</td><td class="p-2 border">Count all rows</td></tr>
+                                <tr><td class="p-2 border">Error_Rows</td><td class="p-2 border">Count where Has_Error = true</td></tr>
+                                <tr><td class="p-2 border">Clean_Rows</td><td class="p-2 border">Count where Has_Error = false</td></tr>
+                                <tr><td class="p-2 border">Error_Rate</td><td class="p-2 border">Error_Rows / Total_Rows</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="3">
+                        <li>Add a row for each error type:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>// Count of amount conversion errors
+Amount_Errors = Table.RowCount(
+    Table.SelectRows(Source, each [Amount_Error] <> null)
+)</code></pre>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="4">
+                        <li>Load this as a single-row summary table you can monitor.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 7 -->
+            <section id="step7" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">7</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Add Processing Audit Trail</h2>
+                        <p class="mt-2 text-gray-700">For production queries, add columns tracking when data was loaded and from which source.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>In your <strong class="font-semibold text-gray-800">Data_Clean</strong> query, add audit columns:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>// When was this row processed?
+Loaded_DateTime = DateTime.LocalNow()
+
+// Which file did it come from? (for folder connectors)
+Source_File = [Source.Name]
+
+// Unique batch ID
+Batch_ID = Text.From(Date.Year(Loaded_DateTime)) & 
+           Text.PadStart(Text.From(Date.Month(Loaded_DateTime)), 2, "0") &
+           Text.PadStart(Text.From(Date.Day(Loaded_DateTime)), 2, "0")</code></pre>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="2">
+                        <li>These columns help you:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li>Track which batch a row came from</li>
+                                <li>Identify source files if errors appear later</li>
+                                <li>Support incremental refresh strategies</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 8 -->
+            <section id="step8" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">8</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Monitor and Respond to Errors</h2>
+                        <p class="mt-2 text-gray-700">Set up a review process for the error table and diagnostics.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Load the <strong class="font-semibold text-gray-800">Data_Errors</strong> query to a separate worksheet.</li>
+                        <li>Load the <strong class="font-semibold text-gray-800">Diagnostics_Summary</strong> to monitor error rates.</li>
+                        <li>Set up conditional formatting:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li>Green if Error_Rate < 1%</li>
+                                <li>Yellow if Error_Rate 1-5%</li>
+                                <li>Red if Error_Rate > 5%</li>
+                            </ul>
+                        </li>
+                        <li>Review error table regularly to identify data quality issues at the source.</li>
+                    </ul>
+                    <div class="bg-green-50 border-l-4 border-green-500 p-4 my-6 max-w-3xl">
+                        <p><strong class="font-semibold text-green-800">Success!</strong> Your query now handles errors gracefully, provides visibility into data quality, and keeps running even when individual rows fail. This is production-grade Power Query.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bonus Section -->
+            <section id="bonus" class="step-card rounded-xl p-6 sm:p-8 bg-indigo-50 border-indigo-200">
+                <h2 class="text-xl sm:text-2xl font-bold text-indigo-900 mb-4">🚀 Advanced: Automated Error Alerts</h2>
+                <div class="space-y-3 text-gray-700">
+                    <p>Integrate with Power Automate to send alerts when error rates spike:</p>
+                    <ul class="list-disc list-inside ml-4 space-y-2 text-sm">
+                        <li>Publish your diagnostics table to Power BI or SharePoint</li>
+                        <li>Create a Power Automate flow triggered when Error_Rate > threshold</li>
+                        <li>Send email to data stewards with link to error table</li>
+                        <li>Include top error messages in the alert body</li>
+                    </ul>
+                    <p class="text-sm">This enables "hands-off" monitoring of automated data pipelines.</p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+</main>

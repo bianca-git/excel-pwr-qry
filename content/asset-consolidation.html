@@ -1,0 +1,296 @@
+<main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    <div class="max-w-4xl mx-auto">
+        <div class="space-y-12">
+            
+            <!-- Intro Section -->
+            <section id="intro" class="text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Inventory / IT Asset Consolidation</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Merge multiple asset lists from different teams (IT, facilities, finance) into a single source of truth. Deduplicate using fuzzy matching and apply priority rules when sources conflict.</p>
+                <div class="pro-tip p-4 rounded-md my-6 max-w-2xl mx-auto">
+                    <p><strong class="font-semibold text-yellow-800">Why This Matters:</strong> Every team maintains their own asset list—IT has laptops, facilities has furniture, finance has depreciation schedules. They never match. This guide shows how to consolidate them with fuzzy deduplication and intelligent conflict resolution. Reduces audit headaches and enables accurate asset tracking.</p>
+                </div>
+                <div class="bg-green-50 border-l-4 border-green-500 p-4 my-6 max-w-2xl mx-auto">
+                    <p class="text-left"><strong class="font-semibold text-green-800">What You'll Build:</strong> A single canonical asset list with preferred-source fields, variance flags showing where sources disagree, and deduplication scores for review.</p>
+                </div>
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 my-6 max-w-2xl mx-auto">
+                    <p class="text-left"><strong class="font-semibold text-blue-800">Key Skills:</strong> Fuzzy dedupe, priority-source merge, canonical keys, conflict detection, data quality scoring</p>
+                </div>
+            </section>
+
+            <!-- Step 1 -->
+            <section id="step1" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">1</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Load All Source Systems</h2>
+                        <p class="mt-2 text-gray-700">Connect to each asset list maintained by different teams—IT inventory, facilities tracking, finance fixed assets, etc.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Load each source system's asset list (Excel, CSV, database).</li>
+                        <li>For each source, ensure you have:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li><strong>Asset Identifier</strong> (serial number, hostname, asset tag)</li>
+                                <li><strong>Description</strong> (make, model, location)</li>
+                                <li><strong>Owner/User</strong></li>
+                                <li><strong>Purchase Date/Value</strong> (if available)</li>
+                            </ul>
+                        </li>
+                        <li>Add a <strong class="font-semibold text-gray-800">Source</strong> column to each query (e.g., "IT", "Finance", "Facilities").</li>
+                    </ul>
+                    <div class="bg-white rounded border p-4 mt-4 max-w-3xl">
+                        <p class="text-sm font-semibold text-gray-700 mb-2">Example: Same Laptop in Three Systems</p>
+                        <table class="w-full text-xs">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="p-2 text-left border">Source</th>
+                                    <th class="p-2 text-left border">Serial Number</th>
+                                    <th class="p-2 text-left border">Hostname</th>
+                                    <th class="p-2 text-left border">User</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="p-2 border">IT</td><td class="p-2 border">SN12345ABC</td><td class="p-2 border">LAPTOP-JD01</td><td class="p-2 border">John Doe</td></tr>
+                                <tr><td class="p-2 border">Finance</td><td class="p-2 border">SN12345ABC</td><td class="p-2 border">-</td><td class="p-2 border">J. Doe</td></tr>
+                                <tr><td class="p-2 border">Facilities</td><td class="p-2 border">SN-12345-ABC</td><td class="p-2 border">laptop-jd01</td><td class="p-2 border">John D</td></tr>
+                            </tbody>
+                        </table>
+                        <p class="text-xs text-gray-500 mt-2 italic">Same asset, different formats!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 2 -->
+            <section id="step2" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">2</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Standardize Identifiers</h2>
+                        <p class="mt-2 text-gray-700">Clean and normalize serial numbers, hostnames, and other identifiers so you can match records across systems.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>For each source query, add custom columns to clean identifiers:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>// Clean serial number
+Serial_Clean = Text.Upper(Text.Trim(Text.Replace([Serial Number], "-", "")))
+
+// Clean hostname
+Hostname_Clean = Text.Upper(Text.Trim([Hostname]))</code></pre>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="2">
+                        <li>Apply the same cleaning to all sources for consistency.</li>
+                        <li>This ensures "SN-12345-ABC" and "SN12345ABC" will match.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 3 -->
+            <section id="step3" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">3</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Append All Sources</h2>
+                        <p class="mt-2 text-gray-700">Combine all asset lists into a single table for deduplication.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Rename columns across all sources to a common schema.</li>
+                        <li>Use <strong class="font-semibold text-gray-800">Append Queries</strong> to stack all sources together.</li>
+                        <li>Name this query <strong class="font-semibold text-gray-800">All Assets Combined</strong>.</li>
+                        <li>You'll now have duplicates—same asset appearing multiple times from different sources.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 4 -->
+            <section id="step4" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">4</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Create a Canonical Key</h2>
+                        <p class="mt-2 text-gray-700">Generate a unique canonical key for each distinct asset by combining cleaned identifiers.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Add a custom column <strong class="font-semibold text-gray-800">Canonical_Key</strong>:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>// Use serial if available, else hostname
+if [Serial_Clean] <> null and [Serial_Clean] <> "" 
+then [Serial_Clean]
+else if [Hostname_Clean] <> null 
+then [Hostname_Clean]
+else [Asset_Tag_Clean]</code></pre>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="2">
+                        <li>This creates a fallback hierarchy: prefer serial number, then hostname, then asset tag.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 5 -->
+            <section id="step5" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">5</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Fuzzy Deduplicate</h2>
+                        <p class="mt-2 text-gray-700">Group records that likely represent the same asset, even if identifiers aren't exactly identical.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Group by <strong class="font-semibold text-gray-800">Canonical_Key</strong> to find exact matches first.</li>
+                        <li>For remaining records without matches, use <strong class="font-semibold text-gray-800">fuzzy merge</strong>:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li>Merge table with itself on Canonical_Key</li>
+                                <li>Enable fuzzy matching with 0.8 similarity threshold</li>
+                                <li>This catches variants like "LAPTOP01" vs "LAPTOP-01"</li>
+                            </ul>
+                        </li>
+                        <li>Assign a <strong class="font-semibold text-gray-800">Master_Asset_ID</strong> to each deduplicated group.</li>
+                    </ul>
+                    <div class="pro-tip p-4 rounded-md mt-4 max-w-3xl">
+                        <p><strong class="font-semibold text-yellow-800">Review Fuzzy Matches:</strong> Always export fuzzy matches with scores below 0.95 for manual review. A laptop and a desktop might have similar hostnames but be different assets.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 6 -->
+            <section id="step6" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">6</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Apply Source Priority Rules</h2>
+                        <p class="mt-2 text-gray-700">When multiple sources have data for the same asset, decide which source is "authoritative" for each field.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Create a priority ranking table:</li>
+                    </ul>
+                    <div class="bg-white rounded border p-4 mt-3 max-w-2xl">
+                        <p class="text-sm font-semibold text-gray-700 mb-2">Source Priority Rules:</p>
+                        <table class="w-full text-xs">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="p-2 text-left border">Field</th>
+                                    <th class="p-2 text-left border">Preferred Source</th>
+                                    <th class="p-2 text-left border">Fallback</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="p-2 border">Serial Number</td><td class="p-2 border">IT</td><td class="p-2 border">Finance</td></tr>
+                                <tr><td class="p-2 border">Purchase Value</td><td class="p-2 border">Finance</td><td class="p-2 border">IT</td></tr>
+                                <tr><td class="p-2 border">Current User</td><td class="p-2 border">IT</td><td class="p-2 border">Facilities</td></tr>
+                                <tr><td class="p-2 border">Location</td><td class="p-2 border">Facilities</td><td class="p-2 border">IT</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="2">
+                        <li>For each field, add a custom column that picks the preferred source:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>// Preferred Serial Number
+let
+    IT_Row = Table.SelectRows(#"Grouped", each [Source] = "IT"),
+    Finance_Row = Table.SelectRows(#"Grouped", each [Source] = "Finance")
+in
+    if Table.RowCount(IT_Row) > 0 and IT_Row{0}[Serial Number] <> null 
+    then IT_Row{0}[Serial Number]
+    else if Table.RowCount(Finance_Row) > 0 
+    then Finance_Row{0}[Serial Number]
+    else null</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 7 -->
+            <section id="step7" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">7</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Add Variance Flags</h2>
+                        <p class="mt-2 text-gray-700">Identify fields where sources disagree so you can investigate discrepancies.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>For critical fields, add columns flagging conflicts:</li>
+                    </ul>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-3 max-w-3xl overflow-x-auto">
+                        <pre class="text-sm"><code>// User Variance Flag
+let
+    IT_User = IT_Row{0}[User],
+    Finance_User = Finance_Row{0}[User]
+in
+    if IT_User <> Finance_User and IT_User <> null and Finance_User <> null
+    then "VARIANCE"
+    else "OK"</code></pre>
+                    </div>
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl mt-4" start="2">
+                        <li>Filter to rows with variances for review by data stewards.</li>
+                        <li>Common variances:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li>User name differences (e.g., "John Doe" vs "J. Doe")</li>
+                                <li>Location discrepancies (asset moved but not updated)</li>
+                                <li>Purchase value differences (revaluation, exchange rates)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 8 -->
+            <section id="step8" class="step-card rounded-xl p-6 sm:p-8">
+                <div class="flex items-start gap-4">
+                    <div class="step-number w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg">8</div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Create the Master Asset List</h2>
+                        <p class="mt-2 text-gray-700">Output a single canonical asset record per Master_Asset_ID with best-of-breed data from all sources.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <ul class="list-decimal list-inside space-y-2 text-gray-600 max-w-3xl">
+                        <li>Group by <strong class="font-semibold text-gray-800">Master_Asset_ID</strong>.</li>
+                        <li>For each group, select the preferred values based on your priority rules.</li>
+                        <li>Include these metadata columns:
+                            <ul class="list-disc list-inside ml-6 mt-2">
+                                <li><strong>Source_Count</strong> (how many sources had this asset)</li>
+                                <li><strong>Match_Quality</strong> (exact vs fuzzy match score)</li>
+                                <li><strong>Has_Variance</strong> (flag if any field had conflicts)</li>
+                                <li><strong>Last_Updated</strong> (today's date)</li>
+                            </ul>
+                        </li>
+                        <li>Click <strong class="font-semibold text-gray-800">Close & Load</strong>.</li>
+                    </ul>
+                    <div class="bg-green-50 border-l-4 border-green-500 p-4 my-6 max-w-3xl">
+                        <p><strong class="font-semibold text-green-800">Success!</strong> You've consolidated multiple asset lists into a single source of truth with intelligent deduplication and conflict resolution. Auditors will love you.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bonus Section -->
+            <section id="bonus" class="step-card rounded-xl p-6 sm:p-8 bg-indigo-50 border-indigo-200">
+                <h2 class="text-xl sm:text-2xl font-bold text-indigo-900 mb-4">🚀 Advanced: Orphan Detection</h2>
+                <div class="space-y-3 text-gray-700">
+                    <p>Find assets that appear in one system but not others:</p>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto">
+                        <pre class="text-xs"><code>// Assets in IT but not in Finance = Missing from depreciation schedule
+IT_Only = 
+    Table.SelectRows(All_Assets, each [Source_Count] = 1 and [Source] = "IT")
+
+// Investigate why these aren't being tracked financially</code></pre>
+                    </div>
+                    <p class="text-sm">Orphan assets often indicate process gaps: purchases bypassing finance, disposals not logged, etc.</p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+</main>
