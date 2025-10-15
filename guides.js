@@ -83,7 +83,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 link.className = 'block px-4 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100';
                 link.innerHTML = `
                     <span class="font-semibold block">${guide.title}</span>
-                    <span class="text-xs text-gray-500">${guide.description}</span>
                 `;
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
