@@ -75,5 +75,12 @@
         "description": "Sophisticated cost allocation using custom functions and drivers.",
         "file": "content/allocation-engine.html",
         "complexity": "Mid"
+    },
+    {
+        "id": "batch-workbook-migration",
+        "title": "Batch Workbook Migration with VBA",
+        "description": "Automate table reference updates across multiple workbooks with verification and error handling.",
+        "file": "content/batch-workbook-migration.html",
+        "complexity": "Advanced"
     }
 ]

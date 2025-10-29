@@ -1,0 +1,825 @@
+<div class="guide-content">
+    <h1>Batch Workbook Migration with VBA Macro</h1>
+    
+    <div class="alert alert-info mb-6">
+        <strong>Purpose:</strong> This guide walks you through using a VBA macro to batch process multiple Excel workbooks, updating formulas from old data tables to new data tables while maintaining data integrity and logging all operations.
+    </div>
+
+    <!-- Overview Section -->
+    <section class="mb-8">
+        <h2>Overview</h2>
+        <p>The Batch Workbook Migration macro automates the process of:</p>
+        <ul class="list-disc list-inside ml-4 mb-4">
+            <li>Recursively processing all Excel files in a folder</li>
+            <li>Updating formula references from old tables to new tables</li>
+            <li>Verifying data integrity after updates</li>
+            <li>Protecting/unprotecting sheets with password management</li>
+            <li>Deleting obsolete data sheets</li>
+            <li>Logging all operations for audit trails</li>
+        </ul>
+    </section>
+
+    <!-- Prerequisites Section -->
+    <section class="mb-8">
+        <h2>Prerequisites</h2>
+        <ul class="list-disc list-inside ml-4">
+            <li>Excel (with VBA support) - desktop version recommended</li>
+            <li>Macro security settings enabled to allow VBA execution</li>
+            <li>All workbooks to be processed saved in .xlsm format (macro-enabled)</li>
+            <li>Your workbooks must have:
+                <ul class="list-circle list-inside ml-6 mt-2">
+                    <li>A new sheet with the new data table (e.g., "NewDataSheet" with "NewTable")</li>
+                    <li>An old sheet to be removed (e.g., "OldDataSheet" with "OldTable")</li>
+                    <li>A verification sheet with a cell containing a formula that uses the table data</li>
+                </ul>
+            </li>
+            <li>Knowledge of your current sheet/table names and passwords</li>
+        </ul>
+    </section>
+
+    <!-- Configuration Section -->
+    <section class="mb-8">
+        <h2 class="flex items-center gap-2">
+            <span class="inline-block bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">1</span>
+            Configuration: Prepare Your Settings
+        </h2>
+        
+        <div class="bg-gray-50 p-4 rounded-lg border-l-4 border-blue-500 mb-4">
+            <p class="mb-4"><strong>Before creating the macro, you MUST gather this information about your workbooks:</strong></p>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="font-semibold text-gray-700">1. Old Sheet & Table Names</label>
+                    <p class="text-sm text-gray-600 mb-2">The sheet and table you want to REMOVE after migration:</p>
+                    <div class="bg-white p-3 rounded border">
+                        <code class="text-sm">Old Sheet: <input type="text" class="config-input" placeholder="e.g., OldDataSheet" data-config="oldSheet" style="border: 1px solid #ccc; padding: 4px; width: 200px;"></code><br>
+                        <code class="text-sm mt-2 inline-block">Old Table: <input type="text" class="config-input" placeholder="e.g., OldTable" data-config="oldTable" style="border: 1px solid #ccc; padding: 4px; width: 200px;"></code>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="font-semibold text-gray-700">2. New Sheet & Table Names</label>
+                    <p class="text-sm text-gray-600 mb-2">The sheet and table containing your new data:</p>
+                    <div class="bg-white p-3 rounded border">
+                        <code class="text-sm">New Sheet: <input type="text" class="config-input" placeholder="e.g., NewDataSheet" data-config="newSheet" style="border: 1px solid #ccc; padding: 4px; width: 200px;"></code><br>
+                        <code class="text-sm mt-2 inline-block">New Table: <input type="text" class="config-input" placeholder="e.g., NewTable" data-config="newTable" style="border: 1px solid #ccc; padding: 4px; width: 200px;"></code>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="font-semibold text-gray-700">3. Sheet Password</label>
+                    <p class="text-sm text-gray-600 mb-2">Password used to protect your worksheets (if any):</p>
+                    <div class="bg-white p-3 rounded border">
+                        <code class="text-sm">Password: <input type="password" class="config-input" placeholder="e.g., YourPasswordHere" data-config="password" style="border: 1px solid #ccc; padding: 4px; width: 200px;"></code>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="font-semibold text-gray-700">4. Verification Cell Reference & Expected Value</label>
+                    <p class="text-sm text-gray-600 mb-2">A cell that contains a formula using your table data (for integrity checking):</p>
+                    <div class="bg-white p-3 rounded border">
+                        <code class="text-sm">Cell Address: <input type="text" class="config-input" placeholder="e.g., Summary!B5" data-config="verifyCell" style="border: 1px solid #ccc; padding: 4px; width: 200px;"></code><br>
+                        <code class="text-sm mt-2 inline-block">Expected Value: <input type="text" class="config-input" placeholder="e.g., 12345" data-config="expectedValue" style="border: 1px solid #ccc; padding: 4px; width: 200px;"></code>
+                    </div>
+                </div>
+            </div>
+
+            <button id="generateMacroBtn" class="mt-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Generate Configured Macro</button>
+        </div>
+    </section>
+
+    <!-- Step-by-Step Instructions -->
+    <section class="mb-8">
+        <h2 class="flex items-center gap-2">
+            <span class="inline-block bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">2</span>
+            Installation: Set Up the Macro
+        </h2>
+        
+        <div class="space-y-6">
+            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+                <h3 class="font-semibold mb-2">Step 1: Open a New Macro-Enabled Workbook</h3>
+                <ol class="list-decimal list-inside ml-4 space-y-2">
+                    <li>Create a new Excel workbook (or use an existing one)</li>
+                    <li>Save it as a <strong>macro-enabled</strong> workbook (.xlsm format)</li>
+                    <li>Give it a meaningful name like "MigrationMacro.xlsm"</li>
+                </ol>
+            </div>
+
+            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+                <h3 class="font-semibold mb-2">Step 2: Open the VBA Editor</h3>
+                <ol class="list-decimal list-inside ml-4 space-y-2">
+                    <li>Press <code class="bg-gray-200 px-1">Alt + F11</code> to open the VBA Editor</li>
+                    <li>You should see the "Project - VBAProject" panel on the left</li>
+                </ol>
+            </div>
+
+            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+                <h3 class="font-semibold mb-2">Step 3: Enable Required References</h3>
+                <ol class="list-decimal list-inside ml-4 space-y-2">
+                    <li>In the VBA Editor, go to <strong>Tools → References</strong></li>
+                    <li>Check the box for <strong>"Microsoft Scripting Runtime"</strong> (required for FileSystemObject)</li>
+                    <li>Click <strong>OK</strong></li>
+                </ol>
+            </div>
+
+            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+                <h3 class="font-semibold mb-2">Step 4: Create a New Module</h3>
+                <ol class="list-decimal list-inside ml-4 space-y-2">
+                    <li>Right-click on any folder in the Project panel on the left</li>
+                    <li>Select <strong>Insert → Module</strong></li>
+                    <li>A new module window will open</li>
+                </ol>
+            </div>
+
+            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+                <h3 class="font-semibold mb-2">Step 5: Paste the Macro Code</h3>
+                <ol class="list-decimal list-inside ml-4 space-y-2">
+                    <li>Copy the complete macro code from the section below</li>
+                    <li>Paste it into the blank module</li>
+                    <li>Replace the configuration values at the top with your settings (see Step 1)</li>
+                </ol>
+            </div>
+
+            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+                <h3 class="font-semibold mb-2">Step 6: Verify the Code</h3>
+                <ol class="list-decimal list-inside ml-4 space-y-2">
+                    <li>Press <code class="bg-gray-200 px-1">Ctrl + Shift + F9</code> to compile the code</li>
+                    <li>If there are no errors, the code is ready to use</li>
+                    <li>Close the VBA Editor (Alt + F4 or close the window)</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Macro Code -->
+    <section class="mb-8">
+        <h2 class="flex items-center gap-2">
+            <span class="inline-block bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">3</span>
+            The Macro Code
+        </h2>
+        
+        <div class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto" style="max-height: 600px; overflow-y: auto;">
+            <pre style="font-family: 'Courier New', monospace; font-size: 12px; white-space: pre-wrap; word-wrap: break-word;"><code id="macroCode">'' --- VBA MODULE ---
+'' --- PASTE THIS ENTIRE SCRIPT INTO A NEW MODULE IN YOUR .xlsm FILE ---
+
+Option Explicit
+
+' --- CONFIGURATION SECTION ---
+' --- YOU MUST UPDATE THESE VALUES BEFORE RUNNING ---
+
+' 1. Define the names of your old and new sheets and tables
+Private Const CONST_OLD_SHEET_NAME As String = "OldDataSheet" ' e.g., "Data_Dec2024"
+Private Const CONST_OLD_TABLE_NAME As String = "OldTable"     ' e.g., "Table_Dec2024"
+Private Const CONST_NEW_SHEET_NAME As String = "NewDataSheet" ' e.g., "Data_Jan2025"
+Private Const CONST_NEW_TABLE_NAME As String = "NewTable"     ' e.g., "Table_Jan2025"
+
+' 2. Define the password for your worksheets
+Private Const CONST_SHEET_PASSWORD As String = "YourPasswordHere"
+
+' 3. Define your verification criteria
+'    This cell MUST have a formula that uses the table data.
+Private Const CONST_VERIFY_CELL_ADDRESS As String = "Summary!B5" ' e.g., "Sheet1!A1"
+'    This is the value you EXPECT that cell to have AFTER the update.
+Private Const CONST_VERIFY_CELL_EXPECTED_VALUE As Variant = 12345 ' Or "Some Text"
+
+' --- END CONFIGURATION SECTION ---
+
+
+' --- GLOBAL VARIABLES ---
+Private g_LogFileNum As Integer
+Private g_LogFilePath As String
+Private g_App As Excel.Application
+
+' --- NEW/MOVED MODULE-LEVEL VARIABLES ---
+Private fso As Object ' FileSystemObject
+Private lSuccessCount As Long
+Private lFailCount As Long
+
+
+' --- MAIN CONTROLLER ---
+
+Public Sub Main_ProcessFolder()
+    Dim fld As Object
+    Dim sFolderPath As String
+    
+    ' Set up the global Excel application object
+    Set g_App = Excel.Application
+    
+    ' Set up the log file
+    If Not SetupLogging() Then Exit Sub
+    
+    ' Let user select the folder
+    With g_App.FileDialog(msoFileDialogFolderPicker)
+        .Title = "Select the Folder of Workbooks to Process"
+        If .Show = -1 Then
+            sFolderPath = .SelectedItems(1)
+        Else
+            LogMsg "User cancelled. No folder selected."
+            Exit Sub
+        End If
+    End With
+    
+    LogMsg "--- BATCH PROCESS STARTED ---"
+    LogMsg "Processing folder (recursively): " & sFolderPath
+    
+    ' Enable FSO (Requires "Microsoft Scripting Runtime" reference)
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    
+    On Error Resume Next
+    Set fld = fso.GetFolder(sFolderPath)
+    If Err.Number <> 0 Then
+        LogMsg "!!! CRITICAL ERROR: Could not access folder: " & sFolderPath
+        MsgBox "Could not access folder: " & sFolderPath & vbCrLf & "Please check permissions and path.", vbCritical
+        Close g_LogFileNum
+        Set fso = Nothing
+        Exit Sub
+    End If
+    On Error GoTo 0
+    
+    ' Disable screen updates for speed
+    g_App.ScreenUpdating = False
+    g_App.DisplayAlerts = False
+    
+    lSuccessCount = 0
+    lFailCount = 0
+    
+    ' --- MODIFIED ---
+    ' Start the new recursive process
+    Call ProcessFolderRecursive(fld)
+    
+    ' Re-enable screen updates
+    g_App.ScreenUpdating = True
+    g_App.DisplayAlerts = True
+    
+    LogMsg "--- BATCH PROCESS FINISHED ---"
+    LogMsg "Successfully processed: " & lSuccessCount & " files."
+    LogMsg "Failed to process: " & lFailCount & " files."
+    
+    ' Close the log file
+    Close g_LogFileNum
+    Set fso = Nothing ' Clean up FSO
+    MsgBox "Batch process complete. See log file on your Desktop for details."
+    
+End Sub
+
+' --- NEW RECURSIVE FUNCTION ---
+Private Sub ProcessFolderRecursive(ByVal fld As Object)
+    Dim fil As Object
+    Dim subFld As Object
+    
+    On Error Resume Next ' To handle folders/files with permission issues
+    
+    ' 1. Process all files in the current folder
+    For Each fil In fld.Files
+        ' Check for Excel file extensions
+        If LCase(fso.GetExtensionName(fil.Path)) Like "xls*" Then
+            
+            ' Process the individual workbook
+            If ProcessWorkbook(fil.Path) Then
+                lSuccessCount = lSuccessCount + 1
+            Else
+                lFailCount = lFailCount + 1
+            End If
+            
+        End If
+    Next fil
+    
+    ' 2. Loop through all subfolders and call this function again
+    For Each subFld In fld.SubFolders
+        LogMsg "--- Entering Subfolder: " & subFld.Path & " ---"
+        Call ProcessFolderRecursive(subFld)
+        LogMsg "--- Exiting Subfolder: " & subFld.Path & " ---"
+    Next subFld
+    
+    On Error GoTo 0
+End Sub
+
+
+' --- WORKER FUNCTIONS ---
+
+Private Function ProcessWorkbook(ByVal sFilePath As String) As Boolean
+    ' This function processes a single workbook.
+    ' Returns TRUE for success, FALSE for failure.
+    Dim wb As Workbook
+    Dim bVerified As Boolean
+    
+    On Error GoTo HandleError
+    
+    ' 1. Open the workbook
+    Set wb = g_App.Workbooks.Open(sFilePath, UpdateLinks:=0, ReadOnly:=False)
+    LogMsg "Processing file: " & wb.Name
+    
+    ' 2. Check if new data sheet/table even exists before we do anything
+    If Not CheckPrerequisites(wb) Then
+        LogMsg "!!! FAILED: Prerequisites not met (new sheet/table not found)."
+        wb.Close SaveChanges:=False
+        ProcessWorkbook = False
+        Exit Function
+    End If
+    
+    ' 3. Unlock all sheets
+    Call UnlockAllSheets(wb, CONST_SHEET_PASSWORD)
+    
+    ' 4. Update all formulas
+    Call UpdateAllFormulas(wb, CONST_OLD_TABLE_NAME, CONST_NEW_TABLE_NAME)
+    
+    ' 5. Verify the update
+    bVerified = VerifyUpdate(wb, CONST_VERIFY_CELL_ADDRESS, CONST_VERIFY_CELL_EXPECTED_VALUE)
+    
+    If bVerified Then
+        LogMsg "Verification PASSED."
+        
+        ' 6. Delete the old sheet
+        Call DeleteOldSheet(wb, CONST_OLD_SHEET_NAME)
+        
+        ' 7. Lock all sheets
+        Call LockAllSheets(wb, CONST_SHEET_PASSWORD)
+        
+        ' 8. Save and Close
+        wb.Close SaveChanges:=True
+        LogMsg "SUCCESS: File saved and closed."
+        ProcessWorkbook = True
+        
+    Else
+        LogMsg "!!! FAILED: Verification failed. Reverting changes."
+        wb.Close SaveChanges:=False
+        ProcessWorkbook = False
+    End If
+    
+    Exit Function
+    
+HandleError:
+    LogMsg "!!! CRITICAL ERROR processing " & sFilePath & ": " & Err.Description
+    If Not wb Is Nothing Then
+        wb.Close SaveChanges:=False ' Rollback on error
+    End If
+    ProcessWorkbook = False
+End Function
+
+Private Function CheckPrerequisites(wb As Workbook) As Boolean
+    ' Checks if the new sheet and new table exist before we start
+    Dim ws As Worksheet
+    Dim tbl As ListObject
+    
+    On Error Resume Next
+    Set ws = wb.Worksheets(CONST_NEW_SHEET_NAME)
+    If ws Is Nothing Then
+        LogMsg "Prerequisite check failed: New sheet '" & CONST_NEW_SHEET_NAME & "' not found."
+        CheckPrerequisites = False
+        Exit Function
+    End If
+    
+    Set tbl = ws.ListObjects(CONST_NEW_TABLE_NAME)
+    If tbl Is Nothing Then
+        LogMsg "Prerequisite check failed: New table '" & CONST_NEW_TABLE_NAME & "' not found on sheet '" & CONST_NEW_SHEET_NAME & "'."
+        CheckPrerequisites = False
+        Exit Function
+    End If
+    
+    On Error GoTo 0
+    CheckPrerequisites = True
+End Function
+
+Private Sub UnlockAllSheets(wb As Workbook, ByVal sPassword As String)
+    Dim ws As Worksheet
+    On Error Resume Next ' In case some sheets are not protected
+    For Each ws In wb.Worksheets
+        ws.Unprotect sPassword
+    Next ws
+    On Error GoTo 0
+    LogMsg "All sheets unlocked."
+End Sub
+
+Private Sub LockAllSheets(wb As Workbook, ByVal sPassword As String)
+    Dim ws As Worksheet
+    On Error Resume Next ' In case of any issues
+    For Each ws In wb.Worksheets
+        ' Re-apply protection. Customize parameters as needed.
+        ws.Protect Password:=sPassword, DrawingObjects:=True, Contents:=True, Scenarios:=True
+    Next ws
+    On Error GoTo 0
+    LogMsg "All sheets re-locked."
+End Sub
+
+Private Sub UpdateAllFormulas(wb As Workbook, ByVal sOldTable As String, ByVal sNewTable As String)
+    ' This is the fastest way to replace.
+    ' We loop every sheet and replace text within all cells.
+    Dim ws As Worksheet
+    For Each ws In wb.Worksheets
+        ' We replace the table name. This works for structured references
+        ' e.g., OldTable[Column1] -> NewTable[Column1]
+        ws.UsedRange.Replace What:=sOldTable, _
+                              Replacement:=sNewTable, _
+                              LookAt:=xlPart, _
+                              SearchOrder:=xlByRows, _
+                              MatchCase:=False
+    Next ws
+    LogMsg "Formula replacement complete."
+End Sub
+
+Private Function VerifyUpdate(wb As Workbook, ByVal sVerifyAddress As String, ByVal vExpectedValue As Variant) As Boolean
+    ' --- Performs a 2-step verification ---
+    Dim ws As Worksheet
+    Dim rngVerify As Range
+    Dim rngErrorCells As Range
+    
+    On Error GoTo HandleError
+    
+    ' Step 1: Check ALL worksheets for ANY formula errors
+    LogMsg "Verification Step 1: Checking for formula errors..."
+    For Each ws In wb.Worksheets
+        Set rngErrorCells = Nothing
+        On Error Resume Next
+        ' Find any cells with formula errors (#N/A, #REF!, #VALUE!, etc.)
+        Set rngErrorCells = ws.UsedRange.SpecialCells(xlCellTypeFormulas, xlErrors)
+        On Error GoTo 0
+        
+        If Not rngErrorCells Is Nothing Then
+            LogMsg "!!! VERIFY FAILED: Found formula errors on sheet '" & ws.Name & "'. First error at " & rngErrorCells.Cells(1).Address
+            VerifyUpdate = False
+            Exit Function
+        End If
+    Next ws
+    LogMsg "Verification Step 1: PASS. No formula errors found."
+    
+    ' Step 2: Check the specific sample value
+    LogMsg "Verification Step 2: Checking sample cell '" & sVerifyAddress & "'..."
+    
+    ' Force calculation to be safe
+    g_App.CalculateFull
+    
+    Set rngVerify = wb.Range(sVerifyAddress)
+    
+    If rngVerify.Value <> vExpectedValue Then
+        LogMsg "!!! VERIFY FAILED: Sample cell value mismatch."
+        LogMsg "    Expected: " & vExpectedValue
+        LogMsg "    Actual:   " & rngVerify.Value
+        VerifyUpdate = False
+        Exit Function
+    End If
+    
+    LogMsg "Verification Step 2: PASS. Sample value matches."
+    
+    ' If both steps pass
+    VerifyUpdate = True
+    Exit Function
+    
+HandleError:
+    LogMsg "!!! VERIFY FAILED: An error occurred during verification."
+    LogMsg "    Error: " & Err.Description
+    LogMsg "    This often means the sample cell '" & sVerifyAddress & "' does not exist."
+    VerifyUpdate = False
+End Function
+
+Private Sub DeleteOldSheet(wb As Workbook, ByVal sSheetName As String)
+    On Error Resume Next ' In case sheet doesn't exist
+    g_App.DisplayAlerts = False
+    
+    wb.Worksheets(sSheetName).Delete
+    
+    g_App.DisplayAlerts = True
+    On Error GoTo 0
+    LogMsg "Old sheet '" & sSheetName & "' deleted."
+End Sub
+
+
+' --- LOGGING HELPERS ---
+
+Private Function SetupLogging() As Boolean
+    Dim sDesktopPath As String
+    
+    On Error GoTo HandleError
+    
+    ' Create a log file on the user's Desktop
+    sDesktopPath = CreateObject("WScript.Shell").SpecialFolders("Desktop")
+    g_LogFilePath = sDesktopPath & "\Macro_Log.txt"
+    
+    g_LogFileNum = FreeFile
+    Open g_LogFilePath For Append As #g_LogFileNum
+    
+    LogMsg "--- Log file initialized: " & Now & " ---"
+    SetupLogging = True
+    Exit Function
+    
+HandleError:
+    MsgBox "Could not create log file on Desktop. Aborting." & vbCrLf & "Error: " & Err.Description
+    SetupLogging = False
+End Function
+
+Private Sub LogMsg(ByVal sMessage As String)
+    ' Logs to the text file and the Immediate Window (for debugging)
+    Dim sTimestampedMessage As String
+    sTimestampedMessage = Format(Now, "yyyy-mm-dd hh:nn:ss") & " - " & sMessage
+    
+    If g_LogFileNum > 0 Then
+        Print #g_LogFileNum, sTimestampedMessage
+    End If
+    Debug.Print sTimestampedMessage
+End Sub</code></pre>
+        </div>
+        
+        <div class="mt-4 flex gap-2">
+            <button id="copyMacroBtn" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Copy Macro Code</button>
+            <button id="downloadMacroBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Download as Text</button>
+        </div>
+    </section>
+
+    <!-- Usage Instructions -->
+    <section class="mb-8">
+        <h2 class="flex items-center gap-2">
+            <span class="inline-block bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">4</span>
+            Running the Macro
+        </h2>
+        
+        <div class="space-y-6">
+            <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+                <h3 class="font-semibold mb-2">Step 1: Return to Excel and Run the Macro</h3>
+                <ol class="list-decimal list-inside ml-4 space-y-2">
+                    <li>Close the VBA Editor and return to Excel</li>
+                    <li>Press <code class="bg-gray-200 px-1">Alt + F8</code> to open the Macro dialog</li>
+                    <li>Select <strong>"Main_ProcessFolder"</strong> from the list</li>
+                    <li>Click <strong>Run</strong></li>
+                </ol>
+            </div>
+
+            <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+                <h3 class="font-semibold mb-2">Step 2: Select the Folder to Process</h3>
+                <ol class="list-decimal list-inside ml-4 space-y-2">
+                    <li>A folder picker dialog will appear</li>
+                    <li>Navigate to the folder containing your workbooks</li>
+                    <li>Click <strong>OK</strong> to begin processing</li>
+                    <li>The macro will:
+                        <ul class="list-circle list-inside ml-6 mt-2">
+                            <li>Recursively scan all subfolders</li>
+                            <li>Process every Excel file (.xlsx, .xlsm)</li>
+                            <li>Update formulas for each file</li>
+                            <li>Verify data integrity</li>
+                            <li>Save successful updates or rollback on failure</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+                <h3 class="font-semibold mb-2">Step 3: Monitor the Log File</h3>
+                <ol class="list-decimal list-inside ml-4 space-y-2">
+                    <li>A log file will be created on your Desktop: <code class="bg-gray-200 px-1">Macro_Log.txt</code></li>
+                    <li>Open this file to see detailed progress and any errors</li>
+                    <li>The log contains:
+                        <ul class="list-circle list-inside ml-6 mt-2">
+                            <li>Timestamps for all operations</li>
+                            <li>File names being processed</li>
+                            <li>Verification results</li>
+                            <li>Error messages with details</li>
+                            <li>Summary counts at the end</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+                <h3 class="font-semibold mb-2">Step 4: Review Results</h3>
+                <p class="text-sm">When the macro completes, a message box will appear showing the summary:</p>
+                <ul class="list-disc list-inside ml-4 mt-2">
+                    <li><strong>Successfully processed:</strong> Number of files updated without issues</li>
+                    <li><strong>Failed to process:</strong> Number of files that encountered errors</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Understanding the Log Output -->
+    <section class="mb-8">
+        <h2>Understanding the Log File</h2>
+        
+        <div class="space-y-4">
+            <div class="bg-blue-50 p-4 rounded-lg">
+                <h3 class="font-semibold mb-2">Success Entry Example:</h3>
+                <div class="bg-white p-3 rounded border-l-4 border-green-500 font-mono text-sm">
+                    2025-10-30 14:23:45 - Processing file: Workbook1.xlsm<br>
+                    2025-10-30 14:23:46 - All sheets unlocked.<br>
+                    2025-10-30 14:23:47 - Formula replacement complete.<br>
+                    2025-10-30 14:23:48 - Verification Step 1: PASS. No formula errors found.<br>
+                    2025-10-30 14:23:49 - SUCCESS: File saved and closed.
+                </div>
+            </div>
+
+            <div class="bg-red-50 p-4 rounded-lg">
+                <h3 class="font-semibold mb-2">Failure Entry Example:</h3>
+                <div class="bg-white p-3 rounded border-l-4 border-red-500 font-mono text-sm">
+                    2025-10-30 14:24:15 - Processing file: Workbook2.xlsm<br>
+                    2025-10-30 14:24:16 - !!! FAILED: Prerequisites not met (new sheet/table not found).<br>
+                    2025-10-30 14:24:17 - Prerequisite check failed: New table 'NewTable' not found on sheet 'NewDataSheet'.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Troubleshooting -->
+    <section class="mb-8">
+        <h2>Troubleshooting</h2>
+        
+        <div class="space-y-4">
+            <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500">
+                <h3 class="font-semibold mb-2">⚠️ Macro won't run or is disabled</h3>
+                <p class="text-sm"><strong>Solution:</strong></p>
+                <ul class="list-disc list-inside ml-4">
+                    <li>Check Excel's macro security settings: File → Options → Trust Center → Trust Center Settings</li>
+                    <li>Set to "Enable all macros" or add the workbook to your trusted locations</li>
+                    <li>Ensure the macro workbook is saved as .xlsm format</li>
+                </ul>
+            </div>
+
+            <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500">
+                <h3 class="font-semibold mb-2">⚠️ "Reference not found" or "Compile error"</h3>
+                <p class="text-sm"><strong>Solution:</strong></p>
+                <ul class="list-disc list-inside ml-4">
+                    <li>Ensure you enabled "Microsoft Scripting Runtime" in Tools → References</li>
+                    <li>Re-check all VBA code for typos during copy/paste</li>
+                </ul>
+            </div>
+
+            <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500">
+                <h3 class="font-semibold mb-2">⚠️ "Prerequisite check failed" errors</h3>
+                <p class="text-sm"><strong>Solution:</strong></p>
+                <ul class="list-disc list-inside ml-4">
+                    <li>Verify the sheet and table names in your configuration are EXACT (case-sensitive)</li>
+                    <li>Check that all workbooks in the folder have the new sheet and table defined</li>
+                    <li>Ensure the table is a proper Excel Table (named range, not just cells)</li>
+                </ul>
+            </div>
+
+            <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500">
+                <h3 class="font-semibold mb-2">⚠️ "Verification failed" messages</h3>
+                <p class="text-sm"><strong>Solution:</strong></p>
+                <ul class="list-disc list-inside ml-4">
+                    <li>Check your CONST_VERIFY_CELL_ADDRESS is correct (e.g., "Sheet!A1")</li>
+                    <li>Verify the expected value matches what the formula should calculate to</li>
+                    <li>Ensure the formula in that cell actually uses your table data</li>
+                    <li>Check for circular references or broken links in formulas</li>
+                </ul>
+            </div>
+
+            <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500">
+                <h3 class="font-semibold mb-2">⚠️ No log file appears on Desktop</h3>
+                <p class="text-sm"><strong>Solution:</strong></p>
+                <ul class="list-disc list-inside ml-4">
+                    <li>Check Windows Desktop folder directly (C:\Users\YourUsername\Desktop)</li>
+                    <li>Look for "Macro_Log.txt"</li>
+                    <li>If not found, the macro may have failed during setup - check the VBA editor for errors</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Best Practices -->
+    <section class="mb-8">
+        <h2>Best Practices</h2>
+        
+        <ul class="list-disc list-inside ml-4 space-y-2">
+            <li><strong>Backup First:</strong> Always backup your workbooks before running the macro</li>
+            <li><strong>Test with a Sample:</strong> Test the macro on a single workbook first to verify settings</li>
+            <li><strong>Review the Log:</strong> Always check the log file for any warnings or errors</li>
+            <li><strong>Verify Manually:</strong> Open a few processed files to confirm updates are correct</li>
+            <li><strong>Keep Old Data Accessible:</strong> Consider archiving old workbooks before running the macro</li>
+            <li><strong>Document Your Settings:</strong> Save a copy of your configuration somewhere for future reference</li>
+            <li><strong>Schedule for Off-Hours:</strong> Run batch processes when you're not actively using Excel</li>
+            <li><strong>Monitor Performance:</strong> For very large folders, watch the macro's progress in the log file</li>
+        </ul>
+    </section>
+
+    <!-- FAQ -->
+    <section class="mb-8">
+        <h2>Frequently Asked Questions</h2>
+        
+        <div class="space-y-4">
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h3 class="font-semibold mb-2">Q: Can I run this on .xlsx files (non-macro files)?</h3>
+                <p class="text-sm">A: The macro can process .xlsx files, but it cannot modify them if they're read-only or on network drives with restricted permissions. Convert to .xlsm for best results.</p>
+            </div>
+
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h3 class="font-semibold mb-2">Q: What if a workbook doesn't have the new sheet?</h3>
+                <p class="text-sm">A: The macro will skip that file and log it as a failed prerequisite check. Review the log file to identify which files need manual preparation.</p>
+            </div>
+
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h3 class="font-semibold mb-2">Q: Can I modify the macro to work differently?</h3>
+                <p class="text-sm">A: Yes, the code is modular and well-commented. You can customize the UpdateAllFormulas function or add additional verification steps as needed.</p>
+            </div>
+
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h3 class="font-semibold mb-2">Q: How long does processing take?</h3>
+                <p class="text-sm">A: Processing time depends on file size, complexity of formulas, and number of sheets. Expect 10-30 seconds per workbook on average.</p>
+            </div>
+
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h3 class="font-semibold mb-2">Q: Is it safe to run on production workbooks?</h3>
+                <p class="text-sm">A: Always test on copies first. The macro includes verification and rollback features, but backup important data before large batch runs.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Support -->
+    <section class="mb-8 p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+        <h2>Need Help?</h2>
+        <p class="mb-2">If you encounter issues:</p>
+        <ol class="list-decimal list-inside ml-4">
+            <li>Check the log file on your Desktop for error messages</li>
+            <li>Review the Troubleshooting section above</li>
+            <li>Verify all configuration values are correct</li>
+            <li>Test on a single workbook first</li>
+            <li>Review the VBA code comments for additional details</li>
+        </ol>
+    </section>
+</div>
+
+<style>
+    .guide-content h2 {
+        @apply text-2xl font-bold mb-4 mt-6;
+    }
+    
+    .guide-content h3 {
+        @apply text-lg font-semibold mb-3;
+    }
+    
+    .guide-content ul, .guide-content ol {
+        @apply my-3;
+    }
+    
+    .guide-content li {
+        @apply mb-2;
+    }
+    
+    .guide-content code {
+        @apply bg-gray-200 px-2 py-1 rounded font-mono;
+    }
+    
+    .guide-content pre {
+        @apply bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto my-3;
+    }
+    
+    .config-input {
+        @apply border border-gray-300 rounded px-2 py-1 font-mono text-sm;
+    }
+    
+    .alert-info {
+        @apply bg-blue-50 border-l-4 border-blue-500 p-4 rounded;
+    }
+</style>
+
+<script>
+    document.getElementById('generateMacroBtn')?.addEventListener('click', function() {
+        const config = {
+            oldSheet: document.querySelector('[data-config="oldSheet"]').value,
+            oldTable: document.querySelector('[data-config="oldTable"]').value,
+            newSheet: document.querySelector('[data-config="newSheet"]').value,
+            newTable: document.querySelector('[data-config="newTable"]').value,
+            password: document.querySelector('[data-config="password"]').value,
+            verifyCell: document.querySelector('[data-config="verifyCell"]').value,
+            expectedValue: document.querySelector('[data-config="expectedValue"]').value
+        };
+
+        if (!config.oldSheet || !config.oldTable || !config.newSheet || !config.newTable || !config.verifyCell) {
+            alert('Please fill in all configuration fields');
+            return;
+        }
+
+        let macroCode = document.getElementById('macroCode').textContent;
+        macroCode = macroCode.replace('Private Const CONST_OLD_SHEET_NAME As String = "OldDataSheet"', 
+            `Private Const CONST_OLD_SHEET_NAME As String = "${config.oldSheet}"`);
+        macroCode = macroCode.replace('Private Const CONST_OLD_TABLE_NAME As String = "OldTable"',
+            `Private Const CONST_OLD_TABLE_NAME As String = "${config.oldTable}"`);
+        macroCode = macroCode.replace('Private Const CONST_NEW_SHEET_NAME As String = "NewDataSheet"',
+            `Private Const CONST_NEW_SHEET_NAME As String = "${config.newSheet}"`);
+        macroCode = macroCode.replace('Private Const CONST_NEW_TABLE_NAME As String = "NewTable"',
+            `Private Const CONST_NEW_TABLE_NAME As String = "${config.newTable}"`);
+        macroCode = macroCode.replace('Private Const CONST_SHEET_PASSWORD As String = "YourPasswordHere"',
+            `Private Const CONST_SHEET_PASSWORD As String = "${config.password}"`);
+        macroCode = macroCode.replace('Private Const CONST_VERIFY_CELL_ADDRESS As String = "Summary!B5"',
+            `Private Const CONST_VERIFY_CELL_ADDRESS As String = "${config.verifyCell}"`);
+        macroCode = macroCode.replace('Private Const CONST_VERIFY_CELL_EXPECTED_VALUE As Variant = 12345',
+            `Private Const CONST_VERIFY_CELL_EXPECTED_VALUE As Variant = ${config.expectedValue}`);
+
+        document.getElementById('macroCode').textContent = macroCode;
+        alert('Macro code has been updated with your configuration!');
+    });
+
+    document.getElementById('copyMacroBtn')?.addEventListener('click', function() {
+        const code = document.getElementById('macroCode').textContent;
+        navigator.clipboard.writeText(code).then(() => {
+            alert('Macro code copied to clipboard!');
+        });
+    });
+
+    document.getElementById('downloadMacroBtn')?.addEventListener('click', function() {
+        const code = document.getElementById('macroCode').textContent;
+        const element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(code));
+        element.setAttribute('download', 'BatchWorkbookMigration.txt');
+        element.style.display = 'none';
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+    });
+</script>
