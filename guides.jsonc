@@ -14,69 +14,6 @@
         "complexity": "Mid"
     },
     {
-        "id": "folder-csv-import",
-        "title": "Import Folder of CSVs",
-        "description": "High reuse connector with parameterization for any CSV folder.",
-        "file": "content/folder-csv-import.html",
-        "complexity": "Beginner"
-    },
-    {
-        "id": "trial-balance",
-        "title": "Simplify Your Trial Balance",
-        "description": "Transform wide financial reports into tidy, analysis-ready data.",
-        "file": "content/trial-balance.html",
-        "complexity": "Beginner→Mid"
-    },
-    {
-        "id": "fx-rates-api",
-        "title": "Merge Transactions with FX Rates API",
-        "description": "Real-time currency conversion with web API integration.",
-        "file": "content/fx-rates-api.html",
-        "complexity": "Mid"
-    },
-    {
-        "id": "marketing-attribution",
-        "title": "Marketing Campaign Attribution",
-        "description": "Connect spend to conversions across multiple platforms.",
-        "file": "content/marketing-attribution.html",
-        "complexity": "Mid"
-    },
-    {
-        "id": "clean-names",
-        "title": "Clean and Canonicalize Names",
-        "description": "Standardize messy customer/vendor names with fuzzy matching.",
-        "file": "content/clean-names.html",
-        "complexity": "Mid"
-    },
-    {
-        "id": "web-sessionization",
-        "title": "Sessionize Web Analytics Funnel",
-        "description": "Turn noisy event streams into meaningful user sessions.",
-        "file": "content/web-sessionization.html",
-        "complexity": "Mid"
-    },
-    {
-        "id": "asset-consolidation",
-        "title": "Inventory / IT Asset Consolidation",
-        "description": "Merge multiple asset lists into a single source of truth.",
-        "file": "content/asset-consolidation.html",
-        "complexity": "Mid"
-    },
-    {
-        "id": "error-handling",
-        "title": "Error Reporting and Audit Trail",
-        "description": "Build trust with robust error handling and data quality logs.",
-        "file": "content/error-handling.html",
-        "complexity": "Mid"
-    },
-    {
-        "id": "allocation-engine",
-        "title": "Build Reusable Allocation Engine",
-        "description": "Sophisticated cost allocation using custom functions and drivers.",
-        "file": "content/allocation-engine.html",
-        "complexity": "Mid"
-    },
-    {
         "id": "batch-workbook-migration",
         "title": "Batch Workbook Migration with VBA",
         "description": "Automate table reference updates across multiple workbooks with verification and error handling.",
